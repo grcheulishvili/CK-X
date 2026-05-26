@@ -18,7 +18,7 @@ kubectl create rolebinding dev-binding --role=dev-role --user=dev-user -n stagin
 ## Question 3: Node Maintenance
 
 ```bash
-kubectl drain worker-1 --ignore-daemonsets
+kubectl drain k3d-cluster-agent-0 --ignore-daemonsets
 ```
 
 ## Question 4: Persistent Volume Configuration

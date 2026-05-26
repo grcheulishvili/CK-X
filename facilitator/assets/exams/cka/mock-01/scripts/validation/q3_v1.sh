@@ -1,2 +1,2 @@
 #!/bin/bash
-kubectl get node worker-1 -o jsonpath='{.spec.unschedulable}' | grep -q 'true'
+kubectl get node k3d-cluster-agent-0 -o jsonpath='{.spec.unschedulable}' | grep -q 'true'

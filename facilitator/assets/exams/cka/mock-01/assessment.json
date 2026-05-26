@@ -71,7 +71,7 @@
       "id": "3",
       "namespace": "default",
       "machineHostname": "controlplane",
-      "question": "Node `worker-1` needs maintenance and will be offline for 1 hour.\n\n1. Prepare the node for maintenance without losing pod data\n2. Verify the node is ready for maintenance\n",
+      "question": "Node `k3d-cluster-agent-0` needs maintenance and will be offline for 1 hour.\n\n1. Prepare the node for maintenance without losing pod data\n2. Verify the node is ready for maintenance\n",
       "concepts": [
         "nodes",
         "maintenance"
@@ -79,7 +79,7 @@
       "verification": [
         {
           "id": "1",
-          "description": "Node worker-1 is unschedulable",
+          "description": "Node k3d-cluster-agent-0 is unschedulable",
           "verificationScriptFile": "q3_v1.sh",
           "expectedOutput": "0",
           "weightage": 5
