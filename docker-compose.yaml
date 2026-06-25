@@ -162,7 +162,10 @@ services:
           cpus: "1"
           memory: 2G
     networks:
-      - ckx-network
+      ckx-network:
+        aliases:
+         - controlplane
+         - ckad9999
     healthcheck:
       test: ["CMD", "ls", "/ready"]
       interval: 30s

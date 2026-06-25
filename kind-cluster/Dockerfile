@@ -4,7 +4,11 @@ FROM docker:dind
 ARG TARGETARCH
 
 #install curl
-RUN apk add --no-cache curl
+# Replace the existing curl installation with this block:
+RUN apk add --no-cache curl --allow-untrusted \
+    && curl -k -LO "https://dl.k8s.io/release/v1.31.5/bin/linux/amd64/kubectl" \
+    && chmod +x kubectl \
+    && mv kubectl /usr/local/bin/""
 # use our own to start kind cluster
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh

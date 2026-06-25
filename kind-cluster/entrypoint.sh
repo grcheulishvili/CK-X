@@ -1,14 +1,13 @@
 #!/bin/sh
 
 # ===============================================================================
-#   KIND Cluster Setup Entrypoint Script
-#   Purpose: Initialize Docker and create Kind cluster
+#   KIND/K3D Cluster Setup Entrypoint Script
+#   Purpose: Initialize Docker Daemon, Provision Cluster, and Manage SSH Setup
 # ===============================================================================
 
 echo "$(date '+%Y-%m-%d %H:%M:%S') | ===== INITIALIZATION STARTED ====="
 echo "$(date '+%Y-%m-%d %H:%M:%S') | Executing container startup script..."
 
-# Execute current entrypoint script
 if [ -f /usr/local/bin/startup.sh ]; then
     sh /usr/local/bin/startup.sh &
 else
@@ -16,14 +15,13 @@ else
 fi
 
 # ===============================================================================
-#   Docker Readiness Check
+#   Docker Daemon Readiness Verification
 # ===============================================================================
 
 echo "$(date '+%Y-%m-%d %H:%M:%S') | Checking Docker service status..."
 DOCKER_CHECK_COUNT=0
 
-# Wait for docker to be ready
-while ! docker ps; do   
+while ! docker ps >/dev/null 2>&1; do
     DOCKER_CHECK_COUNT=$((DOCKER_CHECK_COUNT+1))
     echo "$(date '+%Y-%m-%d %H:%M:%S') | [WAITING] Docker service not ready yet... (attempt $DOCKER_CHECK_COUNT)"
     sleep 5
@@ -31,21 +29,35 @@ done
 
 echo "$(date '+%Y-%m-%d %H:%M:%S') | [SUCCESS] Docker service is ready and operational"
 
-#pull kindest/node image
-# docker pull kindest/node:$KIND_DEFAULT_VERSION
-
-#add user for ssh access
 adduser -S -D -H -s /sbin/nologin -G sshd sshd
-
-#start ssh service
 /usr/sbin/sshd -D &
 
-#install k3d
-echo "$(date '+%Y-%m-%d %H:%M:%S') | [INFO] Installing k3d"
+# ===============================================================================
+#   K3D Installation & Cluster Topology Provisioning
+# ===============================================================================
+
+echo "$(date '+%Y-%m-%d %H:%M:%S') | [INFO] Installing k3d binary..."
 TAG=v5.8.3 bash /usr/local/bin/k3d-install.sh
 
-sleep 10
-touch /ready
+if [ -f /usr/local/bin/env-setup ]; then
+    echo "$(date '+%Y-%m-%d %H:%M:%S') | [INFO] Executing K3D cluster orchestration..."
+    bash /usr/local/bin/env-setup
 
-# Keep container running
-tail -f /dev/null
+    echo "$(date '+%Y-%m-%d %H:%M:%S') | [INFO] Provisioning kubeconfig structure for candidate..."
+    mkdir -p /home/candidate/.kube
+    /usr/local/bin/k3d kubeconfig get cluster > /home/candidate/.kube/config
+    
+    # Use the pre-validated k8s-api-server SAN to satisfy TLS requirements
+    sed -i 's/127.0.0.1/k8s-api-server/g' /home/candidate/.kube/config
+    
+    chown -R candidate: /home/candidate/.kube
+    chmod 600 /home/candidate/.kube/config
+
+    echo "$(date '+%Y-%m-%d %H:%M:%S') | [SUCCESS] Kubernetes backend initialized successfully."
+    touch /ready
+else
+    echo "$(date '+%Y-%m-%d %H:%M:%S') | [ERROR] /usr/local/bin/env-setup script missing!"
+    touch /ready
+fi
+
+exec tail -f /dev/null
