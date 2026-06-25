@@ -1,71 +1,64 @@
+# CK-X Simulator Enhanced Ed.
 
-![Master Kubernetes the Right Way (2)](https://github.com/user-attachments/assets/16edd8d8-5f96-4422-8659-3bb490b77204)
+This repository is an optimized fork of the original `sailor-sh/CK-X` simulator. It introduces critical structural patches, automated environment deployment tooling, and fills major coverage gaps by integrating comprehensive **CKS (Certified Kubernetes Security Specialist)** mock exams and validation matrices that were absent in the upstream repository.
 
-# CK-X Simulator 🚀
+---
 
+## What's New in this Fork
 
-A powerful Kubernetes certification practice environment that provides a realistic exam-like experience for kubernetess exam preparation.
+### 1. Extended Exam & Lab Coverage
+*   **CKS Mock Exam 01 Integration:** Full deployment of dedicated CKS lab scenarios including AppArmor profiles, Falco runtime security rules, Trivy image vulnerability scanners, NetworkPolicies, and API server auditing verification.
+*   **Complete Verification Logic:** Populated missing step-by-step setup (`setup.sh`) and multi-stage shell validation scripts (`validation/q*_v*.sh`) to guarantee accurate automated grading.
 
-## Major Features
+### 2. Platform Stability & Structural Fixes
+*   **RDP/VNC Recovery:** Resolved terminal image rendering and workspace connection issues inside the `remote-desktop` container.
+*   **Cross-Platform Line Ending Normalization:** Embedded configuration protections to stop Windows carriage returns (`CRLF`) from corrupting Linux entrypoint scripts (`/bin/bash^M: bad interpreter` errors).
+*   **Local Build Automation:** Enhanced the standalone `compose-deploy.sh` engine to handle multi-container build cycles locally without dependency breaking.
 
-- **Realistic exam environment** with web-based interface and remote desktop support
-- Comprehensive practice labs for **CKAD, CKA, CKS**, and other Kubernetes certifications
-- **Smart evaluation system** with real-time solution verification
-- **Docker-based deployment** for easy setup and consistent environment
-- **Timed exam mode** with real exam-like conditions and countdown timer 
+---
 
+##  Fork Installation
 
-## 
+Ensure your local Docker engine is running. For Windows environments, verify that the WSL2 engine backend is fully enabled in your Docker Desktop settings before setup.
 
-Watch live demo video showcasing the CK-X Simulator in action:
-
-[![CK-X Simulator Demo](https://img.youtube.com/vi/EQVGhF8x7R4/0.jpg)](https://www.youtube.com/watch?v=EQVGhF8x7R4)
-
-## Installation
-
-#### Linux & macOS
+#### Automated Setup (Linux & macOS)
 ```bash
-curl -fsSL https://raw.githubusercontent.com/sailor-sh/CK-X/master/scripts/install.sh | bash
+curl -fsSL [https://raw.githubusercontent.com/grcheulishvili/CK-X/master/scripts/install.sh](https://raw.githubusercontent.com/grcheulishvili/CK-X/master/scripts/install.sh) | bash
+
 ```
 
-#### Windows ( make sure WSL2 is enabled in the docker desktop )
+#### Automated Setup (Windows PowerShell)
+
 ```powershell
-irm  https://raw.githubusercontent.com/sailor-sh/CK-X/master/scripts/install.ps1 | iex
+irm [https://raw.githubusercontent.com/grcheulishvili/CK-X/master/scripts/install.ps1](https://raw.githubusercontent.com/grcheulishvili/CK-X/master/scripts/install.ps1) | iex
+
 ```
 
-### Manual Installation
-For detailed installation instructions, please refer to our [Deployment Guide](scripts/COMPOSE-DEPLOY.md).
+### Manual Dev Setup
 
-## Community & Support
+To inspect build logs, configure container resource reservations, or modify asset schemas locally:
 
-- Join our [Discord Community](https://discord.gg/6FPQMXNgG9) for discussions and support
-- Feature requests and pull requests are welcome
+```bash
+git clone git@github.com:grcheulishvili/CK-X.git
+cd CK-X
 
-## Adding New Labs
+# Execute the local compilation and deployment pipeline
+./compose-deploy.sh
 
-Check our [Lab Creation Guide](docs/how-to-add-new-labs.md) for instructions on adding new labs.
+```
 
-## Contributing
+---
 
-We welcome contributions! Whether you want to:
-- Add new practice labs
-- Improve existing features
-- Fix bugs
-- Enhance documentation
+## 📂 Repository Structure Highlights
+
+* `facilitator/assets/exams/cks/` - Dedicated CKS mock engine containing runtime asset controls and verification matrices.
+* `remote-desktop/` - Patched VNC server build environments hosting the web-accessible terminal interface.
+* `compose-deploy.sh` - Core localization script executing target compilation and orchestrating the decoupled KIND backend.
+
+---
+
+## Disclaimer & License
+
+This fork is maintained independently for optimized exam readiness. Content tracks CNCF/Linux Foundation exam domains but holds no official affiliation. Distributed under the Business Source License 1.1 (BSL 1.1). See the `LICENSE` file for exact data limits.
 
 
-## Disclaimer
-
-CK-X is an independent tool, not affiliated with CNCF, Linux Foundation, or PSI. We do not guarantee exam success. Please read our [Privacy Policy](docs/PRIVACY_POLICY.md) and [Terms of Service](docs/TERMS_OF_SERVICE.md) for more details about data collection, usage, and limitations.
-
-## Acknowledgments
-
-- [DIND](https://www.docker.com/)
-- [K3D](https://k3d.io/stable/)
-- [Node](https://nodejs.org/en)
-- [Nginx](https://nginx.org/)
-- [ConSol-Vnc](https://github.com/ConSol/docker-headless-vnc-container/)
-
-## License
-
-This project is licensed under the Business Source License 1.1 (BSL 1.1). Personal, educational, research, and non-production use is allowed, but commercial/production usage and SaaS monetization require a separate commercial license from Sailor.sh. See the `LICENSE` file for full terms.
