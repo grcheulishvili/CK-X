@@ -39,19 +39,23 @@ adduser -S -D -H -s /sbin/nologin -G sshd sshd
 echo "$(date '+%Y-%m-%d %H:%M:%S') | [INFO] Installing k3d binary..."
 TAG=v5.8.3 bash /usr/local/bin/k3d-install.sh
 
+# Replace the env-setup block at the bottom of .\kind-cluster\entrypoint.sh with this:
 if [ -f /usr/local/bin/env-setup ]; then
     echo "$(date '+%Y-%m-%d %H:%M:%S') | [INFO] Executing K3D cluster orchestration..."
     bash /usr/local/bin/env-setup
 
     echo "$(date '+%Y-%m-%d %H:%M:%S') | [INFO] Provisioning kubeconfig structure for candidate..."
     mkdir -p /home/candidate/.kube
-    /usr/local/bin/k3d kubeconfig get cluster > /home/candidate/.kube/config
     
-    # Use the pre-validated k8s-api-server SAN to satisfy TLS requirements
-    sed -i 's/127.0.0.1/k8s-api-server/g' /home/candidate/.kube/config
+    # Export to the exact filename format the jumphost configuration requires
+    /usr/local/bin/k3d kubeconfig get cluster > /home/candidate/.kube/kubeconfig
+    sed -i 's/127.0.0.1/k8s-api-server/g' /home/candidate/.kube/kubeconfig
+    
+    # Create a duplicate fallback reference to satisfy local binary contexts
+    cp /home/candidate/.kube/kubeconfig /home/candidate/.kube/config
     
     chown -R candidate: /home/candidate/.kube
-    chmod 600 /home/candidate/.kube/config
+    chmod 600 /home/candidate/.kube/config /home/candidate/.kube/kubeconfig
 
     echo "$(date '+%Y-%m-%d %H:%M:%S') | [SUCCESS] Kubernetes backend initialized successfully."
     touch /ready
@@ -59,5 +63,4 @@ else
     echo "$(date '+%Y-%m-%d %H:%M:%S') | [ERROR] /usr/local/bin/env-setup script missing!"
     touch /ready
 fi
-
 exec tail -f /dev/null

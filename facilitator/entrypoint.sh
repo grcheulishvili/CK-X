@@ -1,4 +1,4 @@
-
+#!/bin/sh
 find /usr/src/app/assets/exams -type d -path "*/*/scripts" | while read scripts_dir; do \
     exam_dir=$(dirname "$scripts_dir"); \
     cd "$exam_dir"; \

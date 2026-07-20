@@ -1,3 +1,4 @@
+#!/bin/bash
 # validate the container image is correct having image name nginx
 # Validate if the pods of deployment 'broken-app' are running in the 'troubleshooting' namespace
 #check deployment status is runing or not

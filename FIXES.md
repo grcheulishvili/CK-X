@@ -63,3 +63,50 @@ Verification: `bash -n` over the entire repo now reports **0 syntax errors** (wa
 - **Gateway API Q13 (cka/002)**: installs CRDs from GitHub at setup; k3s has no Gateway
   controller, so validators correctly check spec only (the Ready-status checks are already
   commented out). Left as-is.
+
+---
+
+# Fixes Applied — v2 (second pass)
+
+The v1 notes above describe intended fixes; several had **not** actually landed in the
+shipped tree. This pass verified everything empirically and corrected it.
+
+## Corrected from v1
+- **CRLF was still repo-wide.** All 657 text files (incl. every `.sh`) were still CRLF,
+  so the v1 "converted 560 .sh to LF" claim was inaccurate. Converted the entire tree to
+  LF (binaries excluded) and reset exec bits. `bash -n` on all scripts and JSON-parse on
+  all `.json` now pass; `scripts/lint-exams.py` reports 0 errors / 0 warnings.
+
+## New bugs found and fixed
+- **other/002 (Helm) Q12 setup never ran.** File was `q12_setup_buggy_release.sh`, which
+  does not match the runtime glob `q*_setup.sh` in `prepare-exam-env.sh`, so the buggy
+  release was never created and Q12 was effectively ungradeable. Renamed to `q12_setup.sh`.
+- **compose-deploy.sh** verified the cluster with `kind get clusters` although the backend
+  is k3d. Changed to `k3d cluster list | grep -q cluster`.
+- **cka/mock-02 Q5 validator** accepted `journalctl -u kubelet` (wrong component) as a
+  correct "API server logs" answer and assumed a static-pod apiserver. Rewritten to accept
+  valid kube-apiserver log commands (kubeadm static pod, crictl, on-disk pod logs, or k3s
+  systemd) and reject kubelet-only answers.
+- **Malformed shebangs.** `ckad/001 q1_s1_validate_namespace.sh` had `#bin/bash`; two other
+  validators and `facilitator/entrypoint.sh` had no shebang. All corrected.
+- **Broken README install links** (`[url](url)` wrapping) fixed to plain URLs.
+
+## Cleanup
+- Removed **71 orphan validation scripts** and **9 dead/unreferenced setup scripts**
+  (leftovers from the retired 20-question CKS/CKAD versions and an un-runnable
+  `cks/001 setup.sh`). All were unreferenced; grading is unchanged.
+- Standardized `machineHostname` in the mocks (`controlplane` -> `ckad9999`) to match the
+  other labs (both resolve via the k8s-api-server network aliases).
+
+## Structure
+- **Expanded both CKA mocks from 5 to 12 questions.** `labs.json` had claimed mock-01 held
+  "15 questions". Added 7 vetted tasks to each mock spanning the CKA domains, with matching
+  setup + validation scripts and `answers.md` solutions. All new validators are k3d /
+  flannel-safe (spec-based where runtime enforcement is unavailable; they rely on k3s's
+  built-in Traefik and local-path where used). Updated `labs.json` accordingly.
+
+## New tooling / convenience
+- `scripts/lint-exams.py` — static checker: referenced-vs-existing validators, orphans,
+  duplicate ids, setup-glob mismatches, CRLF, shebangs, and `bash -n`. Run before commits.
+- `scripts/gen-index.py` -> `facilitator/assets/exams/EXAMS.md` — auto-generated exam index
+  (id, category, question count, difficulty, duration) plus environment notes.

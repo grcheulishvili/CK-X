@@ -3,7 +3,7 @@
     {
       "id": "1",
       "namespace": "production",
-      "machineHostname": "controlplane",
+      "machineHostname": "ckad9999",
       "question": "A pod named `app-frontend` in namespace `production` is stuck in `CrashLoopBackOff`. The pod's container is looking for a configuration file at `/etc/app/config.yaml`, but this file doesn't exist in the image.\n\nYou need to:\n1. Create a ConfigMap named `app-config` with the file content: `database_host: postgres.production.svc.cluster.local`\n2. Mount this ConfigMap as a file at `/etc/app/config.yaml` in the pod\n3. Verify the pod starts successfully\n\nThe pod manifest already exists; you only need to update it.\n",
       "concepts": [
         "pods",
@@ -37,7 +37,7 @@
     {
       "id": "2",
       "namespace": "staging",
-      "machineHostname": "controlplane",
+      "machineHostname": "ckad9999",
       "question": "A developer needs to be able to list Deployments and Pods in the `staging` namespace, but not in other namespaces. Currently, they cannot perform these actions.\n\nCreate:\n1. A Role that allows listing Pods and Deployments in `staging` named `dev-role`\n2. A RoleBinding that grants this Role to the user `dev-user` named `dev-binding`\n\nVerify the permissions work using `kubectl auth can-i`.\n",
       "concepts": [
         "rbac",
@@ -70,7 +70,7 @@
     {
       "id": "3",
       "namespace": "default",
-      "machineHostname": "controlplane",
+      "machineHostname": "ckad9999",
       "question": "Node `k3d-cluster-agent-0` needs maintenance and will be offline for 1 hour.\n\n1. Prepare the node for maintenance without losing pod data\n2. Verify the node is ready for maintenance\n",
       "concepts": [
         "nodes",
@@ -89,7 +89,7 @@
     {
       "id": "4",
       "namespace": "databases",
-      "machineHostname": "controlplane",
+      "machineHostname": "ckad9999",
       "question": "An application needs persistent storage that:\n1. Size: 5Gi\n2. Access mode: can be used by multiple pods simultaneously (ReadWriteMany)\n3. Storage class: `fast-ssd`\n4. Name of PVC: `db-pvc`\n\nCreate the PV named `db-pv` (hostPath `/data`) and the PVC `db-pvc` in the `databases` namespace.\n",
       "concepts": [
         "storage",
@@ -116,7 +116,7 @@
     {
       "id": "5",
       "namespace": "shop",
-      "machineHostname": "controlplane",
+      "machineHostname": "ckad9999",
       "question": "Currently, all pods in namespace `shop` can communicate with each other. You need to implement network isolation using a NetworkPolicy named `backend-policy`:\n1. Backend pods (label: `tier=backend`) can receive traffic from frontend pods (label: `tier=frontend`) on port 3000 only.\n",
       "concepts": [
         "networking",
@@ -136,6 +136,311 @@
           "verificationScriptFile": "q5_v2.sh",
           "expectedOutput": "0",
           "weightage": 3
+        }
+      ]
+    },
+    {
+      "id": "6",
+      "namespace": "default",
+      "machineHostname": "ckad9999",
+      "question": "Schedule a pod onto a specific node using labels.\n\n1. Label the node `k3d-cluster-agent-0` with `disktype=ssd`\n2. Create a pod named `ssd-pod` (image `nginx`) in the `default` namespace that is scheduled **only** onto nodes labelled `disktype=ssd`, using `nodeSelector`\n3. Confirm the pod is scheduled onto `k3d-cluster-agent-0`\n",
+      "concepts": [
+        "scheduling",
+        "nodeSelector",
+        "labels"
+      ],
+      "verification": [
+        {
+          "id": "1",
+          "description": "Node k3d-cluster-agent-0 has label disktype=ssd",
+          "verificationScriptFile": "q6_v1.sh",
+          "expectedOutput": "0",
+          "weightage": 2
+        },
+        {
+          "id": "2",
+          "description": "Pod ssd-pod uses nodeSelector disktype=ssd",
+          "verificationScriptFile": "q6_v2.sh",
+          "expectedOutput": "0",
+          "weightage": 3
+        },
+        {
+          "id": "3",
+          "description": "Pod ssd-pod is scheduled onto k3d-cluster-agent-0",
+          "verificationScriptFile": "q6_v3.sh",
+          "expectedOutput": "0",
+          "weightage": 2
+        }
+      ]
+    },
+    {
+      "id": "7",
+      "namespace": "web",
+      "machineHostname": "ckad9999",
+      "question": "In the namespace `web`:\n\n1. Create a Deployment named `web` using image `nginx:1.25` with `3` replicas\n2. Scale it to `5` replicas\n3. Update the image to `nginx:1.26` and wait for the rollout to complete\n",
+      "concepts": [
+        "deployments",
+        "scaling",
+        "rollout"
+      ],
+      "verification": [
+        {
+          "id": "1",
+          "description": "Deployment web runs image nginx:1.26",
+          "verificationScriptFile": "q7_v1.sh",
+          "expectedOutput": "0",
+          "weightage": 2
+        },
+        {
+          "id": "2",
+          "description": "Deployment web is scaled to 5 replicas",
+          "verificationScriptFile": "q7_v2.sh",
+          "expectedOutput": "0",
+          "weightage": 3
+        },
+        {
+          "id": "3",
+          "description": "All 5 replicas are available",
+          "verificationScriptFile": "q7_v3.sh",
+          "expectedOutput": "0",
+          "weightage": 2
+        }
+      ]
+    },
+    {
+      "id": "8",
+      "namespace": "default",
+      "machineHostname": "ckad9999",
+      "question": "Create a pod named `guaranteed-pod` (image `nginx`) in the `default` namespace whose container has CPU and memory **requests equal to its limits** (`cpu=200m`, `memory=128Mi`) so that Kubernetes assigns it the **Guaranteed** QoS class.\n",
+      "concepts": [
+        "resources",
+        "qos"
+      ],
+      "verification": [
+        {
+          "id": "1",
+          "description": "Requests and limits are both cpu=200m / memory=128Mi",
+          "verificationScriptFile": "q8_v1.sh",
+          "expectedOutput": "0",
+          "weightage": 3
+        },
+        {
+          "id": "2",
+          "description": "Pod QoS class is Guaranteed",
+          "verificationScriptFile": "q8_v2.sh",
+          "expectedOutput": "0",
+          "weightage": 2
+        }
+      ]
+    },
+    {
+      "id": "9",
+      "namespace": "web",
+      "machineHostname": "ckad9999",
+      "question": "In the namespace `web`, expose the `web` Deployment (from question 7) with a **ClusterIP** Service named `web-svc` on port `80`, targeting container port `80`. The Service must select the deployment's pods (its Endpoints must be populated).\n",
+      "concepts": [
+        "services",
+        "networking"
+      ],
+      "verification": [
+        {
+          "id": "1",
+          "description": "ClusterIP Service web-svc exists on port 80",
+          "verificationScriptFile": "q9_v1.sh",
+          "expectedOutput": "0",
+          "weightage": 2
+        },
+        {
+          "id": "2",
+          "description": "Service selects the web pods (Endpoints populated)",
+          "verificationScriptFile": "q9_v2.sh",
+          "expectedOutput": "0",
+          "weightage": 3
+        }
+      ]
+    },
+    {
+      "id": "10",
+      "namespace": "web",
+      "machineHostname": "ckad9999",
+      "question": "In the namespace `web`, create an Ingress named `web-ingress` that routes host `web.example.com`, path `/` (pathType `Prefix`), to the Service `web-svc` on port `80`.\n\n> The cluster ships with the Traefik ingress controller.\n",
+      "concepts": [
+        "ingress",
+        "networking"
+      ],
+      "verification": [
+        {
+          "id": "1",
+          "description": "Ingress web-ingress exists for host web.example.com",
+          "verificationScriptFile": "q10_v1.sh",
+          "expectedOutput": "0",
+          "weightage": 2
+        },
+        {
+          "id": "2",
+          "description": "Ingress routes to web-svc:80",
+          "verificationScriptFile": "q10_v2.sh",
+          "expectedOutput": "0",
+          "weightage": 3
+        }
+      ]
+    },
+    {
+      "id": "11",
+      "namespace": "default",
+      "machineHostname": "ckad9999",
+      "question": "A Deployment named `broken-app` in the `default` namespace is stuck in `ImagePullBackOff` because its image tag does not exist.\n\nFix the Deployment so that it runs image `nginx:1.25` and becomes available.\n",
+      "concepts": [
+        "troubleshooting",
+        "deployments",
+        "images"
+      ],
+      "verification": [
+        {
+          "id": "1",
+          "description": "Deployment broken-app image is nginx:1.25",
+          "verificationScriptFile": "q11_v1.sh",
+          "expectedOutput": "0",
+          "weightage": 2
+        },
+        {
+          "id": "2",
+          "description": "Deployment broken-app has an available replica",
+          "verificationScriptFile": "q11_v2.sh",
+          "expectedOutput": "0",
+          "weightage": 3
+        }
+      ]
+    },
+    {
+      "id": "12",
+      "namespace": "default",
+      "machineHostname": "ckad9999",
+      "question": "Create a CronJob named `backup` in the `default` namespace that:\n\n1. Runs every 5 minutes (`*/5 * * * *`)\n2. Uses image `busybox`\n3. Runs the command `date`\n",
+      "concepts": [
+        "cronjobs",
+        "workloads"
+      ],
+      "verification": [
+        {
+          "id": "1",
+          "description": "CronJob backup schedule is */5 * * * *",
+          "verificationScriptFile": "q12_v1.sh",
+          "expectedOutput": "0",
+          "weightage": 2
+        },
+        {
+          "id": "2",
+          "description": "CronJob uses image busybox",
+          "verificationScriptFile": "q12_v2.sh",
+          "expectedOutput": "0",
+          "weightage": 2
+        },
+        {
+          "id": "3",
+          "description": "CronJob runs the date command",
+          "verificationScriptFile": "q12_v3.sh",
+          "expectedOutput": "0",
+          "weightage": 1
+        }
+      ]
+    },
+    {
+      "id": "13",
+      "namespace": "store",
+      "machineHostname": "ckad9999",
+      "question": "A Service in namespace `store` is not routing traffic. The Deployment `api` is healthy, but the Service `api-svc` returns no endpoints because its selector is wrong.\n\nFix the Service `api-svc` so that it selects the `api` pods and its Endpoints are populated.\n",
+      "concepts": [
+        "troubleshooting",
+        "services",
+        "networking"
+      ],
+      "verification": [
+        {
+          "id": "1",
+          "description": "Service api-svc has populated Endpoints (selector fixed)",
+          "verificationScriptFile": "q13_v1.sh",
+          "expectedOutput": "0",
+          "weightage": 5
+        }
+      ]
+    },
+    {
+      "id": "14",
+      "namespace": "default",
+      "machineHostname": "ckad9999",
+      "question": "A pod named `pending-pod` in `default` is stuck in `Pending` and never schedules. `kubectl describe pod pending-pod` shows it cannot fit on any node.\n\nDiagnose the cause and fix it so the pod reaches `Running`. Keep the image `nginx`.\n",
+      "concepts": [
+        "troubleshooting",
+        "scheduling",
+        "pods"
+      ],
+      "verification": [
+        {
+          "id": "1",
+          "description": "Pod pending-pod is Running",
+          "verificationScriptFile": "q14_v1.sh",
+          "expectedOutput": "0",
+          "weightage": 5
+        }
+      ]
+    },
+    {
+      "id": "15",
+      "namespace": "default",
+      "machineHostname": "ckad9999",
+      "question": "A pod named `crash-pod` in `default` is in `CrashLoopBackOff`. Its container exits immediately with a non-zero status.\n\nFix the pod (image `busybox`) so that it runs continuously and reaches a stable `Running` state.\n",
+      "concepts": [
+        "troubleshooting",
+        "pods"
+      ],
+      "verification": [
+        {
+          "id": "1",
+          "description": "Pod crash-pod is Running",
+          "verificationScriptFile": "q15_v1.sh",
+          "expectedOutput": "0",
+          "weightage": 5
+        }
+      ]
+    },
+    {
+      "id": "16",
+      "namespace": "default",
+      "machineHostname": "ckad9999",
+      "question": "A PersistentVolumeClaim `app-pvc` in `default` is stuck in `Pending`. A PersistentVolume `small-pv` (storageClass `manual`, 100Mi) exists, but the claim will not bind.\n\nFix the situation so that `app-pvc` becomes `Bound`.\n",
+      "concepts": [
+        "troubleshooting",
+        "storage",
+        "pvc"
+      ],
+      "verification": [
+        {
+          "id": "1",
+          "description": "PVC app-pvc is Bound",
+          "verificationScriptFile": "q16_v1.sh",
+          "expectedOutput": "0",
+          "weightage": 5
+        }
+      ]
+    },
+    {
+      "id": "17",
+      "namespace": "default",
+      "machineHostname": "ckad9999",
+      "question": "You have an etcd snapshot at `/opt/backup.db` taken from a kubeadm control plane. Write the full `etcdctl snapshot restore` command that restores it into the data directory `/var/lib/etcd-restored` to the file `/tmp/exam/q17_etcd_restore.txt`.\n\n> Note: this cluster is k3d, so you cannot run the restore for real here \u2014 the task validates that you can recall the exact command. On the real exam you would also update the etcd static pod manifest's `--data-dir` and `hostPath` to match.\n",
+      "concepts": [
+        "clusterarch",
+        "etcd",
+        "backup"
+      ],
+      "verification": [
+        {
+          "id": "1",
+          "description": "Command contains 'etcdctl snapshot restore' targeting /var/lib/etcd-restored",
+          "verificationScriptFile": "q17_v1.sh",
+          "expectedOutput": "0",
+          "weightage": 4
         }
       ]
     }

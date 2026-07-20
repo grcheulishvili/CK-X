@@ -23,14 +23,14 @@ Ensure your local Docker engine is running. For Windows environments, verify tha
 
 #### Automated Setup (Linux & macOS)
 ```bash
-curl -fsSL [https://raw.githubusercontent.com/grcheulishvili/CK-X/master/scripts/install.sh](https://raw.githubusercontent.com/grcheulishvili/CK-X/master/scripts/install.sh) | bash
+curl -fsSL https://raw.githubusercontent.com/grcheulishvili/CK-X/master/scripts/install.sh | bash
 
 ```
 
 #### Automated Setup (Windows PowerShell)
 
 ```powershell
-irm [https://raw.githubusercontent.com/grcheulishvili/CK-X/master/scripts/install.ps1](https://raw.githubusercontent.com/grcheulishvili/CK-X/master/scripts/install.ps1) | iex
+irm https://raw.githubusercontent.com/grcheulishvili/CK-X/master/scripts/install.ps1 | iex
 
 ```
 

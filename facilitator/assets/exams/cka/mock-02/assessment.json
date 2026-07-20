@@ -3,7 +3,7 @@
     {
       "id": "1",
       "namespace": "backend",
-      "machineHostname": "controlplane",
+      "machineHostname": "ckad9999",
       "question": "An application in namespace `backend` needs to call a service in namespace `frontend` via DNS. The service name is `web-ui` and it exposes port 3000.\n\nThe application's configuration needs the full DNS name to connect. What is the correct DNS name within the cluster that the backend application should use?\n\nWrite the exact DNS name to a file `/tmp/exam/q1_dns_name.txt`.\n\nAlso, verify that pod-to-pod DNS resolution works using nslookup or dig from a test pod.\n",
       "concepts": [
         "dns",
@@ -23,7 +23,7 @@
     {
       "id": "2",
       "namespace": "default",
-      "machineHostname": "controlplane",
+      "machineHostname": "ckad9999",
       "question": "A deployment `payment-service` has been updated with a new image version that introduced a bug. Users are reporting errors. You need to:\n1. Check the deployment's rollout history\n2. Identify which revision had the issue\n3. Rollback to the previous stable version\n4. Verify the rollback completed successfully\n",
       "concepts": [
         "deployments",
@@ -43,7 +43,7 @@
     {
       "id": "3",
       "namespace": "default",
-      "machineHostname": "controlplane",
+      "machineHostname": "ckad9999",
       "question": "A pod needs access to database credentials:\n- Username: `dbuser`\n- Password: `secret123`\n- Database: `appdb`\n\nCreate a Secret named `db-creds` and mount it in a deployment named `app-deploy` as environment variables (not as files).\n\nVerify that the pod can access these environment variables without exposing them in pod logs.\n",
       "concepts": [
         "secrets",
@@ -70,7 +70,7 @@
     {
       "id": "4",
       "namespace": "default",
-      "machineHostname": "controlplane",
+      "machineHostname": "ckad9999",
       "question": "A monitoring agent needs to run on every node in the cluster, including control plane nodes. Currently, some nodes are missing the agent due to taints.\n\nCreate or update a DaemonSet named `monitoring-agent` to:\n1. Run the `datadog/agent:latest` image on all nodes\n2. Tolerate the taint `node-role.kubernetes.io/control-plane:NoSchedule`\n3. Verify the agent is running on all nodes\n",
       "concepts": [
         "daemonsets",
@@ -97,7 +97,7 @@
     {
       "id": "5",
       "namespace": "default",
-      "machineHostname": "controlplane",
+      "machineHostname": "ckad9999",
       "question": "The API server appears to be responding slowly. You need to:\n1. Check the API server logs for errors or warnings\n2. Verify the API server is listening on port 6443\n\nWrite the command you would use to check the API server logs to a file `/tmp/exam/q5_command.txt`.\n",
       "concepts": [
         "troubleshooting",
@@ -108,6 +108,319 @@
           "id": "1",
           "description": "Correct command in file",
           "verificationScriptFile": "q5_v1.sh",
+          "expectedOutput": "0",
+          "weightage": 5
+        }
+      ]
+    },
+    {
+      "id": "6",
+      "namespace": "default",
+      "machineHostname": "ckad9999",
+      "question": "On a kubeadm-managed control plane, etcd runs as a static pod and its certificates live under `/etc/kubernetes/pki/etcd/`.\n\nWrite the full `etcdctl snapshot save` command you would use to back up etcd to `/tmp/etcd-backup.db` to the file `/tmp/exam/q6_etcd_backup.txt`. The command must include the `--endpoints`, `--cacert`, `--cert`, and `--key` flags.\n",
+      "concepts": [
+        "etcd",
+        "backup",
+        "clusterarch"
+      ],
+      "verification": [
+        {
+          "id": "1",
+          "description": "Command contains etcdctl snapshot save with all required flags",
+          "verificationScriptFile": "q6_v1.sh",
+          "expectedOutput": "0",
+          "weightage": 5
+        }
+      ]
+    },
+    {
+      "id": "7",
+      "namespace": "default",
+      "machineHostname": "ckad9999",
+      "question": "1. Taint the node `k3d-cluster-agent-0` with `dedicated=special:NoSchedule`\n2. Create a pod named `toleration-pod` (image `nginx`) in the `default` namespace that **tolerates** this taint\n3. Verify the pod runs\n",
+      "concepts": [
+        "taints",
+        "tolerations",
+        "scheduling"
+      ],
+      "verification": [
+        {
+          "id": "1",
+          "description": "Node k3d-cluster-agent-0 has taint 'dedicated'",
+          "verificationScriptFile": "q7_v1.sh",
+          "expectedOutput": "0",
+          "weightage": 2
+        },
+        {
+          "id": "2",
+          "description": "Pod toleration-pod tolerates the 'dedicated' taint",
+          "verificationScriptFile": "q7_v2.sh",
+          "expectedOutput": "0",
+          "weightage": 3
+        },
+        {
+          "id": "3",
+          "description": "Pod toleration-pod is Running",
+          "verificationScriptFile": "q7_v3.sh",
+          "expectedOutput": "0",
+          "weightage": 2
+        }
+      ]
+    },
+    {
+      "id": "8",
+      "namespace": "default",
+      "machineHostname": "ckad9999",
+      "question": "Create a pod named `init-demo` in the `default` namespace with:\n\n1. A shared `emptyDir` volume named `work`\n2. An **initContainer** (image `busybox`) that writes the word `hello` into `/work/index.html`\n3. A main container (image `nginx`) that mounts the `work` volume at `/usr/share/nginx/html`\n",
+      "concepts": [
+        "initcontainers",
+        "volumes",
+        "multi-container"
+      ],
+      "verification": [
+        {
+          "id": "1",
+          "description": "initContainer uses image busybox",
+          "verificationScriptFile": "q8_v1.sh",
+          "expectedOutput": "0",
+          "weightage": 2
+        },
+        {
+          "id": "2",
+          "description": "Pod has an emptyDir volume named 'work'",
+          "verificationScriptFile": "q8_v2.sh",
+          "expectedOutput": "0",
+          "weightage": 2
+        },
+        {
+          "id": "3",
+          "description": "nginx container mounts 'work' at /usr/share/nginx/html",
+          "verificationScriptFile": "q8_v3.sh",
+          "expectedOutput": "0",
+          "weightage": 2
+        }
+      ]
+    },
+    {
+      "id": "9",
+      "namespace": "default",
+      "machineHostname": "ckad9999",
+      "question": "1. Create a ServiceAccount named `build-sa` in the `default` namespace\n2. Create a pod named `sa-pod` (image `nginx`) in `default` that runs as the `build-sa` ServiceAccount\n",
+      "concepts": [
+        "serviceaccounts",
+        "security"
+      ],
+      "verification": [
+        {
+          "id": "1",
+          "description": "ServiceAccount build-sa exists",
+          "verificationScriptFile": "q9_v1.sh",
+          "expectedOutput": "0",
+          "weightage": 2
+        },
+        {
+          "id": "2",
+          "description": "Pod sa-pod uses ServiceAccount build-sa",
+          "verificationScriptFile": "q9_v2.sh",
+          "expectedOutput": "0",
+          "weightage": 3
+        }
+      ]
+    },
+    {
+      "id": "10",
+      "namespace": "default",
+      "machineHostname": "ckad9999",
+      "question": "1. Create a PriorityClass named `high-prio` with value `1000000` (it must **not** be the global default)\n2. Create a pod named `prio-pod` (image `nginx`) in `default` that uses this PriorityClass\n",
+      "concepts": [
+        "scheduling",
+        "priorityclass"
+      ],
+      "verification": [
+        {
+          "id": "1",
+          "description": "PriorityClass high-prio has value 1000000",
+          "verificationScriptFile": "q10_v1.sh",
+          "expectedOutput": "0",
+          "weightage": 2
+        },
+        {
+          "id": "2",
+          "description": "Pod prio-pod uses priorityClassName high-prio",
+          "verificationScriptFile": "q10_v2.sh",
+          "expectedOutput": "0",
+          "weightage": 3
+        }
+      ]
+    },
+    {
+      "id": "11",
+      "namespace": "default",
+      "machineHostname": "ckad9999",
+      "question": "1. Create a PersistentVolumeClaim named `data-pvc` in `default` requesting `1Gi` with access mode `ReadWriteOnce`, using the cluster's **default** StorageClass (`local-path`)\n2. Create a pod named `pvc-pod` (image `nginx`) that mounts this PVC at `/data`\n3. Confirm the PVC becomes `Bound`\n",
+      "concepts": [
+        "storage",
+        "pvc"
+      ],
+      "verification": [
+        {
+          "id": "1",
+          "description": "PVC data-pvc is Bound",
+          "verificationScriptFile": "q11_v1.sh",
+          "expectedOutput": "0",
+          "weightage": 3
+        },
+        {
+          "id": "2",
+          "description": "Pod pvc-pod mounts data-pvc at /data",
+          "verificationScriptFile": "q11_v2.sh",
+          "expectedOutput": "0",
+          "weightage": 2
+        }
+      ]
+    },
+    {
+      "id": "12",
+      "namespace": "default",
+      "machineHostname": "ckad9999",
+      "question": "A Deployment named `frontend` in `default` never becomes ready: its `readinessProbe` targets port `8080`, but nginx serves on port `80`.\n\nFix the readinessProbe to use port `80` so the Deployment becomes available.\n",
+      "concepts": [
+        "troubleshooting",
+        "probes"
+      ],
+      "verification": [
+        {
+          "id": "1",
+          "description": "readinessProbe targets port 80",
+          "verificationScriptFile": "q12_v1.sh",
+          "expectedOutput": "0",
+          "weightage": 2
+        },
+        {
+          "id": "2",
+          "description": "Deployment frontend has an available replica",
+          "verificationScriptFile": "q12_v2.sh",
+          "expectedOutput": "0",
+          "weightage": 3
+        }
+      ]
+    },
+    {
+      "id": "13",
+      "namespace": "apps",
+      "machineHostname": "ckad9999",
+      "question": "A Deployment `cfg-app` in namespace `apps` will not start: its pods are stuck in `CreateContainerConfigError` because it references a ConfigMap `app-cfg` (via `envFrom`) that does not exist.\n\nCreate the missing ConfigMap `app-cfg` in `apps` with the key `MODE=prod` so the Deployment becomes available.\n",
+      "concepts": [
+        "troubleshooting",
+        "configmaps",
+        "deployments"
+      ],
+      "verification": [
+        {
+          "id": "1",
+          "description": "ConfigMap app-cfg has MODE=prod",
+          "verificationScriptFile": "q13_v1.sh",
+          "expectedOutput": "0",
+          "weightage": 2
+        },
+        {
+          "id": "2",
+          "description": "Deployment cfg-app has an available replica",
+          "verificationScriptFile": "q13_v2.sh",
+          "expectedOutput": "0",
+          "weightage": 4
+        }
+      ]
+    },
+    {
+      "id": "14",
+      "namespace": "default",
+      "machineHostname": "ckad9999",
+      "question": "A Deployment `web2` (nginx, serves on port 80) in `default` is exposed by Service `web2-svc`, but requests fail because the Service's `targetPort` points at the wrong port (`8080`).\n\nFix `web2-svc` so it targets port `80`.\n",
+      "concepts": [
+        "troubleshooting",
+        "services",
+        "networking"
+      ],
+      "verification": [
+        {
+          "id": "1",
+          "description": "Service web2-svc targetPort is 80",
+          "verificationScriptFile": "q14_v1.sh",
+          "expectedOutput": "0",
+          "weightage": 3
+        },
+        {
+          "id": "2",
+          "description": "Service web2-svc has populated Endpoints",
+          "verificationScriptFile": "q14_v2.sh",
+          "expectedOutput": "0",
+          "weightage": 3
+        }
+      ]
+    },
+    {
+      "id": "15",
+      "namespace": "production",
+      "machineHostname": "ckad9999",
+      "question": "In namespace `production`, create a NetworkPolicy named `backend-allow` that allows **ingress** to pods labelled `app=backend` on TCP port `8080`, but **only** from pods that are simultaneously:\n\n- in a namespace labelled `env=prod`, **AND**\n- labelled `app=frontend`\n\nThis must be a single combined `from` entry (namespaceSelector **and** podSelector together), not two separate entries.\n\n> The cluster CNI (flannel) does not enforce NetworkPolicy, so this is graded on the policy **spec**.\n",
+      "concepts": [
+        "networking",
+        "networkpolicy",
+        "security"
+      ],
+      "verification": [
+        {
+          "id": "1",
+          "description": "Policy targets app=backend on port 8080",
+          "verificationScriptFile": "q15_v1.sh",
+          "expectedOutput": "0",
+          "weightage": 3
+        },
+        {
+          "id": "2",
+          "description": "Single from-entry ANDs namespaceSelector and podSelector",
+          "verificationScriptFile": "q15_v2.sh",
+          "expectedOutput": "0",
+          "weightage": 3
+        }
+      ]
+    },
+    {
+      "id": "16",
+      "namespace": "default",
+      "machineHostname": "ckad9999",
+      "question": "Expose the Deployment `np-app` in `default` with a **NodePort** Service named `np-svc`:\n\n- Service port `80`\n- Target port `80`\n- NodePort **exactly** `30080`\n",
+      "concepts": [
+        "services",
+        "networking"
+      ],
+      "verification": [
+        {
+          "id": "1",
+          "description": "NodePort Service np-svc on port 80 with nodePort 30080",
+          "verificationScriptFile": "q16_v1.sh",
+          "expectedOutput": "0",
+          "weightage": 5
+        }
+      ]
+    },
+    {
+      "id": "17",
+      "namespace": "default",
+      "machineHostname": "ckad9999",
+      "question": "Write the ordered list of commands to upgrade the **kubelet** on a **worker** node to `v1.33.1` on a kubeadm cluster, to the file `/tmp/exam/q17_upgrade.txt`. Your answer must include: draining the node, `kubeadm upgrade node`, upgrading and restarting kubelet, and uncordoning the node.\n\n> This cluster is k3d, so you recall the command sequence rather than running it.\n",
+      "concepts": [
+        "clusterarch",
+        "kubeadm",
+        "upgrade",
+        "maintenance"
+      ],
+      "verification": [
+        {
+          "id": "1",
+          "description": "Upgrade sequence includes drain, kubeadm upgrade node, kubelet restart, uncordon",
+          "verificationScriptFile": "q17_v1.sh",
           "expectedOutput": "0",
           "weightage": 5
         }

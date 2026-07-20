@@ -1,94 +1,94 @@
 {
-    "labs": [
-      {
-        "id": "ckad-001",
-        "assetPath": "assets/exams/ckad/001",
-        "name": "CKAD Comprehensive Lab - 1",
-        "category": "CKAD",
-        "description": "Hands-on exercises covering core Kubernetes concepts, pod configuration, deployments, and services with practical tasks for application deployment in a cluster.",
-        "warmUpTimeInSeconds": 260,
-         "difficulty": "Medium",
-         "examDurationInMinutes": 120
-      },
-      {
-        "id": "ckad-002",
-        "assetPath": "assets/exams/ckad/002",
-        "name": "CKAD Comprehensive Lab - 2",
-        "category": "CKAD",
-        "description": "Series of practical tasks on multi-container pods, pod design patterns, configuration, services, and networking in Kubernetes environments.",
-        "warmUpTimeInSeconds": 260,
-        "difficulty": "Hard",
-        "examDurationInMinutes": 120
-      },
-      {
-        "id": "cks-001",
-        "assetPath": "assets/exams/cks/001",
-        "name": "CKS Practice Lab - Kubernetes Security Essentials",
-        "category": "CKS",
-        "description": "Practice essential Kubernetes security concepts including network policies, RBAC, supply chain security, and runtime protection",
-        "warmUpTimeInSeconds": 260,
-        "difficulty": "Hard",
-        "examDurationInMinutes": 120
-      },
-      {
-        "id": "cka-002",
-        "assetPath": "assets/exams/cka/002",
-        "name": "CKA Practice Lab - Advanced Administration",
-        "category": "CKA",
-        "description": "Comprehensive lab covering advanced Kubernetes administration topics including storage, networking, security, and troubleshooting with focus on real-world scenarios, updated with the latest CKA exam curriculum changes.",
-        "warmUpTimeInSeconds": 360,
-        "difficulty": "Hard",
-        "examDurationInMinutes": 120
-      },
-      {
-        "id": "cka-001",
-        "assetPath": "assets/exams/cka/001",
-        "name": "CKA Practice Lab - Core Concepts",
-        "category": "CKA",
-        "description": "Practice essential Kubernetes administrator tasks covering cluster management, networking, storage, and security",
-        "warmUpTimeInSeconds": 260,
-        "difficulty": "Easy",
-        "examDurationInMinutes": 60
-      },
-      {
-        "id": "cka-mock-01",
-        "assetPath": "assets/exams/cka/mock-01",
-        "name": "CKA Mock Exam 01",
-        "category": "CKA",
-        "description": "Full realistic mock exam with 15 questions across all CKA domains.",
-        "warmUpTimeInSeconds": 120,
-        "difficulty": "Hard",
-        "examDurationInMinutes": 120
-      },
-      {
-        "id": "cka-mock-02",
-        "assetPath": "assets/exams/cka/mock-02",
-        "name": "CKA Mock Exam 02",
-        "category": "CKA",
-        "description": "Second full realistic mock exam across all CKA domains.",
-        "warmUpTimeInSeconds": 120,
-        "difficulty": "Hard",
-        "examDurationInMinutes": 120
-      },
-      {
-        "id": "docker-001",
-        "assetPath": "assets/exams/other/001",
-        "name": "Docker Speed Run - Core Concepts",
-        "category": "Other",
-        "description": "Fast-paced practice lab covering Docker fundamentals including images, containers, volumes, networking, OCI, logging, and security best practices.",
-        "warmUpTimeInSeconds": 120,
-        "difficulty": "Medium",
-        "examDurationInMinutes": 90
-      },
-      {
-        "id": "helm-001",
-        "assetPath": "assets/exams/other/002",
-        "name": "Helm Fundamentals Lab",
-        "category": "Other",
-        "description": "Comprehensive lab covering Helm basics including chart installation, repositories, customization, packaging, debugging, and advanced Helm operations for Kubernetes applications.",
-        "warmUpTimeInSeconds": 260,
-        "difficulty": "Medium",
-        "examDurationInMinutes": 90
-      }
-    ]
-  } 
+  "labs": [
+    {
+      "id": "ckad-001",
+      "assetPath": "assets/exams/ckad/001",
+      "name": "CKAD Comprehensive Lab - 1",
+      "category": "CKAD",
+      "description": "Hands-on exercises covering core Kubernetes concepts, pod configuration, deployments, and services with practical tasks for application deployment in a cluster.",
+      "warmUpTimeInSeconds": 260,
+      "difficulty": "Medium",
+      "examDurationInMinutes": 120
+    },
+    {
+      "id": "ckad-002",
+      "assetPath": "assets/exams/ckad/002",
+      "name": "CKAD Comprehensive Lab - 2",
+      "category": "CKAD",
+      "description": "Series of practical tasks on multi-container pods, pod design patterns, configuration, services, and networking in Kubernetes environments.",
+      "warmUpTimeInSeconds": 260,
+      "difficulty": "Hard",
+      "examDurationInMinutes": 120
+    },
+    {
+      "id": "cks-001",
+      "assetPath": "assets/exams/cks/001",
+      "name": "CKS Practice Lab - Kubernetes Security Essentials",
+      "category": "CKS",
+      "description": "Practice essential Kubernetes security concepts including network policies, RBAC, supply chain security, and runtime protection",
+      "warmUpTimeInSeconds": 260,
+      "difficulty": "Hard",
+      "examDurationInMinutes": 120
+    },
+    {
+      "id": "cka-002",
+      "assetPath": "assets/exams/cka/002",
+      "name": "CKA Practice Lab - Advanced Administration",
+      "category": "CKA",
+      "description": "Comprehensive lab covering advanced Kubernetes administration topics including storage, networking, security, and troubleshooting with focus on real-world scenarios, updated with the latest CKA exam curriculum changes.",
+      "warmUpTimeInSeconds": 360,
+      "difficulty": "Hard",
+      "examDurationInMinutes": 120
+    },
+    {
+      "id": "cka-001",
+      "assetPath": "assets/exams/cka/001",
+      "name": "CKA Practice Lab - Core Concepts",
+      "category": "CKA",
+      "description": "Practice essential Kubernetes administrator tasks covering cluster management, networking, storage, and security",
+      "warmUpTimeInSeconds": 260,
+      "difficulty": "Easy",
+      "examDurationInMinutes": 60
+    },
+    {
+      "id": "cka-mock-01",
+      "assetPath": "assets/exams/cka/mock-01",
+      "name": "CKA Mock Exam 01",
+      "category": "CKA",
+      "description": "Full CKA mock exam: 17 tasks weighted to the real blueprint (25% cluster architecture, 15% workloads & scheduling, 20% services & networking, 10% storage, 30% troubleshooting). Troubleshooting-heavy, with live-graded fixes.",
+      "warmUpTimeInSeconds": 180,
+      "difficulty": "Hard",
+      "examDurationInMinutes": 120
+    },
+    {
+      "id": "cka-mock-02",
+      "assetPath": "assets/exams/cka/mock-02",
+      "name": "CKA Mock Exam 02",
+      "category": "CKA",
+      "description": "Second CKA mock exam: 17 tasks across all domains including etcd backup/restore recall, kubeadm upgrade recall, NetworkPolicy AND/OR, NodePort, DNS, and multiple live troubleshooting scenarios. Aligned to the real exam weighting.",
+      "warmUpTimeInSeconds": 180,
+      "difficulty": "Hard",
+      "examDurationInMinutes": 120
+    },
+    {
+      "id": "docker-001",
+      "assetPath": "assets/exams/other/001",
+      "name": "Docker Speed Run - Core Concepts",
+      "category": "Other",
+      "description": "Fast-paced practice lab covering Docker fundamentals including images, containers, volumes, networking, OCI, logging, and security best practices.",
+      "warmUpTimeInSeconds": 120,
+      "difficulty": "Medium",
+      "examDurationInMinutes": 90
+    },
+    {
+      "id": "helm-001",
+      "assetPath": "assets/exams/other/002",
+      "name": "Helm Fundamentals Lab",
+      "category": "Other",
+      "description": "Comprehensive lab covering Helm basics including chart installation, repositories, customization, packaging, debugging, and advanced Helm operations for Kubernetes applications.",
+      "warmUpTimeInSeconds": 260,
+      "difficulty": "Medium",
+      "examDurationInMinutes": 90
+    }
+  ]
+}

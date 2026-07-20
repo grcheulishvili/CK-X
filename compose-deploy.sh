@@ -177,7 +177,7 @@ if docker compose ps k8s-api-server | grep "Up"; then
   sleep 30
   
   # Check if cluster is accessible
-  if docker compose exec k8s-api-server kind get clusters | grep "kind-cluster"; then
+  if docker compose exec k8s-api-server k3d cluster list | grep -q "cluster"; then
     print_success "KIND cluster is operational and accessible"
   else
     print_warning "KIND cluster may still be initializing"

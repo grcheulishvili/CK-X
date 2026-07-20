@@ -1,4 +1,4 @@
-#bin/bash
+#!/bin/bash
 
 # Validate namespace if present then return 0 else return 1
 kubectl get namespace dev
