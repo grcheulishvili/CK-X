@@ -16,7 +16,7 @@ _Auto-generated from `labs.json` + each `assessment.json`. Regenerate with `pyth
 
 ## Environment notes
 
-- Backend cluster is **k3d** (k3s-in-docker). Node names: `k3d-cluster-server-0` (control plane), `k3d-cluster-agent-0..N` (workers). Worker count per exam is set by `workerNodes` in `config.json`.
+- Candidates SSH to the single node shown in each question, now named **`controlplane`** (exam convention). Note the two naming layers: the SSH host / shell prompt is `controlplane`, while `kubectl get nodes` shows the k3d object names `k3d-cluster-server-0` (control plane) and `k3d-cluster-agent-0..N` (workers) — validators and node-affinity/taint tasks use those object names. Worker count per exam is set by `workerNodes` in `config.json`.
 - Default CNI is **flannel**, which does **not** enforce NetworkPolicy. NetworkPolicy questions are graded on the policy **spec**, not on live connectivity.
 - k3s ships **Traefik** (ingress) and **local-path** (default StorageClass) — Ingress and dynamic-PVC questions rely on these.
 - Setup scripts run only if they match the glob `q*_setup.sh`; validators are executed by path, so a valid shebang and LF line endings are required. Run `python3 scripts/lint-exams.py` before committing changes.

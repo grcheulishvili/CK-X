@@ -51,5 +51,22 @@ RUN echo "candidate:x:1000:1000:candidate:/home/candidate:/bin/bash" >> /etc/pas
 RUN mkdir -p /home/candidate
 RUN chown -R candidate: /home/candidate
 
+# Exam-realistic node identity + shell prompt.
+# The displayed node name is read from /etc/ckx-node-name (default: controlplane),
+# so the prompt matches the "ssh <host>" shown in each question. Override per-exam
+# by writing a different name to /etc/ckx-node-name during env setup.
+RUN echo "controlplane" > /etc/ckx-node-name
+RUN mkdir -p /etc/profile.d && printf '%s\n' \
+    'NODE="$(cat /etc/ckx-node-name 2>/dev/null || hostname)"' \
+    'export PS1="\u@${NODE}:\w\$ "' \
+    'export PROMPT_COMMAND=""' \
+    > /etc/profile.d/00-ckx-prompt.sh
+# Replace the noisy default Alpine MOTD with a minimal, exam-like banner.
+RUN printf '%s\n' \
+    '' \
+    'Certified Kubernetes exam environment.' \
+    'You are on the controlplane node. kubectl is preconfigured.' \
+    '' > /etc/motd
+
 EXPOSE 6443
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

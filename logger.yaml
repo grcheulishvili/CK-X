@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: logger
+  namespace: monitoring
+spec:
+  volumes:
+  - name: log-volume
+    emptyDir: {}
+  containers:
+  - name: busybox
+    image: busybox:1.36
+    command: ["/bin/sh", "-c"]
+    args:
+      - while true; do
+          echo "$(date) - Log entry" >> /var/log/app.log;
+          sleep 1;
+        done
+    volumeMounts:
+    - name: log-volume
+      mountPath: /var/log
+  - name: fluentd
+    image: fluentd
+    volumeMounts:
+    - name: log-volume
+      mountPath: /var/log

@@ -89,7 +89,7 @@ services:
     networks:
       - ckx-network
 
-  # Jump Host (ckad9999 and ckad9988)
+  # Jump Host (internal validation host; candidates do not use this)
   jumphost:
     image: nishanb/ck-x-simulator-jumphost:latest
     build:
@@ -146,7 +146,7 @@ services:
     build:
       context: ./kind-cluster
     container_name: kind-cluster
-    hostname: k8s-api-server
+    hostname: controlplane
     privileged: true # Required for running containers inside KIND
     expose:
       - "6443"
@@ -165,6 +165,7 @@ services:
       ckx-network:
         aliases:
          - controlplane
+         - node01
          - ckad9999
     healthcheck:
       test: ["CMD", "ls", "/ready"]
