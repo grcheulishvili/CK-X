@@ -69,6 +69,18 @@ options:
       - arg: "--tls-san=localhost"
         nodeFilters:
           - server:*
+registries:
+  # Skip TLS verification for image pulls. Required when the host network does
+  # TLS inspection (a self-signed CA is injected into the chain), which otherwise
+  # makes containerd fail to pull images inside the cluster.
+  config: |
+    configs:
+      "docker.io":
+        tls:
+          insecure_skip_verify: true
+      "registry-1.docker.io":
+        tls:
+          insecure_skip_verify: true
 EOF
 
 echo "Cluster config with $NUM_WORKERS worker nodes generated: /tmp/k3d-config.yaml"

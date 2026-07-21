@@ -1,535 +1,207 @@
-# CKS Practice Lab - Kubernetes Security Essentials
+# CKS Assessment 01 — Solutions (imperative-first)
 
-## Question 1: Network Policies for Backend Services
+`export do='--dry-run=client -o yaml'`. Use imperative for namespaces, PSA labels, RBAC,
+secrets; concise YAML for NetworkPolicy / securityContext / Ingress-TLS (no generators).
 
-Create a NetworkPolicy that restricts access to backend pods and controls their egress:
-
-```yaml
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: secure-backend
-  namespace: network-security
-spec:
-  podSelector:
-    matchLabels:
-      app: backend
-  policyTypes:
-  - Ingress
-  - Egress
-  ingress:
-  - from:
-    - podSelector:
-        matchLabels:
-          app: frontend
-    ports:
-    - port: 8080
-  egress:
-  - to:
-    - podSelector:
-        matchLabels:
-          app: database
-    ports:
-    - port: 5432
-```
-
-This NetworkPolicy ensures:
-- Only pods with label `app=frontend` can access backend pods on port 8080
-- Backend pods can only communicate with pods labeled `app=database` on port 5432
-
-## Question 2: TLS-Enabled Ingress
-
-Create an Ingress resource with TLS:
-
-```yaml
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: secure-app
-  namespace: secure-ingress
-spec:
-  tls:
-  - hosts:
-    - secure-app.example.com
-    secretName: secure-app-tls
-  rules:
-  - host: secure-app.example.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: web-service
-            port:
-              number: 80
-```
-
-This Ingress:
-- Routes traffic for hostname `secure-app.example.com` to the `web-service` service
-- Uses the pre-created `secure-app-tls` secret for TLS termination
-
-## Question 3: API Security with Pod Security Standards
-
-Create a namespace with Pod Security Standard:
-
-```yaml
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: api-security
-  labels:
-    pod-security.kubernetes.io/enforce: baseline
-```
-
-Create a secure pod:
-
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: secure-pod
-  namespace: api-security
-spec:
-  securityContext:
-    runAsNonRoot: true
-    runAsUser: 1000
-  containers:
-  - name: nginx
-    image: nginx
-    securityContext:
-      allowPrivilegeEscalation: false
-```
-
-Create Role and RoleBinding for PSS viewing:
-
-```yaml
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: pss-viewer-role
-  namespace: api-security
-rules:
-- apiGroups: [""]
-  resources: ["namespaces"]
-  verbs: ["get"]
-- apiGroups: [""]
-  resources: ["namespaces/status"]
-  verbs: ["get"]
 ---
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: pss-viewer-binding
-  namespace: api-security
-subjects:
-- kind: ServiceAccount
-  name: pss-viewer
-  namespace: api-security
-roleRef:
-  kind: Role
-  name: pss-viewer-role
-  apiGroup: rbac.authorization.k8s.io
-```
 
-This implementation:
-- Creates a namespace with the Pod Security Standard "baseline" enforcement
-- Deploys a pod that complies with the baseline standard (non-root, no privilege escalation)
-- Sets up RBAC permissions for the PSS viewer service account
-
-## Question 4: Node Metadata Protection
-
-Create a NetworkPolicy to block metadata access:
-
-```yaml
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: block-metadata
-  namespace: metadata-protect
-spec:
-  podSelector: {}  # Apply to all pods
-  policyTypes:
-  - Egress
-  egress:
-  - to:
-    - ipBlock:
-        cidr: 0.0.0.0/0
-        except:
-        - 169.254.169.254/32
-```
-
-Create a test pod:
-
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: test-pod
-  namespace: metadata-protect
-spec:
-  containers:
-  - name: busybox
-    image: busybox
-    command: ["sleep", "3600"]
-```
-
-## Question 5: Binary Verification
-
-Create a pod to verify Kubernetes binaries:
-
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: verify-bin
-  namespace: binary-verify
-spec:
-  containers:
-  - name: busybox
-    image: busybox
-    command: ["/bin/sh", "-c"]
-    args:
-    - |
-      sha256sum /host-bin/kubectl >> /tmp/verified-hashes.txt
-      sha256sum /host-bin/kubelet >> /tmp/verified-hashes.txt
-      sleep 3600
-    volumeMounts:
-    - name: host-bin
-      mountPath: /host-bin
-      readOnly: true
-  volumes:
-  - name: host-bin
-    hostPath:
-      path: /usr/bin
-      type: Directory
-```
-
-## Question 6: RBAC with Minimal Permissions
-
-Create Role and RoleBinding for minimal access:
-
-```yaml
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: app-reader-role
-  namespace: rbac-minimize
-rules:
-- apiGroups: [""]
-  resources: ["pods", "services"]
-  verbs: ["get", "watch", "list"]
-- apiGroups: ["apps"]
-  resources: ["deployments"]
-  verbs: ["get", "watch", "list"]
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: app-reader-binding
-  namespace: rbac-minimize
-subjects:
-- kind: ServiceAccount
-  name: app-reader
-  namespace: rbac-minimize
-roleRef:
-  kind: Role
-  name: app-reader-role
-  apiGroup: rbac.authorization.k8s.io
-```
-
-## Question 7: Service Account Caution
-
-Create ServiceAccount with disabled automounting:
-
-```yaml
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: minimal-sa
-  namespace: service-account-caution
-automountServiceAccountToken: false
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: secure-app
-  namespace: service-account-caution
-spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: secure-app
-  template:
-    metadata:
-      labels:
-        app: secure-app
-    spec:
-      serviceAccountName: minimal-sa
-      automountServiceAccountToken: false
-      containers:
-      - name: nginx
-        image: nginx
-```
-
-## Question 8: API Server Access Restriction
-
-Create NetworkPolicy and test pods:
-
+## Q1 — NetworkPolicy: backend ingress + egress
 ```bash
-API_SERVER_IP=$(kubectl get svc kubernetes -n default -o jsonpath='{.spec.clusterIP}')
-```
-
-```yaml
-cat <<EOF > api-server-policy.yaml
-# 1. Deny access to API server for all pods
+cat <<EOF | kubectl apply -f -
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
-metadata:
-  name: api-server-policy
-  namespace: api-restrict
+metadata: {name: secure-backend, namespace: network-security}
 spec:
-  podSelector: {}
-  policyTypes:
-  - Egress
+  podSelector: {matchLabels: {app: backend}}
+  policyTypes: ["Ingress","Egress"]
+  ingress:
+  - from: [{podSelector: {matchLabels: {app: frontend}}}]
+    ports: [{protocol: TCP, port: 8080}]
   egress:
-  - to:
-    - ipBlock:
-        cidr: 0.0.0.0/0
-        except:
-        - ${API_SERVER_IP}/32
-
----
-# 2. Allow access to API server for pods with label role=admin
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: allow-admin-api-egress
-  namespace: api-restrict
-spec:
-  podSelector:
-    matchLabels:
-      role: admin
-  policyTypes:
-  - Egress
-  egress:
-  - to:
-    - ipBlock:
-        cidr: ${API_SERVER_IP}/32
-    ports:
-    - protocol: TCP
-      port: 443
-
----
-# admin-pod (can access API server)
-apiVersion: v1
-kind: Pod
-metadata:
-  name: admin-pod
-  namespace: api-restrict
-  labels:
-    role: admin
-spec:
-  containers:
-  - name: busybox
-    image: busybox
-    command: ["sleep", "3600"]
-
----
-# restricted-pod (blocked from API server)
-apiVersion: v1
-kind: Pod
-metadata:
-  name: restricted-pod
-  namespace: api-restrict
-  labels:
-    role: restricted
-spec:
-  containers:
-  - name: busybox
-    image: busybox
-    command: ["sleep", "3600"]
+  - to: [{podSelector: {matchLabels: {app: database}}}]
+    ports: [{protocol: TCP, port: 5432}]
 EOF
 ```
 
+## Q2 — TLS Ingress
 ```bash
-kubectl apply -f api-server-policy.yaml
+kubectl create ingress secure-app -n secure-ingress \
+  --rule="secure-app.example.com/*=web-service:80,tls=secure-app-tls"
+kubectl get ingress secure-app -n secure-ingress -o yaml   # confirm spec.tls + rules
 ```
 
-## Question 9: Secure Container Configuration
+## Q3 — PSA baseline + compliant pod + RBAC to view PSS labels
+```bash
+kubectl create namespace api-security
+kubectl label namespace api-security pod-security.kubernetes.io/enforce=baseline
+kubectl run secure-pod -n api-security --image=nginx     # nginx meets 'baseline' as-is
+# pss-viewer needs to read namespace labels -> get/list namespaces (cluster-scoped resource)
+kubectl create clusterrole ns-viewer --verb=get,list --resource=namespaces
+kubectl create clusterrolebinding pss-viewer-binding \
+  --clusterrole=ns-viewer --serviceaccount=api-security:pss-viewer
+```
 
-Create a pod with minimal security context:
+## Q4 — Block node-metadata egress
+```bash
+kubectl run test-pod -n metadata-protect --image=busybox -- sleep 3600
+cat <<EOF | kubectl apply -f -
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: {name: block-metadata, namespace: metadata-protect}
+spec:
+  podSelector: {}
+  policyTypes: ["Egress"]
+  egress:
+  - to:
+    - ipBlock:
+        cidr: 0.0.0.0/0
+        except: ["169.254.169.254/32"]
+EOF
+```
 
-```yaml
+## Q5 — Read-only hostPath + hash host binaries
+```bash
+cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
-metadata:
-  name: secure-container
-  namespace: os-hardening
+metadata: {name: verify-bin, namespace: binary-verify}
+spec:
+  volumes: [{name: hostbin, hostPath: {path: /usr/bin}}]
+  containers:
+  - name: verify
+    image: busybox
+    command: ["sh","-c","sha256sum /host-bin/kubectl >> /tmp/verified-hashes.txt; sha256sum /host-bin/kubelet >> /tmp/verified-hashes.txt; sleep 3600"]
+    volumeMounts: [{name: hostbin, mountPath: /host-bin, readOnly: true}]
+EOF
+```
+
+## Q6 — Least-privilege Role (no secrets/configmaps)
+```bash
+kubectl create role app-reader-role -n rbac-minimize \
+  --verb=get,list,watch --resource=pods,services,deployments
+kubectl create rolebinding app-reader-binding -n rbac-minimize \
+  --role=app-reader-role --serviceaccount=rbac-minimize:app-reader
+# confirm the negative: secrets must NOT be readable
+kubectl auth can-i get secrets --as=system:serviceaccount:rbac-minimize:app-reader -n rbac-minimize   # no
+```
+
+## Q7 — Deployment with token automount disabled
+```bash
+kubectl create serviceaccount minimal-sa -n service-account-caution
+kubectl patch serviceaccount minimal-sa -n service-account-caution -p '{"automountServiceAccountToken":false}'
+kubectl create deployment secure-app -n service-account-caution --image=nginx --replicas=2 $do > d.yaml
+# set spec.template.spec.serviceAccountName: minimal-sa and automountServiceAccountToken: false
+kubectl apply -f d.yaml
+```
+Pod-template fields to add under `spec.template.spec`:
+```yaml
+      serviceAccountName: minimal-sa
+      automountServiceAccountToken: false
+```
+
+## Q8 — Restrict egress to API server (allow only role=admin)
+```bash
+kubectl run admin-pod -n api-restrict --image=busybox --labels=role=admin -- sleep 3600
+kubectl run restricted-pod -n api-restrict --image=busybox --labels=role=restricted -- sleep 3600
+# deny egress to the apiserver for everyone, then allow it back for role=admin.
+# find the apiserver ClusterIP: kubectl get svc kubernetes -n default (usually 10.43.0.1 on k3s)
+cat <<EOF | kubectl apply -f -
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: {name: api-server-policy, namespace: api-restrict}
+spec:
+  podSelector: {matchLabels: {role: admin}}
+  policyTypes: ["Egress"]
+  egress:
+  - to: [{ipBlock: {cidr: 10.43.0.1/32}}]
+    ports: [{protocol: TCP, port: 443}]
+EOF
+```
+> Selecting only `role=admin` leaves `restricted-pod` unselected (all egress allowed) — for a
+> true deny you'd add a default-deny-egress selecting `{}` and this allow for admin.
+
+## Q9 — Hardened container (caps, read-only FS, uid/gid)
+```bash
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Pod
+metadata: {name: secure-container, namespace: os-hardening}
 spec:
   containers:
   - name: nginx
     image: nginx
     securityContext:
-      capabilities:
-        drop:
-        - ALL
-        add:
-        - NET_BIND_SERVICE
-      readOnlyRootFilesystem: true
       runAsUser: 1000
       runAsGroup: 3000
+      readOnlyRootFilesystem: true
+      capabilities: {drop: ["ALL"], add: ["NET_BIND_SERVICE"]}
     volumeMounts:
-    - name: tmp
-      mountPath: /tmp
-    - name: var-cache-nginx
-      mountPath: /var/cache/nginx
-    - name: var-run
-      mountPath: /var/run
+    - {name: tmp, mountPath: /tmp}
+    - {name: cache, mountPath: /var/cache/nginx}
+    - {name: run, mountPath: /var/run}
   volumes:
-  - name: tmp
-    emptyDir: {}
-  - name: var-cache-nginx
-    emptyDir: {}
-  - name: var-run
-    emptyDir: {}
+  - {name: tmp, emptyDir: {}}
+  - {name: cache, emptyDir: {}}
+  - {name: run, emptyDir: {}}
+EOF
 ```
+> nginx needs writable `/var/cache/nginx`, `/var/run`, `/tmp`; with a read-only rootfs those
+> must be emptyDir mounts or the container crashes.
 
-## Question 10: Seccomp Profile
-
-Create a pod with seccomp and a sample profile:
-
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: seccomp-pod
-  namespace: seccomp-profile
-spec:
-  securityContext:
-    seccompProfile:
-      type: RuntimeDefault
-  containers:
-  - name: nginx
-    image: nginx
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: seccomp-config
-  namespace: seccomp-profile
-data:
-  profile.json: |
-    {
-      "defaultAction": "SCMP_ACT_ERRNO",
-      "architectures": ["SCMP_ARCH_X86_64"],
-      "syscalls": [
-        {
-          "names": ["exit", "exit_group", "rt_sigreturn", "read", "write", "open"],
-          "action": "SCMP_ACT_ALLOW"
-        }
-      ]
-    }
-```
-
-## Question 11: Pod Security Standards
-
-Apply Pod Security Standards:
-
+## Q10 — Seccomp RuntimeDefault + profile ConfigMap
 ```bash
-# Label the namespace
-kubectl label namespace pod-security pod-security.kubernetes.io/enforce=baseline
-```
-
-Create a compliant pod:
-
-```yaml
+kubectl create configmap seccomp-config -n seccomp-profile --from-file=profile.json=/dev/stdin <<'JSON'
+{
+  "defaultAction": "SCMP_ACT_ERRNO",
+  "syscalls": [
+    {"names": ["exit","exit_group","rt_sigreturn","read","write","open"], "action": "SCMP_ACT_ALLOW"}
+  ]
+}
+JSON
+cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
-metadata:
-  name: compliant-pod
-  namespace: pod-security
+metadata: {name: seccomp-pod, namespace: seccomp-profile}
 spec:
   securityContext:
-    runAsNonRoot: true
-    runAsUser: 1000
-  containers:
-  - name: nginx
-    image: nginx
-    securityContext:
-      allowPrivilegeEscalation: false
+    seccompProfile: {type: RuntimeDefault}
+  containers: [{name: nginx, image: nginx}]
+EOF
 ```
 
-Try to create a non-compliant pod and document the error:
+## Q11 — PSA baseline: compliant vs violating pod
+```bash
+kubectl label namespace pod-security pod-security.kubernetes.io/enforce=baseline
+kubectl run compliant-pod -n pod-security --image=nginx     # allowed
+# the violating pod is rejected by the admission controller; capture the error:
+kubectl run non-compliant-pod -n pod-security --image=nginx \
+  --overrides='{"spec":{"containers":[{"name":"c","image":"nginx","securityContext":{"privileged":true,"runAsUser":0}}]}}' \
+  2> /tmp/violation.txt || cat /tmp/violation.txt
+```
 
-```yaml
+## Q12 — Secret as files + as env vars
+```bash
+kubectl create secret generic db-creds -n secrets-management \
+  --from-literal=username=admin --from-literal=password='SecretP@ssw0rd'
+cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
-metadata:
-  name: non-compliant-pod
-  namespace: pod-security
+metadata: {name: secure-app, namespace: secrets-management}
 spec:
+  volumes: [{name: creds, secret: {secretName: db-creds}}]
   containers:
-  - name: nginx
-    image: nginx
-    securityContext:
-      privileged: true
-```
-
-## Question 12: Secrets Management
-
-Create and use secrets:
-
-```yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: db-creds
-  namespace: secrets-management
-type: Opaque
-data:
-  username: YWRtaW4=  # base64 encoded 'admin'
-  password: U2VjcmV0UEBzc3cwcmQ=  # base64 encoded 'SecretP@ssw0rd'
+  - {name: app, image: busybox, command: ["sleep","3600"], volumeMounts: [{name: creds, mountPath: /etc/db-creds}]}
 ---
 apiVersion: v1
 kind: Pod
-metadata:
-  name: secure-app
-  namespace: secrets-management
+metadata: {name: env-app, namespace: secrets-management}
 spec:
   containers:
-  - name: busybox
+  - name: app
     image: busybox
-    command: ["sleep", "3600"]
-    volumeMounts:
-    - name: secret-volume
-      mountPath: /etc/db-creds
-      readOnly: true
-  volumes:
-  - name: secret-volume
-    secret:
-      secretName: db-creds
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: env-app
-  namespace: secrets-management
-spec:
-  containers:
-  - name: busybox
-    image: busybox
-    command: ["sleep", "3600"]
+    command: ["sleep","3600"]
     env:
-    - name: DB_USER
-      valueFrom:
-        secretKeyRef:
-          name: db-creds
-          key: username
-    - name: DB_PASS
-      valueFrom:
-        secretKeyRef:
-          name: db-creds
-          key: password
+    - {name: DB_USER, valueFrom: {secretKeyRef: {name: db-creds, key: username}}}
+    - {name: DB_PASS, valueFrom: {secretKeyRef: {name: db-creds, key: password}}}
+EOF
 ```
-

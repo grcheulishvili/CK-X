@@ -169,9 +169,29 @@
     padding: 15px 20px;
     border-bottom: 1px solid #e9ecef;
     display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    background-color: white;
+}
+
+.verification-main {
+    display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: white;
+    width: 100%;
+}
+
+.verification-reason {
+    margin-top: 8px;
+    padding: 8px 10px;
+    background-color: #fdf2f2;
+    border-left: 3px solid #e74c3c;
+    border-radius: 4px;
+    color: #7b241c;
+    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12.5px;
+    white-space: pre-wrap;
+    word-break: break-word;
 }
 
 .verification-item:last-child {

@@ -217,6 +217,7 @@ services:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - TRACK_METRICS=true # based on the environment variable TRACK_METRICS, the facilitator will send metrics to the metric server
+      - NODE_TLS_REJECT_UNAUTHORIZED=0 # accept self-signed certs (e.g. behind corporate TLS inspection) so outbound HTTPS doesn't fail
     restart: unless-stopped
     depends_on:
       - jumphost

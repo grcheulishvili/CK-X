@@ -1,116 +1,103 @@
-# CKA Assessment Answers
+# CKA Assessment 01 — Solutions (imperative-first)
 
-## Question 1: Namespace and Pod Creation
+These solutions use the **real exam workflow**: reach for an imperative `kubectl` command
+first, and only drop to YAML when a resource has no generator (StorageClass, PVC,
+NetworkPolicy, multi-container pods, probes, affinity). The fast pattern for "YAML-only"
+resources is to *generate* a skeleton and edit it, not to type YAML from memory:
 
-Create a namespace named `app-team1` and create a pod named `nginx-pod` with the following specifications:
-- Image: nginx:1.19
-- Namespace: app-team1
-- Label: run=nginx-pod
+```bash
+alias k=kubectl
+export do='--dry-run=client -o yaml'   # k run x --image=nginx $do > x.yaml
+```
 
-```yaml
-# Create namespace
+---
+
+## Question 1 — Pod in a namespace with a label
+
+**Approach:** fully imperative.
+
+```bash
 kubectl create namespace app-team1
-
-# Create pod
 kubectl run nginx-pod --image=nginx:1.19 -n app-team1 --labels=run=nginx-pod
+# verify
+kubectl get pod nginx-pod -n app-team1 -o wide
 ```
 
-## Question 2: Static Pod Creation
+---
 
-Create a static pod named `static-web` on ckad9999 with the following specifications:
-- Image: nginx:1.19
-- Port: 80
+## Question 2 — Static pod
 
-```yaml
-# Create static pod manifest
-cat << EOF > /etc/kubernetes/manifests/static-web.yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: static-web
-spec:
-  containers:
-  - name: nginx
-    image: nginx:1.19
-    ports:
-    - containerPort: 80
-EOF
+**Approach:** generate the manifest imperatively and drop it in the kubelet's static-pod
+directory. The kubelet (not the API server) creates it, and the running pod's name gets the
+node name appended (e.g. `static-web-controlplane`).
+
+```bash
+kubectl run static-web --image=nginx:1.19 --port=80 \
+  --dry-run=client -o yaml > /etc/kubernetes/manifests/static-web.yaml
+# kubelet picks it up automatically; confirm from the API:
+kubectl get pods | grep static-web
 ```
 
-## Question 3: Storage Setup
+> On a real kubeadm node the path is `/etc/kubernetes/manifests`. On this k3d-backed lab the
+> static-pod path is set by the kubelet's `--pod-manifest-path`; the concept and command are
+> what the exam tests.
 
-Create a StorageClass named `fast-storage` and a PVC named `data-pvc` with the following specifications:
+---
 
-StorageClass:
-- Name: fast-storage
-- Provisioner: kubernetes.io/no-provisioner
-- Namespace: storage
+## Question 3 — StorageClass + PVC
 
-PVC:
-- Name: data-pvc
-- StorageClass: fast-storage
-- Size: 1Gi
-- Namespace: storage
-- Access Mode: ReadWriteOnce
+**Approach:** no imperative generator exists for StorageClass or PVC, so apply a small YAML.
+Keep this skeleton bookmarked — you'll reuse it every exam.
 
-```yaml
-# Create storage namespace
+```bash
 kubectl create namespace storage
-
-# Create StorageClass
-cat << EOF | kubectl apply -f -
+cat <<EOF | kubectl apply -f -
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: fast-storage
 provisioner: kubernetes.io/no-provisioner
-EOF
-
-# Create PVC
-cat << EOF | kubectl apply -f -
+volumeBindingMode: WaitForFirstConsumer
+---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: data-pvc
   namespace: storage
 spec:
+  accessModes: ["ReadWriteOnce"]
   storageClassName: fast-storage
-  accessModes:
-    - ReadWriteOnce
   resources:
     requests:
       storage: 1Gi
 EOF
+# verify (PVC stays Pending until a pod consumes it — WaitForFirstConsumer)
+kubectl get sc fast-storage; kubectl get pvc -n storage
 ```
 
-## Question 4: Logging Setup
+---
 
-Create a pod named `logger` in the monitoring namespace with the following specifications:
-- Container 1: busybox (writes logs to /var/log/app.log)
-- Container 2: fluentd (reads logs from the same location)
-- Use emptyDir volume to share logs between containers
+## Question 4 — Multi-container pod sharing an emptyDir
+
+**Approach:** `kubectl run` only makes single-container pods, so generate one container, then
+edit in the second container and the shared volume.
+
+```bash
+kubectl run logger -n monitoring --image=busybox $do \
+  -- sh -c 'while true; do echo "$(date) log line" >> /var/log/app.log; sleep 5; done' > logger.yaml
+```
+
+Edit `logger.yaml` so both containers mount the same `emptyDir`:
 
 ```yaml
-# Create monitoring namespace
-kubectl create namespace monitoring
-
-# Create pod
-cat << EOF | kubectl apply -f -
-apiVersion: v1
-kind: Pod
-metadata:
-  name: logger
-  namespace: monitoring
 spec:
+  volumes:
+  - name: log-volume
+    emptyDir: {}
   containers:
-  - name: busybox
+  - name: logger            # the busybox writer generated above
     image: busybox
-    command: ['/bin/sh', '-c']
-    args:
-    - while true; do
-        echo "$(date) - Application log entry" >> /var/log/app.log;
-        sleep 10;
-      done
+    command: ["sh","-c","while true; do echo \"$(date) log line\" >> /var/log/app.log; sleep 5; done"]
     volumeMounts:
     - name: log-volume
       mountPath: /var/log
@@ -119,58 +106,38 @@ spec:
     volumeMounts:
     - name: log-volume
       mountPath: /var/log
-  volumes:
-  - name: log-volume
-    emptyDir: {}
-EOF
 ```
 
-## Question 5: RBAC Setup
+```bash
+kubectl apply -f logger.yaml
+kubectl get pod logger -n monitoring
+```
 
-Create a ServiceAccount named `app-sa` and configure RBAC to allow it to read pods in the default namespace.
+---
 
-```yaml
-# Create ServiceAccount
+## Question 5 — RBAC (ServiceAccount + Role + RoleBinding)
+
+**Approach:** fully imperative — the `kubectl create role/rolebinding` generators are faster
+and less error-prone than writing the RBAC YAML by hand.
+
+```bash
 kubectl create serviceaccount app-sa
-
-# Create Role
-cat << EOF | kubectl apply -f -
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: pod-reader
-rules:
-- apiGroups: [""]
-  resources: ["pods"]
-  verbs: ["get", "list"]
-EOF
-
-# Create RoleBinding
-cat << EOF | kubectl apply -f -
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: read-pods
-subjects:
-- kind: ServiceAccount
-  name: app-sa
-roleRef:
-  kind: Role
-  name: pod-reader
-  apiGroup: rbac.authorization.k8s.io
-EOF
+kubectl create role pod-reader --verb=get,list --resource=pods
+kubectl create rolebinding read-pods --role=pod-reader --serviceaccount=default:app-sa
+# verify the binding actually grants the permission
+kubectl auth can-i list pods --as=system:serviceaccount:default:app-sa
 ```
 
-## Question 6: Network Policy
+---
 
-Create a NetworkPolicy named `db-policy` in the networking namespace to allow only frontend pods to access the database pods on port 3306.
+## Question 6 — NetworkPolicy (allow one label, deny the rest)
 
-```yaml
-# Create networking namespace
+**Approach:** NetworkPolicy has no generator → YAML. Selecting `role=db` for Ingress with a
+single `from` allowing `role=frontend` implicitly denies all other ingress to `role=db`.
+
+```bash
 kubectl create namespace networking
-
-# Create NetworkPolicy
-cat << EOF | kubectl apply -f -
+cat <<EOF | kubectl apply -f -
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -180,8 +147,7 @@ spec:
   podSelector:
     matchLabels:
       role: db
-  policyTypes:
-  - Ingress
+  policyTypes: ["Ingress"]
   ingress:
   - from:
     - podSelector:
@@ -193,79 +159,51 @@ spec:
 EOF
 ```
 
-## Question 7: Deployment and Service
+> This lab's CNI (flannel) doesn't enforce NetworkPolicy, so it's graded on the spec. On the
+> real exam the CNI enforces it — test with a temporary pod:
+> `kubectl run t --rm -it --image=busybox -- wget -qO- <db-ip>:3306`.
 
-Create a Deployment named `web-app` with 3 replicas and a NodePort Service named `web-service` with the following specifications:
+---
 
-Deployment:
-- Name: web-app
-- Image: nginx:1.19
-- Replicas: 3
+## Question 7 — Deployment + NodePort + pod anti-affinity
 
-Service:
-- Name: web-service
-- Type: NodePort
-- Port: 80
-- Target Port: 80
+**Approach:** create the Deployment and Service imperatively; add anti-affinity by editing the
+Deployment (no flag for it).
 
-```yaml
-# Create Deployment
-cat << EOF | kubectl apply -f -
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: web-app
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: web-app
-  template:
-    metadata:
-      labels:
-        app: web-app
-    spec:
-      containers:
-      - name: nginx
-        image: nginx:1.19
-EOF
-
-# Create Service
-cat << EOF | kubectl apply -f -
-apiVersion: v1
-kind: Service
-metadata:
-  name: web-service
-spec:
-  type: NodePort
-  ports:
-  - port: 80
-    targetPort: 80
-  selector:
-    app: web-app
-EOF
+```bash
+kubectl create deployment web-app --image=nginx:1.19 --replicas=3
+kubectl expose deployment web-app --name=web-service --port=80 --type=NodePort
+kubectl edit deployment web-app     # add the affinity block below under spec.template.spec
 ```
 
-## Question 8: Resource Management
+```yaml
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app: web-app
+            topologyKey: kubernetes.io/hostname
+```
 
-Create a pod named `resource-pod` in the monitoring namespace with the following resource specifications:
-- CPU Request: 100m
-- Memory Request: 128Mi
-- CPU Limit: 200m
-- Memory Limit: 256Mi
+```bash
+kubectl get pods -l app=web-app -o wide   # confirm spread across nodes
+```
+
+---
+
+## Question 8 — Pod with resource requests/limits
+
+**Approach:** generate, then add the resources block (`kubectl run` can't express both
+requests and limits cleanly).
+
+```bash
+kubectl run resource-pod -n monitoring --image=nginx $do > resource-pod.yaml
+```
+
+Add under the container:
 
 ```yaml
-# Create pod
-cat << EOF | kubectl apply -f -
-apiVersion: v1
-kind: Pod
-metadata:
-  name: resource-pod
-  namespace: monitoring
-spec:
-  containers:
-  - name: nginx
-    image: nginx
     resources:
       requests:
         cpu: "100m"
@@ -273,33 +211,31 @@ spec:
       limits:
         cpu: "200m"
         memory: "256Mi"
-EOF
 ```
 
-## Question 9: ConfigMap and Pod
+```bash
+kubectl apply -f resource-pod.yaml
+kubectl get pod resource-pod -n monitoring
+```
 
-Create a ConfigMap named `app-config` with a key `APP_COLOR` set to `blue` and create a pod named `config-pod` that mounts this ConfigMap at `/etc/config`.
+---
+
+## Question 9 — ConfigMap mounted as a volume
+
+**Approach:** ConfigMap imperatively; mount it by editing a generated pod (volume mounts have
+no flag).
+
+```bash
+kubectl create configmap app-config --from-literal=APP_COLOR=blue
+kubectl run config-pod --image=nginx $do > config-pod.yaml
+```
+
+Add the volume + mount:
 
 ```yaml
-# Create ConfigMap
-cat << EOF | kubectl apply -f -
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: app-config
-data:
-  APP_COLOR: blue
-EOF
-
-# Create pod
-cat << EOF | kubectl apply -f -
-apiVersion: v1
-kind: Pod
-metadata:
-  name: config-pod
 spec:
   containers:
-  - name: nginx
+  - name: config-pod
     image: nginx
     volumeMounts:
     - name: config-volume
@@ -308,27 +244,26 @@ spec:
   - name: config-volume
     configMap:
       name: app-config
-EOF
 ```
 
-## Question 10: Health Checks
+```bash
+kubectl apply -f config-pod.yaml
+kubectl exec config-pod -- cat /etc/config/APP_COLOR   # -> blue
+```
 
-Create a pod named `health-check` with the following health check specifications:
-- Liveness Probe: HTTP GET / on port 80
-- Readiness Probe: HTTP GET / on port 80
-- Initial Delay: 5 seconds for both probes
+---
+
+## Question 10 — Liveness and readiness probes
+
+**Approach:** generate, then add both probes.
+
+```bash
+kubectl run health-check --image=nginx $do > health-check.yaml
+```
+
+Add under the container:
 
 ```yaml
-# Create pod
-cat << EOF | kubectl apply -f -
-apiVersion: v1
-kind: Pod
-metadata:
-  name: health-check
-spec:
-  containers:
-  - name: nginx
-    image: nginx
     livenessProbe:
       httpGet:
         path: /
@@ -339,5 +274,10 @@ spec:
         path: /
         port: 80
       initialDelaySeconds: 5
-EOF
-``` 
+```
+
+```bash
+kubectl apply -f health-check.yaml
+kubectl get pod health-check          # READY 1/1 once the readiness probe passes
+kubectl describe pod health-check | grep -A2 -i 'Liveness\|Readiness'
+```

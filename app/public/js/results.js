@@ -424,13 +424,23 @@ document.addEventListener('DOMContentLoaded', function() {
                     const item = document.createElement('li');
                     item.className = 'verification-item';
                     
+                    const escapeHtml = (s) => String(s)
+                        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                    // On failure, show what was expected plus the reason the check reported.
+                    const reason = (!verification.validAnswer && verification.details)
+                        ? `<div class="verification-reason">${escapeHtml(verification.details)}</div>`
+                        : '';
+
                     item.innerHTML = `
-                        <div class="verification-description">${verification.description}</div>
-                        <div class="verification-status ${verification.validAnswer ? 'status-success' : 'status-failure'}">
-                            ${verification.validAnswer ? 
-                                '<i class="fas fa-check-circle"></i>' : 
-                                '<i class="fas fa-times-circle"></i>'}
+                        <div class="verification-main">
+                            <div class="verification-description">${verification.description}</div>
+                            <div class="verification-status ${verification.validAnswer ? 'status-success' : 'status-failure'}">
+                                ${verification.validAnswer ? 
+                                    '<i class="fas fa-check-circle"></i>' : 
+                                    '<i class="fas fa-times-circle"></i>'}
+                            </div>
                         </div>
+                        ${reason}
                     `;
                     
                     verificationList.appendChild(item);

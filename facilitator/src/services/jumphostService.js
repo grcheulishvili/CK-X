@@ -244,13 +244,22 @@ async function evaluateExamOnJumphost(examId, questions) {
           logger.info(`Script Path: ${scriptPath}`);
 
 
-          // Record the verification result without logs
+          // Capture the script's own output so the candidate can see *why* a
+          // check failed (validation scripts echo messages like "Role does not
+          // allow access to resource: pods"). Kept short and only for failures.
+          let details = '';
+          if (!isValid) {
+            const raw = `${result.stdout || ''}\n${result.stderr || ''}`.trim();
+            details = raw.length > 600 ? raw.slice(-600) : raw;
+          }
+
           questionResult.verificationResults.push({
             id: verification.id,
             description: verification.description,
             validAnswer: isValid,
             weightage: weightage,
-            score: score
+            score: score,
+            details: details
           });
 
           // Log the result for debugging but don't include in response
@@ -271,13 +280,13 @@ async function evaluateExamOnJumphost(examId, questions) {
             error: error.message, verification: verification.id 
           });
           
-          // Record the failed verification without error details
           questionResult.verificationResults.push({
             id: verification.id,
             description: verification.description,
             validAnswer: false,
             weightage: weightage,
-            score: 0
+            score: 0,
+            details: `Verification could not run: ${error.message}`
           });
         }
       }

@@ -1,6 +1,23 @@
 const winston = require('winston');
 const config = require('../config');
 
+// Safe JSON stringify that tolerates circular references (e.g. an Error whose
+// metadata contains a TLSSocket/ClientRequest, which crashes JSON.stringify).
+function safeStringify(obj) {
+  const seen = new WeakSet();
+  try {
+    return JSON.stringify(obj, (key, value) => {
+      if (typeof value === 'object' && value !== null) {
+        if (seen.has(value)) return '[Circular]';
+        seen.add(value);
+      }
+      return value;
+    });
+  } catch (e) {
+    return `[Unserializable metadata: ${e.message}]`;
+  }
+}
+
 // Define log format
 const logFormat = winston.format.combine(
   winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
@@ -23,13 +40,9 @@ const logger = winston.createLogger({
           ({ level, message, timestamp, ...metadata }) => {
             let msg = `${timestamp} [${level}]: ${message}`;
             
-            try {
-              // Add metadata if exists
-              if (Object.keys(metadata).length > 0 && metadata.service) {
-                msg += JSON.stringify(metadata);
-              }
-            } catch (error) {
-              console.error('Error in logger:', error);
+            // Add metadata if exists (circular-safe)
+            if (Object.keys(metadata).length > 0 && metadata.service) {
+              msg += ' ' + safeStringify(metadata);
             }
             
             return msg;

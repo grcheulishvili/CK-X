@@ -1,404 +1,191 @@
-# Docker Speed Run - Core Concepts: Solutions
+# Docker Speedrun — Solutions
 
-## Question 1: Create and tag a Docker image
+All tasks are Docker CLI workflows. Commands assume the referenced files already exist under
+`/tmp/exam/qN` where the task provides them.
 
-**Task**: Create a Docker image named `docker-speedrun:v1` using the provided Dockerfile and tag it as `docker-speedrun:latest`.
+---
 
-**Solution**:
+## Q1 — Build and tag
 ```bash
-# Navigate to the directory containing the Dockerfile
-cd /tmp/exam/q1
-
-# Build the image with the tag docker-speedrun:v1
-docker build -t docker-speedrun:v1 .
-
-# Tag the image as docker-speedrun:latest
+docker build -t docker-speedrun:v1 /tmp/exam/q1
 docker tag docker-speedrun:v1 docker-speedrun:latest
-
-# Verify the images exist
 docker images | grep docker-speedrun
 ```
 
-## Question 2: Run a container with specific parameters
-
-**Task**: Run a container using nginx:alpine with specific parameters.
-
-**Solution**:
+## Q2 — Run detached with port + env
 ```bash
 docker run -d --name web-server -p 8080:80 -e NGINX_HOST=localhost nginx:alpine
-
-# Verify the container is running
-docker ps | grep web-server
-
-# Verify environment variable
-docker exec web-server env | grep NGINX_HOST
 ```
 
-## Question 3: Create and use a Docker volume
-
-**Task**: Create a Docker volume and use it in a container to persist data.
-
-**Solution**:
+## Q3 — Named volume
 ```bash
-# Create the volume
 docker volume create data-volume
-
-# Run a container that mounts the volume and creates a file
-docker run --name volume-test -v data-volume:/app/data alpine:latest sh -c "mkdir -p /app/data && echo 'Docker volumes test' > /app/data/test.txt"
-
-# Verify the data was persisted
-docker run --rm -v data-volume:/app/data alpine:latest cat /app/data/test.txt
+docker run --name volume-test -v data-volume:/app/data alpine:latest \
+  sh -c "echo 'Docker volumes test' > /app/data/test.txt"
 ```
 
-## Question 4: Create a multi-stage Dockerfile
-
-**Task**: Create a multi-stage Dockerfile to build a Go application with a minimal final image.
-
-**Solution**:
-```
-FROM golang:1.17-alpine AS builder
-WORKDIR /app
-COPY /tmp/exam/q4/main.go .
-RUN go build -o app .
+## Q4 — Multi-stage build
+```bash
+cat > /tmp/exam/q4/Dockerfile <<'DF'
+FROM golang:1.17-alpine AS build
+WORKDIR /src
+COPY main.go .
+RUN go build -o /app main.go
 
 FROM alpine:latest
-WORKDIR /root/
-COPY --from=builder /app/app .
-ENTRYPOINT ["./app"]
+COPY --from=build /app /app
+ENTRYPOINT ["/app"]
+DF
+docker build -t multi-stage:latest /tmp/exam/q4
 ```
 
-Build command:
+## Q5 — systemd cgroup driver
 ```bash
-cd /tmp/exam/q4
-docker build -t multi-stage:latest .
-```
-
-## Question 5: Configure Docker daemon with systemd cgroup driver
-
-**Task**: Configure the Docker daemon to use the systemd cgroup driver.
-
-**Solution**:
-```bash
-# Create or edit the daemon.json file
-cat > /etc/docker/daemon.json << EOF
-{
-  "exec-opts": ["native.cgroupdriver=systemd"],
-  "log-driver": "json-file",
-  "log-opts": {
-    "max-size": "100m"
-  },
-  "storage-driver": "overlay2"
-}
-EOF
-
-# Restart Docker service
+cat > /etc/docker/daemon.json <<'JSON'
+{ "exec-opts": ["native.cgroupdriver=systemd"] }
+JSON
 systemctl restart docker
-
-# Verify the configuration
-docker info | grep -i cgroup
+docker info | grep -i "Cgroup Driver"    # -> systemd
 ```
 
-## Question 6: Configure container logging
-
-**Task**: Run a container with specific logging configuration.
-
-**Solution**:
+## Q6 — json-file logging with rotation
 ```bash
 docker run -d --name logging-test \
-  --log-driver json-file \
-  --log-opt max-size=10m \
-  --log-opt max-file=3 \
+  --log-driver json-file --log-opt max-size=10m --log-opt max-file=3 \
   nginx:alpine
-
-# Verify logging configuration
-docker inspect logging-test --format '{{.HostConfig.LogConfig}}'
 ```
 
-## Question 7: Create a custom network and use container DNS
-
-**Task**: Create a custom bridge network and test container DNS resolution.
-
-**Solution**:
+## Q7 — Custom bridge network + DNS
 ```bash
-# Create the custom network
-docker network create --subnet=172.18.0.0/16 app-network
-
-# Run the first container in detached mode
-docker run -d --name app1 --network app-network alpine sleep 1000
-
-# Run the second container to ping the first one
+docker network create --subnet 172.18.0.0/16 app-network
+docker run -d --name app1 --network app-network alpine sleep 3600
 docker run --name app2 --network app-network alpine ping -c 3 app1
-
-# Verify the containers used the correct network
-docker network inspect app-network
 ```
 
-## Question 8: Implement Docker healthchecks
-
-**Task**: Create a Dockerfile with healthcheck for a web application.
-
-**Solution**:
-```
+## Q8 — HEALTHCHECK image
+```bash
+cat > /tmp/exam/q8/Dockerfile <<'DF'
 FROM nginx:alpine
-
-# Install curl for the healthcheck
 RUN apk add --no-cache curl
-
-# Configure the healthcheck
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
   CMD curl -f http://localhost:80/ || exit 1
-
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+DF
+docker build -t healthy-app:latest /tmp/exam/q8
+docker run -d --name healthy-app healthy-app:latest
+docker inspect --format '{{.State.Health.Status}}' healthy-app
 ```
 
-Build and run command:
+## Q9 — Manifest + platforms
 ```bash
-cd /tmp/exam/q8
-docker build -t healthy-nginx .
-docker run -d --name healthy-app healthy-nginx
-
-# Check health status
-docker inspect --format='{{.State.Health.Status}}' healthy-app
-```
-
-## Question 9: Work with OCI image manifests
-
-**Task**: Pull and analyze an image manifest.
-
-**Solution**:
-```bash
-# Pull the image
-docker pull nginx:1.21.0
-
-# Get the image manifest and save to file
 mkdir -p /tmp/exam/q9
 docker manifest inspect nginx:1.21.0 > /tmp/exam/q9/manifest.json
-
-# Extract platforms information
-cat /tmp/exam/q9/manifest.json | grep -A 10 "platform" | grep "architecture\|os" | sort | uniq > /tmp/exam/q9/platforms.txt
+jq -r '.manifests[].platform | .os+"/"+.architecture' /tmp/exam/q9/manifest.json \
+  > /tmp/exam/q9/platforms.txt
+# (if manifest inspect is disabled: docker buildx imagetools inspect nginx:1.21.0)
 ```
 
-## Question 10: Set container resource limits
-
-**Task**: Run a container with CPU and memory limits.
-
-**Solution**:
+## Q10 — Resource-limited container
 ```bash
-docker run -d --name limited-resources \
-  --cpus=0.5 \
-  --memory=256m \
-  stress --cpu 1
-
-# Verify the limits
-docker inspect limited-resources --format '{{.HostConfig.NanoCpus}}'
-docker inspect limited-resources --format '{{.HostConfig.Memory}}'
+docker run -d --name limited-resources --cpus=0.5 --memory=256m \
+  stress stress --cpu 1
 ```
 
-## Question 11: Create a Docker Compose configuration
-
-**Task**: Create a Docker Compose file for a web and database application.
-
-**Solution**:
-```yaml
-version: '3'
-
+## Q11 — docker-compose stack
+```bash
+cat > /tmp/exam/q11/docker-compose.yml <<'YML'
 services:
   web:
     image: nginx:alpine
-    ports:
-      - "8080:80"
-    networks:
-      - app-network
-    depends_on:
-      - db
-
+    ports: ["8080:80"]
+    networks: [appnet]
   db:
     image: postgres:13
     environment:
-      - POSTGRES_USER=dbuser
-      - POSTGRES_PASSWORD=dbpassword
-      - POSTGRES_DB=myapp
-    volumes:
-      - db-data:/var/lib/postgresql/data
-    networks:
-      - app-network
-
-networks:
-  app-network:
-    driver: bridge
-
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: appdb
+    volumes: [dbdata:/var/lib/postgresql/data]
+    networks: [appnet]
 volumes:
-  db-data:
+  dbdata:
+networks:
+  appnet:
+YML
+docker compose -f /tmp/exam/q11/docker-compose.yml up -d
 ```
 
-Start services:
-```bash
-cd /tmp/exam/q11
-docker-compose up -d
-```
-
-## Question 12: Analyze a Docker image
-
-**Task**: Analyze and report on an existing Docker image.
-
-**Solution**:
+## Q12 — Image inspection report
 ```bash
 mkdir -p /tmp/exam/q12
-
-# Pull the image if not already available
-docker pull webapp:latest
-
-# Analyze the image and create the report
-cat > /tmp/exam/q12/image-report.txt << EOF
-Base Image: $(docker inspect webapp:latest --format '{{.Config.Image}}')
-Number of Layers: $(docker history webapp:latest | wc -l)
-Exposed Ports: $(docker inspect webapp:latest --format '{{.Config.ExposedPorts}}')
-Environment Variables: $(docker inspect webapp:latest --format '{{.Config.Env}}')
-Entrypoint: $(docker inspect webapp:latest --format '{{.Config.Entrypoint}}')
-EOF
+{
+  echo "Base image:  $(docker inspect -f '{{index .Config.Labels "base"}}' webapp:latest 2>/dev/null; docker history --no-trunc webapp:latest | tail -1)"
+  echo "Layers:      $(docker image inspect -f '{{len .RootFS.Layers}}' webapp:latest)"
+  echo "Exposed:     $(docker image inspect -f '{{json .Config.ExposedPorts}}' webapp:latest)"
+  echo "Env:         $(docker image inspect -f '{{json .Config.Env}}' webapp:latest)"
+  echo "Entrypoint:  $(docker image inspect -f '{{json .Config.Entrypoint}}' webapp:latest)"
+} > /tmp/exam/q12/image-report.txt
 ```
 
-## Question 13: Troubleshoot a container
-
-**Task**: Fix an issue with a broken container.
-
-**Solution**:
+## Q13 — Troubleshoot broken-container
 ```bash
 mkdir -p /tmp/exam/q13
-
-# Check container logs
-docker logs broken-container > /tmp/exam/q13/container-logs.txt
-
-# Examine the container
-docker exec -it broken-container ls -la /app
-
-# Fix the issue by creating the missing file
-docker exec -it broken-container sh -c 'echo "{\"config\": \"fixed\"}" > /app/config.json'
-
-# Document the diagnosis
-cat > /tmp/exam/q13/diagnosis.txt << EOF
-Issue: The container was missing a required configuration file at /app/config.json
-Symptoms: Container was failing to start properly due to missing configuration
-Solution: Created the missing config.json file with basic configuration
-EOF
+docker logs broken-container 2>&1 | tail -20
+docker exec broken-container ls -l /app || true
+# fix: create the missing config file
+docker exec broken-container sh -c 'echo "{}" > /app/config.json'
+{
+  echo "Symptom: container error referencing /app/config.json"
+  echo "Cause: /app/config.json was missing"
+  echo "Fix: created /app/config.json inside the container"
+} > /tmp/exam/q13/diagnosis.txt
 ```
 
-## Question 14: Create a Docker container with non-root user
-
-**Task**: Create a Dockerfile that runs as a non-root user for improved security.
-
-**Solution**:
-```
-FROM python:3.9-slim
-
-# Create a non-root user
-RUN useradd -u 1001 -m appuser
-
-# Set the working directory
-WORKDIR /app
-
-# Copy the application code
-COPY /tmp/exam/q14/app.py .
-
-# Change ownership to the non-root user
-RUN chown -R appuser:appuser /app
-
-# Switch to the non-root user
-USER appuser
-
-# Set the entrypoint
-ENTRYPOINT ["python", "app.py"]
-```
-
-Build and run:
+## Q14 — Non-root user image
 ```bash
-cd /tmp/exam/q14
-docker build -t secure-app .
-docker run -d --name secure-app secure-app
-
-# Verify the user
-docker exec secure-app whoami
+cat > /tmp/exam/q14/Dockerfile <<'DF'
+FROM python:3.9-slim
+RUN useradd -u 1001 appuser
+WORKDIR /app
+COPY app.py /app/app.py
+USER appuser
+ENTRYPOINT ["python","/app/app.py"]
+DF
+docker build -t secure-app:latest /tmp/exam/q14
+docker run -d --name secure-app secure-app:latest
 ```
 
-## Question 15: Optimize a Dockerfile
-
-**Task**: Optimize an existing Dockerfile for better build performance and smaller size.
-
-**Solution**:
-
-Creating a .dockerignore file:
-```
+## Q15 — Optimize (caching, .dockerignore, fewer layers)
+```bash
+cat > /tmp/exam/q15/.dockerignore <<'IGN'
 .git
 node_modules
-npm-debug.log
-Dockerfile
-.dockerignore
 *.md
-*.log
-```
-
-Optimized Dockerfile:
-```
-FROM node:14-alpine
-
+IGN
+# Order: copy dependency manifests and install BEFORE copying source, so the
+# dependency layer stays cached across code changes; chain RUNs to cut layers.
+cat > /tmp/exam/q15/Dockerfile <<'DF'
+FROM python:3.9-slim
 WORKDIR /app
-
-# Copy package files first to leverage caching
-COPY package*.json ./
-RUN npm install --production
-
-# Then copy application code
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
-
-# Use multi-stage build to create smaller final image
-FROM node:14-alpine
-WORKDIR /app
-COPY --from=0 /app/node_modules ./node_modules
-COPY --from=0 /app/package.json ./
-COPY --from=0 /app/src ./src
-
-# Combine multiple commands to reduce layers
-ENV NODE_ENV=production \
-    PORT=3000
-
-EXPOSE 3000
-
-# Use exec form of CMD
-CMD ["node", "src/index.js"]
+ENTRYPOINT ["python","app.py"]
+DF
+docker build -t optimized-app:latest /tmp/exam/q15
 ```
 
-Build command:
+## Q16 — Docker Content Trust
 ```bash
-cd /tmp/exam/q15
-docker build -t optimized-app:latest .
-```
-
-## Question 16: Docker Content Trust
-
-**Task**: Configure and use Docker Content Trust for image signing.
-
-**Solution**:
-```bash
-# Commands saved to file
-cat > /tmp/exam/q16/dct-commands.sh << EOF
+mkdir -p /tmp/exam/q16
+cat > /tmp/exam/q16/dct-commands.sh <<'SH'
 #!/bin/bash
-
-# Enable Docker Content Trust
 export DOCKER_CONTENT_TRUST=1
-
-# Pull a signed image
-docker pull docker.io/library/alpine:latest
-
-# Configure passphrase for signing
-export DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE="my-secure-passphrase"
-
-# Build and push a signed image to local registry
-docker build -t localhost:5000/secure-app:latest .
-docker push localhost:5000/secure-app:latest
-EOF
-
-# Make the file executable
+export DOCKER_CONTENT_TRUST_ROOT_PASSPHRASE="rootpass"
+export DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE="repopass"
+docker pull docker.io/library/alpine:latest        # verified pull (DCT on)
+docker tag alpine:latest localhost:5000/alpine:signed
+docker push localhost:5000/alpine:signed           # signs on push
+docker trust inspect --pretty localhost:5000/alpine:signed
+SH
 chmod +x /tmp/exam/q16/dct-commands.sh
-``` 
+```
