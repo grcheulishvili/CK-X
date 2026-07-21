@@ -1,5 +1,6 @@
 # Base Image (x86_64 build only)
-FROM nishanb/ck-x-simulator-vnc-base:v3
+ARG VNC_BASE_IMAGE=consol/ubuntu-xfce-vnc:1.3.0
+FROM ${VNC_BASE_IMAGE}
 
 # --- Add QEMU for ARM emulation ---
 # This lets the container run on ARM hosts even if the base image is amd64

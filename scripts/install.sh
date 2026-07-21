@@ -182,20 +182,27 @@ main() {
     echo -e "${YELLOW}Creating project directory...${NC}"
     mkdir -p ck-x-simulator && cd ck-x-simulator
     
-    # Download docker-compose.yml
-    echo -e "${YELLOW}Downloading Docker Compose file...${NC}"
-    curl -fsSL https://raw.githubusercontent.com/sailor-sh/CK-X/master/docker-compose.yaml -o docker-compose.yml
+    # Use the local docker-compose file if we're inside the repo; otherwise fetch it.
+    echo -e "${YELLOW}Preparing Docker Compose file...${NC}"
+    if [ -f ../docker-compose.yaml ]; then
+        cp ../docker-compose.yaml docker-compose.yml
+    elif [ -f ../docker-compose.yml ]; then
+        cp ../docker-compose.yml docker-compose.yml
+    else
+        curl -fsSL https://raw.githubusercontent.com/sailor-sh/CK-X/master/docker-compose.yaml -o docker-compose.yml
+    fi
     
     if [ ! -f docker-compose.yml ]; then
-        echo -e "${RED}✗ Failed to download docker-compose.yml${NC}"
+        echo -e "${RED}✗ Failed to obtain docker-compose.yml${NC}"
         exit 1
     fi
-    echo -e "${GREEN}✓ Docker Compose file downloaded${NC}"
+    echo -e "${GREEN}✓ Docker Compose file ready${NC}"
     
-    # Pull images
-    echo -e "${YELLOW}Pulling Docker images...${NC}"
-    docker compose pull
-    echo -e "${GREEN}✓ Docker images pulled successfully${NC}"
+    # Build images locally (self-contained; does not depend on any external image registry
+    # beyond official library base images).
+    echo -e "${YELLOW}Building Docker images locally...${NC}"
+    docker compose build
+    echo -e "${GREEN}✓ Docker images built successfully${NC}"
     
     # Start services
     echo -e "${YELLOW}Starting CK-X services...${NC}"

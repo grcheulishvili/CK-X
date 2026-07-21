@@ -1,5 +1,9 @@
-# Base Image
-FROM nishanb/ck-x-simulator-vnc-base:v3
+# Base Image (headless XFCE + TigerVNC + noVNC).
+# Default is the public upstream so the build never depends on nishanb's registry.
+# For a fully self-hosted base, build ./vnc-base and pass
+#   --build-arg VNC_BASE_IMAGE=ckx/vnc-base:local
+ARG VNC_BASE_IMAGE=consol/ubuntu-xfce-vnc:1.3.0
+FROM ${VNC_BASE_IMAGE}
 
 # Switch to root user for installations
 USER 0

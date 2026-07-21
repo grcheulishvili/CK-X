@@ -1,7 +1,8 @@
 services:
   # VNC Server (Ubuntu)
   remote-desktop:
-    image: nishanb/ck-x-simulator-remote-desktop:latest
+    image: ckx/ck-x-simulator-remote-desktop:local
+    pull_policy: build   # never pull from a remote registry; always build locally
     build:
       context: ./remote-desktop
     hostname: terminal
@@ -31,7 +32,8 @@ services:
 
   # Web Application (not directly exposed to users)
   webapp:
-    image: nishanb/ck-x-simulator-webapp:latest
+    image: ckx/ck-x-simulator-webapp:local
+    pull_policy: build   # never pull from a remote registry; always build locally
     build:
       context: ./app
     expose:
@@ -62,7 +64,8 @@ services:
 
   # Nginx Reverse Proxy - ONLY SERVICE EXPOSED TO USERS
   nginx:
-    image: nishanb/ck-x-simulator-nginx:latest
+    image: ckx/ck-x-simulator-nginx:local
+    pull_policy: build   # never pull from a remote registry; always build locally
     build:
       context: ./nginx
     depends_on:
@@ -91,7 +94,8 @@ services:
 
   # Jump Host (internal validation host; candidates do not use this)
   jumphost:
-    image: nishanb/ck-x-simulator-jumphost:latest
+    image: ckx/ck-x-simulator-jumphost:local
+    pull_policy: build   # never pull from a remote registry; always build locally
     build:
       context: ./jumphost
     hostname: ckad9999
@@ -118,7 +122,8 @@ services:
 
   # Remote Terminal Service
   remote-terminal:
-    image: nishanb/ck-x-simulator-remote-terminal:latest
+    image: ckx/ck-x-simulator-remote-terminal:local
+    pull_policy: build   # never pull from a remote registry; always build locally
     build:
       context: ./remote-terminal
     hostname: remote-terminal
@@ -142,7 +147,8 @@ services:
 
   # KIND Kubernetes Cluster
   k8s-api-server: # Service name that will be used for DNS resolution
-    image: nishanb/ck-x-simulator-cluster:latest
+    image: ckx/ck-x-simulator-cluster:local
+    pull_policy: build   # never pull from a remote registry; always build locally
     build:
       context: ./kind-cluster
     container_name: kind-cluster
@@ -200,7 +206,8 @@ services:
 
   # Facilitator Service
   facilitator:
-    image: nishanb/ck-x-simulator-facilitator:latest
+    image: ckx/ck-x-simulator-facilitator:local
+    pull_policy: build   # never pull from a remote registry; always build locally
     build:
       context: ./facilitator
       dockerfile: Dockerfile
