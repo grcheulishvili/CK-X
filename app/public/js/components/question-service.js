@@ -68,8 +68,17 @@ function generateQuestionContent(question) {
         const concepts = originalData.concepts || [];
         const conceptsString = concepts.join(', ');
         
+        // Use the translated question body when the interface language has one.
+        const lang = (window.i18n && window.i18n.lang) ? window.i18n.lang() : 'en';
+        const tr = function (key, fallback) {
+            return (window.i18n && window.i18n.t) ? window.i18n.t(key) : fallback;
+        };
+        const localisedBody = (lang !== 'en' && originalData['question_' + lang])
+            ? originalData['question_' + lang]
+            : question.content;
+
         // Format question content with improved styling
-        const formattedQuestionContent = processQuestionContent(question.content);
+        const formattedQuestionContent = processQuestionContent(localisedBody);
         
         // Create formatted content with minimal layout
         return `
@@ -77,15 +86,15 @@ function generateQuestionContent(question) {
                 <div class="question-header">
                     
                     <div class="mb-3">
-                        <strong>Solve this question on instance:</strong> <span class="inline-code">ssh ${machineHostname}</span></span>
+                        <strong>${tr('q.instance', 'Solve this question on instance:')}</strong> <span class="inline-code">ssh ${machineHostname}</span></span>
                     </div>
                     
                     <div class="mb-3">
-                        <strong>Namespace:</strong> <span class="text-primary">${namespace}</span>
+                        <strong>${tr('q.namespace', 'Namespace:')}</strong> <span class="text-primary">${namespace}</span>
                     </div>
                     
                     <div class="mb-3">
-                        <strong>Concepts:</strong> <span class="text-primary">${conceptsString}</span>
+                        <strong>${tr('q.concepts', 'Concepts:')}</strong> <span class="text-primary">${conceptsString}</span>
                     </div>
                     
                     <hr class="my-3">

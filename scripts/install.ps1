@@ -46,7 +46,7 @@ try {
         Write-ColorOutput "CK-X Simulator: Kubernetes Certification Exam Simulator" "Cyan"
         Write-ColorOutput "Practice in a realistic environment for CKA, CKAD, and more" "Cyan"
         Write-ColorOutput "==============================================================" "Cyan"
-        Write-ColorOutput " Facing any issues? Please report at: https://github.com/sailor-sh/CK-X/issues" "Cyan"
+        Write-ColorOutput " Logs: docker compose logs -f" "Cyan"
         Write-Host ""
     }
 
@@ -221,7 +221,7 @@ try {
                 return $true
             } catch {
                 Write-ColorOutput "Could not automatically open browser. Please visit:" "Yellow"
-                Write-ColorOutput "https://play.sailor.sh/" "Green"
+                Write-ColorOutput "http://localhost:30080" "Green"
                 return $false
             }
         }
@@ -258,7 +258,7 @@ try {
         
         # Download docker-compose.yml
         Write-ColorOutput "Downloading Docker Compose file..." "Yellow"
-        $composeUrl = "https://raw.githubusercontent.com/sailor-sh/CK-X/master/docker-compose.yaml"
+        $composeUrl = ""  # build locally from the repository; no remote compose file
         
         if (Test-Command curl) {
             curl.exe -fsSL $composeUrl -o docker-compose.yml
@@ -341,7 +341,7 @@ try {
         Write-ColorOutput "To remove only CK-X images: " -NoNewline
         Write-ColorOutput "docker compose down --rmi all" "Green"
         Write-ColorOutput "To access CK-X Simulator: " -NoNewline
-        Write-ColorOutput "https://play.sailor.sh/" "Green"
+        Write-ColorOutput "http://localhost:30080" "Green"
         Write-ColorOutput "To access CK-X Simulator locally use: " -NoNewline
         Write-ColorOutput "http://localhost:30080/" "Green"
         Write-Host ""

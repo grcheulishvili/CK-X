@@ -8,7 +8,10 @@
       "description": "Hands-on exercises covering core Kubernetes concepts, pod configuration, deployments, and services with practical tasks for application deployment in a cluster.",
       "warmUpTimeInSeconds": 260,
       "difficulty": "Medium",
-      "examDurationInMinutes": 120
+      "examDurationInMinutes": 120,
+      "questionCount": 21,
+      "name_ka": "CKAD სავარჯიშო ლაბორატორია 01",
+      "description_ka": "CKAD სავარჯიშოები: Deployment-ები, საცავი, კონფიგურაცია, probe-ები, CronJob-ები, RBAC, Helm და CRD."
     },
     {
       "id": "ckad-002",
@@ -18,7 +21,10 @@
       "description": "Series of practical tasks on multi-container pods, pod design patterns, configuration, services, and networking in Kubernetes environments.",
       "warmUpTimeInSeconds": 260,
       "difficulty": "Hard",
-      "examDurationInMinutes": 120
+      "examDurationInMinutes": 120,
+      "questionCount": 20,
+      "name_ka": "CKAD სავარჯიშო ლაბორატორია 02",
+      "description_ka": "CKAD სავარჯიშოები: მრავალკონტეინერიანი პოდები, სერვისები, საიდუმლოებები, init კონტეინერები, უსაფრთხოების კონტექსტი და გამართვა."
     },
     {
       "id": "cks-001",
@@ -28,7 +34,10 @@
       "description": "Practice essential Kubernetes security concepts including network policies, RBAC, supply chain security, and runtime protection",
       "warmUpTimeInSeconds": 260,
       "difficulty": "Hard",
-      "examDurationInMinutes": 120
+      "examDurationInMinutes": 120,
+      "questionCount": 12,
+      "name_ka": "CKS სავარჯიშო ლაბორატორია 01",
+      "description_ka": "CKS სავარჯიშოები: NetworkPolicy, TLS Ingress, Pod Security Admission, RBAC-ის მინიმიზაცია, seccomp და საიდუმლოებები."
     },
     {
       "id": "cka-002",
@@ -38,7 +47,10 @@
       "description": "Comprehensive lab covering advanced Kubernetes administration topics including storage, networking, security, and troubleshooting with focus on real-world scenarios, updated with the latest CKA exam curriculum changes.",
       "warmUpTimeInSeconds": 360,
       "difficulty": "Hard",
-      "examDurationInMinutes": 120
+      "examDurationInMinutes": 120,
+      "questionCount": 20,
+      "name_ka": "CKA სავარჯიშო ლაბორატორია 02",
+      "description_ka": "გაფართოებული CKA სავარჯიშოები: საცავი, დაგეგმვა, StatefulSet, Helm, Kustomize, Gateway API და გამართვა."
     },
     {
       "id": "cka-001",
@@ -48,7 +60,10 @@
       "description": "Practice essential Kubernetes administrator tasks covering cluster management, networking, storage, and security",
       "warmUpTimeInSeconds": 260,
       "difficulty": "Easy",
-      "examDurationInMinutes": 60
+      "examDurationInMinutes": 60,
+      "questionCount": 10,
+      "name_ka": "CKA სავარჯიშო ლაბორატორია 01",
+      "description_ka": "საბაზისო CKA სავარჯიშოები: პოდები, სტატიკური პოდები, საცავი, RBAC, ქსელის პოლიტიკა და probe-ები."
     },
     {
       "id": "cka-mock-01",
@@ -58,7 +73,10 @@
       "description": "Full CKA mock exam: 17 tasks weighted to the real blueprint (25% cluster architecture, 15% workloads & scheduling, 20% services & networking, 10% storage, 30% troubleshooting). Troubleshooting-heavy, with live-graded fixes.",
       "warmUpTimeInSeconds": 180,
       "difficulty": "Hard",
-      "examDurationInMinutes": 120
+      "examDurationInMinutes": 120,
+      "questionCount": 17,
+      "name_ka": "CKA საცდელი გამოცდა 01",
+      "description_ka": "სრული CKA საცდელი გამოცდა: 17 დავალება რეალური გამოცდის წონების მიხედვით (25% არქიტექტურა, 15% სამუშაო დატვირთვები, 20% ქსელი, 10% საცავი, 30% გამართვა)."
     },
     {
       "id": "cka-mock-02",
@@ -68,7 +86,10 @@
       "description": "Second CKA mock exam: 17 tasks across all domains including etcd backup/restore recall, kubeadm upgrade recall, NetworkPolicy AND/OR, NodePort, DNS, and multiple live troubleshooting scenarios. Aligned to the real exam weighting.",
       "warmUpTimeInSeconds": 180,
       "difficulty": "Hard",
-      "examDurationInMinutes": 120
+      "examDurationInMinutes": 120,
+      "questionCount": 17,
+      "name_ka": "CKA საცდელი გამოცდა 02",
+      "description_ka": "მეორე CKA საცდელი გამოცდა: etcd-ის ბექაფი და აღდგენა, kubeadm-ის განახლება, NetworkPolicy, NodePort, DNS და გამართვის რამდენიმე სცენარი."
     },
     {
       "id": "docker-001",
@@ -78,7 +99,10 @@
       "description": "Fast-paced practice lab covering Docker fundamentals including images, containers, volumes, networking, OCI, logging, and security best practices.",
       "warmUpTimeInSeconds": 120,
       "difficulty": "Medium",
-      "examDurationInMinutes": 90
+      "examDurationInMinutes": 90,
+      "questionCount": 16,
+      "name_ka": "Docker სავარჯიშოები",
+      "description_ka": "Docker-ის პრაქტიკული დავალებები: აგება, ვოლუმები, ქსელი, healthcheck, უსაფრთხოება და ოპტიმიზაცია."
     },
     {
       "id": "helm-001",
@@ -88,7 +112,10 @@
       "description": "Comprehensive lab covering Helm basics including chart installation, repositories, customization, packaging, debugging, and advanced Helm operations for Kubernetes applications.",
       "warmUpTimeInSeconds": 260,
       "difficulty": "Medium",
-      "examDurationInMinutes": 90
+      "examDurationInMinutes": 90,
+      "questionCount": 12,
+      "name_ka": "Helm სავარჯიშოები",
+      "description_ka": "Helm-ის პრაქტიკული დავალებები: რეპოზიტორიები, ინსტალაცია, განახლება, values ფაილები, პაკეტირება და rollback."
     }
   ]
 }

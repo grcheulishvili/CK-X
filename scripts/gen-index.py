@@ -13,6 +13,7 @@ for l in labs.values():
     nq = 0
     if os.path.isfile(aj):
         nq = len(json.load(open(aj)).get("questions", []))
+    l["questionCount"] = nq  # keep labs.json in sync for the UI catalog
     rows.append((l, nq))
 
 order = {"CKA": 0, "CKAD": 1, "CKS": 2, "Other": 3}

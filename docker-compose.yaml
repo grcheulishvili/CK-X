@@ -1,6 +1,18 @@
 services:
   # VNC Server (Ubuntu)
   remote-desktop:
+    # Cap file descriptors; fd exhaustion is its own denial-of-service vector.
+    # The process cap lives in deploy.resources.limits.pids below.
+    ulimits:
+      nofile:
+        soft: 8192
+        hard: 8192
+    # Bound log growth so a chatty or looping container cannot fill the disk.
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     image: ckx/ck-x-simulator-remote-desktop:local
     pull_policy: build   # never pull from a remote registry; always build locally
     build:
@@ -14,6 +26,9 @@ services:
       - VNC_PASSWORD=bakku-the-wizard
       - VNC_VIEW_ONLY=false
       - VNC_RESOLUTION=1280x800
+      # Set true only if a wallpaper still appears: drops xfdesktop entirely and
+      # leaves a solid root window (no desktop icons or right-click menu).
+      - CKX_KILL_XFDESKTOP=false
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:6901/"]
       interval: 10s
@@ -22,6 +37,8 @@ services:
     deploy:
       resources:
         limits:
+          # pids caps process count: this, not cpu/memory, is what stops a fork bomb.
+          pids: 1024
           cpus: "1"
           memory: 1G
         reservations:
@@ -32,6 +49,18 @@ services:
 
   # Web Application (not directly exposed to users)
   webapp:
+    # Cap file descriptors; fd exhaustion is its own denial-of-service vector.
+    # The process cap lives in deploy.resources.limits.pids below.
+    ulimits:
+      nofile:
+        soft: 8192
+        hard: 8192
+    # Bound log growth so a chatty or looping container cannot fill the disk.
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     image: ckx/ck-x-simulator-webapp:local
     pull_policy: build   # never pull from a remote registry; always build locally
     build:
@@ -49,6 +78,8 @@ services:
     deploy:
       resources:
         limits:
+          # pids caps process count: this, not cpu/memory, is what stops a fork bomb.
+          pids: 512
           cpus: "0.5"
           memory: 512M
         reservations:
@@ -64,6 +95,18 @@ services:
 
   # Nginx Reverse Proxy - ONLY SERVICE EXPOSED TO USERS
   nginx:
+    # Cap file descriptors; fd exhaustion is its own denial-of-service vector.
+    # The process cap lives in deploy.resources.limits.pids below.
+    ulimits:
+      nofile:
+        soft: 8192
+        hard: 8192
+    # Bound log growth so a chatty or looping container cannot fill the disk.
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     image: ckx/ck-x-simulator-nginx:local
     pull_policy: build   # never pull from a remote registry; always build locally
     build:
@@ -79,6 +122,8 @@ services:
     deploy:
       resources:
         limits:
+          # pids caps process count: this, not cpu/memory, is what stops a fork bomb.
+          pids: 256
           cpus: "0.2"
           memory: 256M
         reservations:
@@ -92,13 +137,41 @@ services:
     networks:
       - ckx-network
 
-  # Jump Host (internal validation host; candidates do not use this)
+  # Optional self-hosted desktop base (Ubuntu 22.04) replacing the EOL 16.04
+  # ConSol image. Built only when asked for:
+  #   docker compose --profile vncbase build vnc-base
+  #   docker compose build --build-arg VNC_BASE_IMAGE=ckx/vnc-base:local remote-desktop
+  vnc-base:
+    profiles: ["vncbase"]
+    image: ckx/vnc-base:local
+    pull_policy: build
+    build:
+      context: ./vnc-base
+    entrypoint: ["/bin/true"]
+    restart: "no"
+
+  # Jump Host (internal validation host; candidates never ssh here).
+  # NOTE: its hostname must NOT collide with any candidate-facing alias
+  # (it used to be 'ckad9999', which also aliased the cluster node and made
+  #  `ssh ckad9999` resolve to two different hosts / SSH host keys).
   jumphost:
+    # Cap file descriptors; fd exhaustion is its own denial-of-service vector.
+    # The process cap lives in deploy.resources.limits.pids below.
+    ulimits:
+      nofile:
+        soft: 16384
+        hard: 16384
+    # Bound log growth so a chatty or looping container cannot fill the disk.
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     image: ckx/ck-x-simulator-jumphost:local
     pull_policy: build   # never pull from a remote registry; always build locally
     build:
       context: ./jumphost
-    hostname: ckad9999
+    hostname: jumphost
     privileged: true
     # No external port mappings - only accessible internally
     expose:
@@ -108,7 +181,10 @@ services:
     deploy:
       resources:
         limits:
+          # pids caps process count: this, not cpu/memory, is what stops a fork bomb.
+          pids: 1024
           cpus: "1"
+          memory: 1G
         reservations:
           cpus: "0.5"
           memory: 512M
@@ -122,6 +198,18 @@ services:
 
   # Remote Terminal Service
   remote-terminal:
+    # Cap file descriptors; fd exhaustion is its own denial-of-service vector.
+    # The process cap lives in deploy.resources.limits.pids below.
+    ulimits:
+      nofile:
+        soft: 8192
+        hard: 8192
+    # Bound log growth so a chatty or looping container cannot fill the disk.
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     image: ckx/ck-x-simulator-remote-terminal:local
     pull_policy: build   # never pull from a remote registry; always build locally
     build:
@@ -132,6 +220,8 @@ services:
     deploy:
       resources:
         limits:
+          # pids caps process count: this, not cpu/memory, is what stops a fork bomb.
+          pids: 256
           cpus: "0.5"
           memory: 512M
         reservations:
@@ -147,6 +237,25 @@ services:
 
   # KIND Kubernetes Cluster
   k8s-api-server: # Service name that will be used for DNS resolution
+    # This container is privileged and runs dind + k3s, so it is the one most
+    # able to hurt the host. nofile is high because containerd legitimately
+    # needs it; the process cap is in deploy.resources.limits.pids below.
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    # Per-container disk quota. Requires overlay2 on XFS with the 'pquota' mount
+    # option (or btrfs/devicemapper). On Docker Desktop the VM filesystem is ext4,
+    # where this option makes the container refuse to start, so it is opt-in.
+    # There, cap disk via Settings > Resources > Disk image size instead.
+    # See docs/RESOURCE-LIMITS.md
+    # storage_opt:
+    #   size: "20G"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     image: ckx/ck-x-simulator-cluster:local
     pull_policy: build   # never pull from a remote registry; always build locally
     build:
@@ -162,6 +271,8 @@ services:
     deploy:
       resources:
         limits:
+          # pids caps process count: this, not cpu/memory, is what stops a fork bomb.
+          pids: 8192
           cpus: "2"
           memory: 4G
         reservations:
@@ -182,6 +293,18 @@ services:
 
   # Redis Database for Facilitator
   redis:
+    # Cap file descriptors; fd exhaustion is its own denial-of-service vector.
+    # The process cap lives in deploy.resources.limits.pids below.
+    ulimits:
+      nofile:
+        soft: 8192
+        hard: 8192
+    # Bound log growth so a chatty or looping container cannot fill the disk.
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     image: redis:alpine
     hostname: redis
     command: ["redis-server", "--appendonly", "yes"]
@@ -193,6 +316,8 @@ services:
     deploy:
       resources:
         limits:
+          # pids caps process count: this, not cpu/memory, is what stops a fork bomb.
+          pids: 256
           cpus: "0.3"
           memory: 256M
         reservations:
@@ -206,6 +331,18 @@ services:
 
   # Facilitator Service
   facilitator:
+    # Cap file descriptors; fd exhaustion is its own denial-of-service vector.
+    # The process cap lives in deploy.resources.limits.pids below.
+    ulimits:
+      nofile:
+        soft: 8192
+        hard: 8192
+    # Bound log growth so a chatty or looping container cannot fill the disk.
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     image: ckx/ck-x-simulator-facilitator:local
     pull_policy: build   # never pull from a remote registry; always build locally
     build:
@@ -234,6 +371,8 @@ services:
     deploy:
       resources:
         limits:
+          # pids caps process count: this, not cpu/memory, is what stops a fork bomb.
+          pids: 512
           cpus: "0.5"
           memory: 512M
         reservations:

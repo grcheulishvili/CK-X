@@ -81,6 +81,13 @@ RUN chmod +x /usr/local/bin/cleanup-exam-env
 RUN mkdir -p /tmp/exam-env
 
 # Expose SSH port
+
+# SSH client defaults: container host keys are regenerated on every rebuild, so
+# strict checking would block candidates with "REMOTE HOST IDENTIFICATION HAS CHANGED".
+RUN printf 'Host *\n    StrictHostKeyChecking no\n    UserKnownHostsFile /dev/null\n    LogLevel ERROR\n\n' > /tmp/ckx_ssh \
+    && cat /etc/ssh/ssh_config >> /tmp/ckx_ssh \
+    && mv /tmp/ckx_ssh /etc/ssh/ssh_config
+
 EXPOSE 22
 
 RUN echo "export TERM=xterm" >> /home/candidate/.bashrc

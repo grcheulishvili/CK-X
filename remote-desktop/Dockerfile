@@ -43,6 +43,26 @@ RUN echo "StrictHostKeyChecking no" >> /home/candidate/.ssh/config
 RUN echo "UserKnownHostsFile /dev/null" >> /home/candidate/.ssh/config
 
 
+# Flat, solid desktop for VNC performance (see desktop-tune.sh).
+# Shipped as xfconf XML so the very first paint is already solid.
+COPY xfce/xfce4-desktop.xml /headless/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml
+COPY xfce/xfwm4.xml         /headless/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml
+RUN chmod -R 0777 /headless/.config
+
+# Belt and braces: overwrite every stock backdrop with a solid-colour image.
+# xfdesktop renders whatever file is configured, so replacing the file content
+# guarantees a flat background even if a config we don't control wins.
+# (GdkPixbuf sniffs content, so a PNG kept under a .jpg name still loads.)
+COPY xfce/solid-bg.png /usr/share/backgrounds/ckx-solid.png
+RUN set -eux; \
+    for d in /usr/share/xfce4/backdrops /usr/share/backgrounds/xfce; do \
+        [ -d "$d" ] || continue; \
+        for f in "$d"/*; do [ -f "$f" ] && cp -f /usr/share/backgrounds/ckx-solid.png "$f"; done; \
+    done; true
+
+COPY desktop-tune.sh /usr/local/bin/desktop-tune.sh
+RUN chmod +x /usr/local/bin/desktop-tune.sh
+
 # Copy startup script
 COPY startup.sh /usr/local/bin/startup.sh
 RUN chmod +x /usr/local/bin/startup.sh

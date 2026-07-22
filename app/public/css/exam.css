@@ -166,7 +166,6 @@ body {
     opacity: 1;
 }
 .terminal-controls .btn {
-    backdrop-filter: blur(4px);
     background-color: rgba(255, 255, 255, 0.2);
     border-color: rgba(255, 255, 255, 0.3);
     color: white;
@@ -292,12 +291,6 @@ ul.requirements li {
     width: 4px;
     height: 100%;
     background-color: #1e88e5;
-    animation: pulseIndicator 1s ease-in-out;
-}
-@keyframes pulseIndicator {
-    0% { opacity: 0; }
-    50% { opacity: 1; }
-    100% { opacity: 0; }
 }
 /* Inline code highlighting for text in single quotes */
 .inline-code {
@@ -432,13 +425,8 @@ ul.requirements li {
 .timer-warning {
     background-color: rgba(220, 53, 69, 0.25);
     color: #ffc107;
-    animation: pulseTimer 1.5s infinite alternate;
 }
 
-@keyframes pulseTimer {
-    from { background-color: rgba(220, 53, 69, 0.25); }
-    to { background-color: rgba(220, 53, 69, 0.5); }
-}
 
 /* Toast container customization */
 .toast-container {
@@ -475,10 +463,6 @@ ul.requirements li {
     margin-left: 10px;
     display: inline-block;
     vertical-align: middle;
-    animation: fadeIn 0.3s ease-in-out;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-5px); }
-    to { opacity: 1; transform: translateY(0); }
-} 
+ 

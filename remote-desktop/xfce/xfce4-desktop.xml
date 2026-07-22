@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Solid backdrop from first paint: no wallpaper image, no gradient.
+     desktop-tune.sh re-applies this at runtime for whatever monitor names
+     the VNC session actually creates. -->
+<channel name="xfce4-desktop" version="1.0">
+  <property name="backdrop" type="empty">
+    <property name="screen0" type="empty">
+      <property name="monitor0" type="empty">
+        <property name="workspace0" type="empty">
+          <property name="color-style" type="int" value="0"/>
+          <property name="image-style" type="int" value="0"/>
+          <property name="last-image" type="string" value=""/>
+          <property name="rgba1" type="array">
+            <value type="double" value="0.058824"/>
+            <value type="double" value="0.090196"/>
+            <value type="double" value="0.125490"/>
+            <value type="double" value="1.000000"/>
+          </property>
+        </property>
+      </property>
+    </property>
+  </property>
+  <property name="desktop-menu" type="empty">
+    <property name="show-icons" type="bool" value="false"/>
+  </property>
+</channel>

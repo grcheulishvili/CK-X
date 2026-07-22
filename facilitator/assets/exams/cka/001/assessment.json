@@ -32,13 +32,14 @@
           "expectedOutput": "0",
           "weightage": 2
         }
-      ]
+      ],
+      "question_ka": "შექმენით პოდი სახელად `nginx-pod` იმიჯით `nginx:1.19`.\n\nდარწმუნდით, რომ პოდი შექმნილია `app-team1` namespace-ში და აქვს ლეიბლი `run=nginx-pod`.\n\nშეამოწმეთ, რომ პოდი `Running` მდგომარეობაშია."
     },
     {
       "id": "2",
       "namespace": "default",
       "machineHostname": "controlplane",
-      "question": "Create a static pod named `static-web` on `ckad9999` using the `nginx:1.19` image.\nThe pod should expose port `80`.\n\nPlace the static pod manifest file at `/etc/kubernetes/manifests/static-web.yaml`.",
+      "question": "Create a static pod named `static-web` on `controlplane` using the `nginx:1.19` image.\nThe pod should expose port `80`.\n\nPlace the static pod manifest file at `/etc/kubernetes/manifests/static-web.yaml`.",
       "concepts": [
         "static pods",
         "node configuration"
@@ -58,7 +59,8 @@
           "expectedOutput": "0",
           "weightage": 3
         }
-      ]
+      ],
+      "question_ka": "შექმენით სტატიკური პოდი სახელად `static-web` `controlplane`-ზე, იმიჯით `nginx:1.19`.\nპოდს უნდა ჰქონდეს გახსნილი პორტი `80`.\n\nსტატიკური პოდის მანიფესტის ფაილი განათავსეთ მისამართზე `/etc/kubernetes/manifests/static-web.yaml`."
     },
     {
       "id": "3",
@@ -85,7 +87,8 @@
           "expectedOutput": "0",
           "weightage": 2
         }
-      ]
+      ],
+      "question_ka": "შექმენით StorageClass სახელად `fast-storage` provisioner-ით `kubernetes.io/no-provisioner`.\n\nშექმენით PersistentVolumeClaim სახელად `data-pvc` `storage` namespace-ში, რომელიც ამ StorageClass-ს იყენებს.\n\nწვდომის რეჟიმად მიუთითეთ `ReadWriteOnce` და მოითხოვეთ `1Gi` მოცულობა."
     },
     {
       "id": "4",
@@ -112,7 +115,8 @@
           "expectedOutput": "0",
           "weightage": 3
         }
-      ]
+      ],
+      "question_ka": "შექმენით პოდი სახელად `logger` `monitoring` namespace-ში ორი კონტეინერით:\n\n1. `busybox` კონტეინერი, რომელიც ლოგებს ჩაწერს ფაილში `/var/log/app.log`\n2. `fluentd` კონტეინერი, რომელიც ლოგებს კითხულობს იმავე მდებარეობიდან\n\nლოგების გასაზიარებლად გამოიყენეთ `emptyDir` ტიპის ვოლუმი სახელად `log-volume`. მიამაგრეთ ეს ვოლუმი ორივე კონტეინერში მისამართზე `/var/log`.\n\nდარწმუნდით, რომ ორივე კონტეინერი გაშვებულია."
     },
     {
       "id": "5",
@@ -146,7 +150,8 @@
           "expectedOutput": "0",
           "weightage": 3
         }
-      ]
+      ],
+      "question_ka": "შექმენით ServiceAccount სახელად `app-sa` `default` namespace-ში.\n\nშექმენით Role სახელად `pod-reader`, რომელიც დაუშვებს პოდების ნახვასა და ჩამონათვალის მიღებას (get, list).\n\nშექმენით RoleBinding სახელად `read-pods`, რომელიც `pod-reader` Role-ს დააკავშირებს `app-sa` ServiceAccount-თან."
     },
     {
       "id": "6",
@@ -172,7 +177,8 @@
           "expectedOutput": "0",
           "weightage": 3
         }
-      ]
+      ],
+      "question_ka": "შექმენით NetworkPolicy სახელად `db-policy` `networking` namespace-ში, რომელიც:\n\n1. დაუშვებს `role=frontend` ლეიბლის მქონე პოდებს დაუკავშირდნენ `role=db` ლეიბლის მქონე პოდებს პორტზე `3306`\n2. აკრძალავს ყველა სხვა შემომავალ (ingress) ტრაფიკს `role=db` ლეიბლის მქონე პოდებისკენ\n\nდარწმუნდით, რომ პოლიტიკა სწორად ვრცელდება შესაბამისი ლეიბლების მქონე პოდებზე."
     },
     {
       "id": "7",
@@ -199,7 +205,8 @@
           "expectedOutput": "0",
           "weightage": 2
         }
-      ]
+      ],
+      "question_ka": "შექმენით deployment სახელად `web-app` `default` namespace-ში `3` რეპლიკით, იმიჯით `nginx:1.19`.\n\nშექმენით NodePort ტიპის სერვისი სახელად `web-service`, რომელიც deployment-ს გამოაქვეყნებს პორტზე `80`.\n\nუზრუნველყავით პოდების განაწილება რამდენიმე node-ზე შესაბამისი pod anti-affinity წესის გამოყენებით."
     },
     {
       "id": "8",
@@ -225,7 +232,8 @@
           "expectedOutput": "0",
           "weightage": 3
         }
-      ]
+      ],
+      "question_ka": "შექმენით პოდი სახელად `resource-pod` `monitoring` namespace-ში `nginx` იმიჯით და შემდეგი რესურსული მოთხოვნებით:\n\n- CPU request: `100m`\n- CPU limit: `200m`\n- Memory request: `128Mi`\n- Memory limit: `256Mi`\n\nდარწმუნდით, რომ პოდი `Running` მდგომარეობაშია და ყველა რესურსული შეზღუდვა სწორად არის გამოყენებული."
     },
     {
       "id": "9",
@@ -259,7 +267,8 @@
           "expectedOutput": "0",
           "weightage": 3
         }
-      ]
+      ],
+      "question_ka": "შექმენით ConfigMap სახელად `app-config` გასაღებით `APP_COLOR` და მნიშვნელობით `blue`.\n\nშექმენით პოდი სახელად `config-pod` `nginx` იმიჯით, რომელიც ამ ConfigMap-ს მიამაგრებს ვოლუმად სახელით `config-volume` მისამართზე `/etc/config`.\n\nშეამოწმეთ, რომ კონფიგურაცია სწორად არის ხელმისაწვდომი პოდის შიგნით."
     },
     {
       "id": "10",
@@ -285,7 +294,8 @@
           "expectedOutput": "0",
           "weightage": 3
         }
-      ]
+      ],
+      "question_ka": "შექმენით პოდი სახელად `health-check` `default` namespace-ში `nginx` იმიჯით და ჯანმრთელობის შემოწმების შემდეგი კონფიგურაციით:\n\n- Liveness probe: HTTP GET გზაზე `/` პორტზე `80`, საწყისი დაყოვნებით `5` წამი\n- Readiness probe: HTTP GET გზაზე `/` პორტზე `80`, საწყისი დაყოვნებით `5` წამი\n\nდარწმუნდით, რომ პოდი გაშვებულია და ორივე probe სწორად მუშაობს."
     }
   ]
 }
