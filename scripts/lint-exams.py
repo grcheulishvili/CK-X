@@ -73,7 +73,7 @@ for d in exam_dirs:
 
 # ---- tree-wide checks ----
 for r, _, files in os.walk(ROOT):
-    if os.sep + ".git" in r:
+    if os.sep + ".git" in r or "__pycache__" in r or os.sep + "node_modules" in r:
         continue
     for fn in files:
         p = os.path.join(r, fn)

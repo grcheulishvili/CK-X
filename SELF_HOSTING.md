@@ -20,7 +20,7 @@ images** (`node`, `ubuntu`, `nginx`, `alpine`, `docker:dind`, `redis`) and the o
    ConSol headless-VNC image. The `FROM` is now an overridable build arg:
 
    ```dockerfile
-   ARG VNC_BASE_IMAGE=consol/ubuntu-xfce-vnc:1.3.0
+   ARG VNC_BASE_IMAGE=consol/debian-xfce-vnc:nightly
    FROM ${VNC_BASE_IMAGE}
    ```
 
@@ -28,8 +28,9 @@ images** (`node`, `ubuntu`, `nginx`, `alpine`, `docker:dind`, `redis`) and the o
    nishanb at all. If you want zero third-party base images either, build the fully
    self-hosted base in `./vnc-base` (below) and point the arg at it.
 
-   **Verified:** `nishanb/ck-x-simulator-vnc-base:v3` is exactly `consol/ubuntu-xfce-vnc`
-   (Ubuntu 16.04, XFCE 4.12) — confirmed from the running image's ConSol labels and its
+   **Verified:** `nishanb/ck-x-simulator-vnc-base:v3` was `consol/ubuntu-xfce-vnc`
+   (Ubuntu 16.04, XFCE 4.12), which upstream has since deprecated in favour of the
+   Debian-based images; the default now tracks `consol/debian-xfce-vnc` — confirmed from the running image's ConSol labels and its
    verbatim `vnc_startup.sh`. The swap is transparent because **all VNC settings are injected
    at runtime by `docker-compose.yaml`** (`VNC_PW` / `VNC_PASSWORD=bakku-the-wizard`,
    `VNC_RESOLUTION=1280x800`, `VNC_VIEW_ONLY=false`), and the webapp auto-connects noVNC with

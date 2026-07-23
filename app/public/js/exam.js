@@ -643,6 +643,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Setup clipboard copy for inline code elements
         ClipboardService.setupInlineCodeCopy();
+        // Host-to-guest paste panel (copy from the docs in your own browser)
+        ClipboardService.setupHostToGuestPaste();
         
         // If in completed exam mode, ensure the question pane is visible
         if (isCompletedExamMode) {

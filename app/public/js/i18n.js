@@ -60,6 +60,12 @@
             'q.namespace': 'Namespace:',
             'q.concepts': 'Concepts:',
 
+            'clip.title': 'Send text to the lab clipboard',
+            'clip.hint': 'Paste a snippet copied from the Kubernetes docs, then use Ctrl+Shift+V in the lab terminal.',
+            'clip.send': 'Send to VM',
+            'clip.sent': 'Sent. Paste inside the VM with Ctrl+Shift+V.',
+            'clip.failed': 'Could not reach the lab desktop.',
+
             'pref.theme': 'Theme',
             'pref.language': 'Language',
             'pref.light': 'Light',
@@ -116,6 +122,12 @@
             'q.instance': 'ეს დავალება შეასრულეთ ინსტანსზე:',
             'q.namespace': 'სახელების სივრცე (namespace):',
             'q.concepts': 'თემები:',
+
+            'clip.title': 'ტექსტის გაგზავნა ლაბორატორიის ბუფერში',
+            'clip.hint': 'ჩასვით Kubernetes-ის დოკუმენტაციიდან დაკოპირებული ფრაგმენტი, შემდეგ ლაბორატორიის ტერმინალში გამოიყენეთ Ctrl+Shift+V.',
+            'clip.send': 'გაგზავნა',
+            'clip.sent': 'გაიგზავნა. ჩასასმელად გამოიყენეთ Ctrl+Shift+V.',
+            'clip.failed': 'ლაბორატორიის დესკტოპთან დაკავშირება ვერ მოხერხდა.',
 
             'pref.theme': 'თემა',
             'pref.language': 'ენა',

@@ -21,6 +21,9 @@ services:
     expose:
       - "5901" # VNC port (internal only)
       - "6901" # Web VNC port (internal only)
+    # Browsers in this image crash at higher resolutions because a container's
+    # default /dev/shm is only 64MB. ConSol documents --shm-size as the fix.
+    shm_size: "256m"
     environment:
       - VNC_PW=bakku-the-wizard
       - VNC_PASSWORD=bakku-the-wizard

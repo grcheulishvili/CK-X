@@ -28,8 +28,32 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       novnc websockify \
       python3 python3-numpy \
       net-tools procps sudo curl wget ca-certificates locales \
+      xclip openssh-client software-properties-common gnupg \
     && locale-gen en_US.UTF-8 \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# A current browser, so kubernetes.io renders correctly (the old 16.04 base shipped
+# a Firefox/Chromium too old for the docs site).
+#
+# NOTE: on Ubuntu 22.04 the `firefox` apt package is a transitional stub that
+# installs a *snap*, which cannot run in a container. The Mozilla team PPA ships a
+# real .deb, so it is pinned above the stub.
+ARG INSTALL_BROWSER=true
+RUN if [ "$INSTALL_BROWSER" = "true" ]; then \
+      add-apt-repository -y ppa:mozillateam/ppa \
+   && printf 'Package: *\nPin: release o=LP-PPA-mozillateam\nPin-Priority: 1001\n' \
+        > /etc/apt/preferences.d/mozilla-firefox \
+   && apt-get update \
+   && apt-get install -y --no-install-recommends firefox \
+   && apt-get clean && rm -rf /var/lib/apt/lists/*; \
+    fi
+
+# Corporate / custom root CAs (see remote-desktop/certs/README.md).
+COPY certs/ /usr/local/share/ca-certificates/ckx/
+RUN update-ca-certificates || true \
+ && mkdir -p /etc/firefox/policies \
+ && CERTS=$(ls /usr/local/share/ca-certificates/ckx/*.crt 2>/dev/null | sed 's/.*/"&"/' | paste -sd, -) \
+ && printf '{\n  "policies": {\n    "Certificates": { "ImportEnterpriseRoots": true, "Install": [%s] },\n    "DisableTelemetry": true,\n    "OverrideFirstRunPage": "",\n    "DontCheckDefaultBrowser": true\n  }\n}\n' "$CERTS" > /etc/firefox/policies/policies.json
 
 # noVNC entry page -> point the root at vnc.html
 RUN ln -sf /usr/share/novnc/vnc.html /usr/share/novnc/index.html || true

@@ -466,3 +466,25 @@ ul.requirements li {
 }
 
  
+/* ---- host-to-guest clipboard bridge ---- */
+.clipboard-bridge {
+    margin: 8px 0 0;
+    padding: 8px 10px;
+    border: 1px solid #d8dee5;
+    border-radius: 6px;
+    background: #f7f8fa;
+    font-size: .85rem;
+}
+.clipboard-bridge summary { cursor: pointer; font-weight: 600; }
+.clipboard-hint { margin: 8px 0 6px; color: #6b7883; font-size: .8rem; line-height: 1.5; }
+.clipboard-bridge textarea {
+    width: 100%;
+    font-family: ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace;
+    font-size: .82rem;
+    padding: 7px 9px;
+    border: 1px solid #d8dee5;
+    border-radius: 5px;
+    resize: vertical;
+}
+.clipboard-actions { display: flex; align-items: center; gap: 10px; margin-top: 7px; }
+.clipboard-status { color: #6b7883; font-size: .78rem; }

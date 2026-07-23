@@ -1,8 +1,10 @@
-# Base Image (headless XFCE + TigerVNC + noVNC).
-# Default is the public upstream so the build never depends on nishanb's registry.
-# For a fully self-hosted base, build ./vnc-base and pass
+# Base Image (headless XFCE + TigerVNC + noVNC + current Firefox/Chromium).
+# consol/ubuntu-xfce-vnc was Ubuntu 16.04 and is deprecated; the maintained image
+# family is now Debian-based. This one ships browsers new enough to render
+# kubernetes.io correctly.
+# For a fully self-hosted base instead, build ./vnc-base and pass
 #   --build-arg VNC_BASE_IMAGE=ckx/vnc-base:local
-ARG VNC_BASE_IMAGE=consol/ubuntu-xfce-vnc:1.3.0
+ARG VNC_BASE_IMAGE=consol/debian-xfce-vnc:nightly
 FROM ${VNC_BASE_IMAGE}
 
 # Switch to root user for installations
@@ -67,6 +69,25 @@ RUN chmod +x /usr/local/bin/desktop-tune.sh
 COPY startup.sh /usr/local/bin/startup.sh
 RUN chmod +x /usr/local/bin/startup.sh
 
+# Corporate / custom root CAs. Drop .crt files into remote-desktop/certs/ to fix
+# TLS-inspection SSL errors when browsing docs inside the desktop. The directory
+# ships with only a README, so this is a no-op unless you add a certificate.
+COPY certs/ /usr/local/share/ca-certificates/ckx/
+RUN update-ca-certificates || true
+
+# Firefox keeps its own trust store, so point its enterprise policy at the same
+# files. Harmless when the directory holds no certificates.
+RUN mkdir -p /etc/firefox/policies /usr/lib/firefox/distribution \
+ && CERTS=$(ls /usr/local/share/ca-certificates/ckx/*.crt 2>/dev/null \
+      | sed 's/.*/"&"/' | paste -sd, -) \
+ && printf '{\n  "policies": {\n    "Certificates": {\n      "ImportEnterpriseRoots": true,\n      "Install": [%s]\n    },\n    "DisableTelemetry": true,\n    "DisableFirefoxStudies": true,\n    "OverrideFirstRunPage": "",\n    "DontCheckDefaultBrowser": true\n  }\n}\n' "$CERTS" > /etc/firefox/policies/policies.json \
+ && cp /etc/firefox/policies/policies.json /usr/lib/firefox/distribution/policies.json 2>/dev/null || true
+
 COPY agent.py /tmp/agent.py
 
-RUN sed -i '/### every exit != 0 fails the script/a /usr/local/bin/startup.sh' /dockerstartup/vnc_startup.sh
+# Run our startup script from inside ConSol's VNC startup. If upstream ever renames
+# this marker the sed would silently do nothing and the clipboard agent + desktop
+# tuning would never start, so verify the injection actually landed.
+RUN grep -q '### every exit != 0 fails the script' /dockerstartup/vnc_startup.sh \
+ && sed -i '/### every exit != 0 fails the script/a /usr/local/bin/startup.sh' /dockerstartup/vnc_startup.sh \
+ && grep -q '^/usr/local/bin/startup.sh' /dockerstartup/vnc_startup.sh

@@ -201,6 +201,25 @@
                 </div>
                 <div id="terminal" class="terminal"></div>
                 <div id="sshConnectionStatus" class="connection-status">Connecting to SSH...</div>
+
+                <!-- Host-to-guest clipboard bridge.
+                     Copy a snippet from kubernetes.io in your own browser, paste it here,
+                     and it lands on the lab desktop's clipboard. Avoids needing a browser
+                     inside the VM. -->
+                <details class="clipboard-bridge">
+                    <summary data-i18n="clip.title">Send text to the lab clipboard</summary>
+                    <p class="clipboard-hint" data-i18n="clip.hint">
+                        Paste a snippet copied from the Kubernetes docs, then use Ctrl+Shift+V
+                        in the lab terminal.
+                    </p>
+                    <textarea id="clipboardText" rows="3" spellcheck="false"
+                              placeholder="kubectl create deployment web --image=nginx"></textarea>
+                    <div class="clipboard-actions">
+                        <button type="button" class="btn btn-sm btn-primary" id="clipboardSendBtn"
+                                data-i18n="clip.send">Send to VM</button>
+                        <span class="clipboard-status" id="clipboardStatus" aria-live="polite"></span>
+                    </div>
+                </details>
             </div>
         </div>
     </div>
