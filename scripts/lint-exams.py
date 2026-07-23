@@ -92,6 +92,17 @@ for r, _, files in os.walk(ROOT):
             r2 = subprocess.run(["bash", "-n", p], capture_output=True, text=True)
             if r2.returncode != 0:
                 err(f"bash syntax error: {os.path.relpath(p, ROOT)} :: {r2.stderr.strip().splitlines()[:1]}")
+            # A validator that can never fail is worse than no validator: `jq 'select(...)'`
+            # exits 0 even when nothing matches, so it must be `jq -e`.
+            if os.sep + "validation" + os.sep in p:
+                for line in b.decode("utf-8", "replace").split("\n"):
+                    ls = line.strip()
+                    if not ls or ls.startswith("#"):
+                        continue
+                    if "jq " in ls and "select(" in ls and not re.search(r"jq\s+-[a-zA-Z]*e\b", ls) \
+                            and not re.match(r"^[A-Za-z_]+=", ls):
+                        err(f"validator can never fail (needs `jq -e`): {os.path.relpath(p, ROOT)}")
+                        break
 
 print(f"Exams scanned: {len(exam_dirs)}")
 for w in warnings:

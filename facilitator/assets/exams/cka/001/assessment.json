@@ -39,7 +39,7 @@
       "id": "2",
       "namespace": "default",
       "machineHostname": "controlplane",
-      "question": "Create a static pod named `static-web` on `controlplane` using the `nginx:1.19` image.\nThe pod should expose port `80`.\n\nPlace the static pod manifest file at `/etc/kubernetes/manifests/static-web.yaml`.",
+      "question": "Create a static pod manifest for a pod named `static-web` using the `nginx:1.19` image, exposing container port `80`.\n\nPlace the manifest at `/etc/kubernetes/manifests/static-web.yaml`.\n\n> On a kubeadm node the kubelet watches this directory and starts the pod automatically. This lab's cluster runs k3s inside containers, so nothing watches that path here: the task is graded on the manifest's location and contents, which is the part the exam tests.",
       "concepts": [
         "static pods",
         "node configuration"
@@ -60,7 +60,7 @@
           "weightage": 3
         }
       ],
-      "question_ka": "შექმენით სტატიკური პოდი სახელად `static-web` `controlplane`-ზე, იმიჯით `nginx:1.19`.\nპოდს უნდა ჰქონდეს გახსნილი პორტი `80`.\n\nსტატიკური პოდის მანიფესტის ფაილი განათავსეთ მისამართზე `/etc/kubernetes/manifests/static-web.yaml`."
+      "question_ka": "შექმენით სტატიკური პოდის მანიფესტი პოდისთვის სახელად `static-web`, იმიჯით `nginx:1.19` და კონტეინერის პორტით `80`.\n\nმანიფესტი განათავსეთ მისამართზე `/etc/kubernetes/manifests/static-web.yaml`.\n\n> kubeadm-ის node-ზე kubelet ამ დირექტორიას აკვირდება და პოდს ავტომატურად უშვებს. ამ ლაბორატორიის კლასტერი k3s-ს კონტეინერებში უშვებს, ამიტომ აქ ამ გზას არაფერი აკვირდება: შეფასდება მანიფესტის მდებარეობა და შიგთავსი, რასაც გამოცდაც ამოწმებს."
     },
     {
       "id": "3",

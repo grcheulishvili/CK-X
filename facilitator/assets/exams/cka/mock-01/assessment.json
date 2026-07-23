@@ -32,7 +32,8 @@
           "expectedOutput": "0",
           "weightage": 3
         }
-      ]
+      ],
+      "question_ka": "`production` namespace-ში პოდი `app-frontend` `CrashLoopBackOff` მდგომარეობაშია. კონტეინერი ეძებს კონფიგურაციის ფაილს მისამართზე `/etc/app/config.yaml`, მაგრამ ეს ფაილი იმიჯში არ არსებობს.\n\nსაჭიროა:\n1. შექმენით ConfigMap სახელად `app-config` ფაილის შიგთავსით: `database_host: postgres.production.svc.cluster.local`\n2. მიამაგრეთ ეს ConfigMap ფაილის სახით პოდში მისამართზე `/etc/app/config.yaml`\n3. შეამოწმეთ, რომ პოდი წარმატებით ეშვება\n\nპოდის მანიფესტი უკვე არსებობს; საჭიროა მხოლოდ მისი განახლება."
     },
     {
       "id": "2",
@@ -65,7 +66,8 @@
           "expectedOutput": "0",
           "weightage": 2
         }
-      ]
+      ],
+      "question_ka": "დეველოპერს სჭირდება `staging` namespace-ში Deployment-ებისა და პოდების ჩამონათვალის ნახვა, მაგრამ არა სხვა namespace-ებში. ამჟამად მას ეს უფლება არ აქვს.\n\nშექმენით:\n1. Role სახელად `dev-role`, რომელიც `staging`-ში დაუშვებს პოდებისა და Deployment-ების ჩამონათვალის ნახვას\n2. RoleBinding სახელად `dev-binding`, რომელიც ამ Role-ს მიანიჭებს მომხმარებელს `dev-user`\n\nშეამოწმეთ უფლებები `kubectl auth can-i` ბრძანებით."
     },
     {
       "id": "3",
@@ -84,7 +86,8 @@
           "expectedOutput": "0",
           "weightage": 5
         }
-      ]
+      ],
+      "question_ka": "node `k3d-cluster-agent-0` საჭიროებს ტექნიკურ მომსახურებას და 1 საათით გაითიშება.\n\n1. მოამზადეთ node ტექმომსახურებისთვის პოდების მონაცემების დაკარგვის გარეშე\n2. შეამოწმეთ, რომ node მზადაა ტექმომსახურებისთვის"
     },
     {
       "id": "4",
@@ -111,7 +114,8 @@
           "expectedOutput": "0",
           "weightage": 3
         }
-      ]
+      ],
+      "question_ka": "აპლიკაციას სჭირდება მუდმივი საცავი, რომელსაც აქვს:\n1. მოცულობა: 5Gi\n2. წვდომის რეჟიმი: შესაძლებელი უნდა იყოს რამდენიმე პოდის მიერ ერთდროულად გამოყენება (ReadWriteMany)\n3. Storage class: `fast-ssd`\n4. PVC-ის სახელი: `db-pvc`\n\nშექმენით PV სახელად `db-pv` (hostPath `/data`) და PVC `db-pvc` `databases` namespace-ში."
     },
     {
       "id": "5",
@@ -137,7 +141,8 @@
           "expectedOutput": "0",
           "weightage": 3
         }
-      ]
+      ],
+      "question_ka": "ამჟამად `shop` namespace-ში ყველა პოდს შეუძლია ერთმანეთთან კომუნიკაცია. საჭიროა ქსელური იზოლაციის დანერგვა NetworkPolicy-ით სახელად `backend-policy`:\n1. backend პოდებმა (ლეიბლი: `tier=backend`) ტრაფიკი უნდა მიიღონ frontend პოდებისგან (ლეიბლი: `tier=frontend`) მხოლოდ პორტზე 3000."
     },
     {
       "id": "6",
@@ -171,7 +176,8 @@
           "expectedOutput": "0",
           "weightage": 2
         }
-      ]
+      ],
+      "question_ka": "დაგეგმეთ პოდი კონკრეტულ node-ზე ლეიბლების გამოყენებით.\n\n1. მიანიჭეთ node-ს `k3d-cluster-agent-0` ლეიბლი `disktype=ssd`\n2. შექმენით პოდი სახელად `ssd-pod` (იმიჯი `nginx`) `default` namespace-ში, რომელიც დაიგეგმება **მხოლოდ** იმ node-ებზე, რომლებსაც აქვთ ლეიბლი `disktype=ssd`, `nodeSelector`-ის გამოყენებით\n3. დაადასტურეთ, რომ პოდი დაიგეგმა `k3d-cluster-agent-0`-ზე"
     },
     {
       "id": "7",
@@ -205,7 +211,8 @@
           "expectedOutput": "0",
           "weightage": 2
         }
-      ]
+      ],
+      "question_ka": "`web` namespace-ში:\n\n1. შექმენით Deployment სახელად `web` იმიჯით `nginx:1.25` და `3` რეპლიკით\n2. გაზარდეთ რეპლიკების რაოდენობა `5`-მდე\n3. განაახლეთ იმიჯი `nginx:1.26`-მდე და დაელოდეთ rollout-ის დასრულებას"
     },
     {
       "id": "8",
@@ -231,7 +238,8 @@
           "expectedOutput": "0",
           "weightage": 2
         }
-      ]
+      ],
+      "question_ka": "შექმენით პოდი სახელად `guaranteed-pod` (იმიჯი `nginx`) `default` namespace-ში, რომლის კონტეინერის CPU და მეხსიერების **requests ტოლია limits-ის** (`cpu=200m`, `memory=128Mi`), რათა Kubernetes-მა მას მიანიჭოს **Guaranteed** QoS კლასი."
     },
     {
       "id": "9",
@@ -257,7 +265,8 @@
           "expectedOutput": "0",
           "weightage": 3
         }
-      ]
+      ],
+      "question_ka": "`web` namespace-ში გამოაქვეყნეთ `web` Deployment (მე-7 დავალებიდან) **ClusterIP** ტიპის სერვისით სახელად `web-svc` პორტზე `80`, სამიზნე კონტეინერის პორტით `80`. სერვისმა უნდა შეარჩიოს deployment-ის პოდები (მისი Endpoints შევსებული უნდა იყოს)."
     },
     {
       "id": "10",
@@ -283,7 +292,8 @@
           "expectedOutput": "0",
           "weightage": 3
         }
-      ]
+      ],
+      "question_ka": "`web` namespace-ში შექმენით Ingress სახელად `web-ingress`, რომელიც ჰოსტს `web.example.com` და გზას `/` (pathType `Prefix`) მიმართავს სერვისზე `web-svc` პორტზე `80`.\n\n> კლასტერში წინასწარ დაინსტალირებულია Traefik ingress კონტროლერი."
     },
     {
       "id": "11",
@@ -310,7 +320,8 @@
           "expectedOutput": "0",
           "weightage": 3
         }
-      ]
+      ],
+      "question_ka": "`default` namespace-ში Deployment სახელად `broken-app` `ImagePullBackOff` მდგომარეობაშია, რადგან მისი იმიჯის ტეგი არ არსებობს.\n\nგაასწორეთ Deployment ისე, რომ გაუშვას იმიჯი `nginx:1.25` და გახდეს ხელმისაწვდომი."
     },
     {
       "id": "12",
@@ -343,7 +354,8 @@
           "expectedOutput": "0",
           "weightage": 1
         }
-      ]
+      ],
+      "question_ka": "შექმენით CronJob სახელად `backup` `default` namespace-ში, რომელიც:\n\n1. ეშვება ყოველ 5 წუთში (`*/5 * * * *`)\n2. იყენებს იმიჯს `busybox`\n3. ასრულებს ბრძანებას `date`"
     },
     {
       "id": "13",
@@ -363,7 +375,8 @@
           "expectedOutput": "0",
           "weightage": 5
         }
-      ]
+      ],
+      "question_ka": "`store` namespace-ში სერვისი ტრაფიკს არ მარშრუტიზირებს. Deployment `api` გამართულია, მაგრამ სერვისი `api-svc` endpoint-ებს არ აბრუნებს, რადგან მისი სელექტორი არასწორია.\n\nგაასწორეთ სერვისი `api-svc` ისე, რომ შეარჩიოს `api` პოდები და მისი Endpoints შეივსოს."
     },
     {
       "id": "14",
@@ -383,7 +396,8 @@
           "expectedOutput": "0",
           "weightage": 5
         }
-      ]
+      ],
+      "question_ka": "`default`-ში პოდი `pending-pod` `Pending` მდგომარეობაშია და არასოდეს იგეგმება. `kubectl describe pod pending-pod` აჩვენებს, რომ ის ვერცერთ node-ზე ვერ თავსდება.\n\nდაადგინეთ მიზეზი და გაასწორეთ ისე, რომ პოდმა მიაღწიოს `Running` მდგომარეობას. შეინარჩუნეთ იმიჯი `nginx`."
     },
     {
       "id": "15",
@@ -402,7 +416,8 @@
           "expectedOutput": "0",
           "weightage": 5
         }
-      ]
+      ],
+      "question_ka": "`default`-ში პოდი `crash-pod` `CrashLoopBackOff` მდგომარეობაშია. მისი კონტეინერი მაშინვე სრულდება არანულოვანი სტატუსით.\n\nგაასწორეთ პოდი (იმიჯი `busybox`) ისე, რომ ის უწყვეტად მუშაობდეს და მიაღწიოს სტაბილურ `Running` მდგომარეობას."
     },
     {
       "id": "16",
@@ -422,13 +437,14 @@
           "expectedOutput": "0",
           "weightage": 5
         }
-      ]
+      ],
+      "question_ka": "`default`-ში PersistentVolumeClaim `app-pvc` `Pending` მდგომარეობაშია. არსებობს PersistentVolume `small-pv` (storageClass `manual`, 100Mi), მაგრამ claim ვერ ებმება.\n\nგაასწორეთ სიტუაცია ისე, რომ `app-pvc` გახდეს `Bound`."
     },
     {
       "id": "17",
       "namespace": "default",
       "machineHostname": "controlplane",
-      "question": "You have an etcd snapshot at `/opt/backup.db` taken from a kubeadm control plane. Write the full `etcdctl snapshot restore` command that restores it into the data directory `/var/lib/etcd-restored` to the file `/tmp/exam/q17_etcd_restore.txt`.\n\n> Note: this cluster is k3d, so you cannot run the restore for real here \u2014 the task validates that you can recall the exact command. On the real exam you would also update the etcd static pod manifest's `--data-dir` and `hostPath` to match.\n",
+      "question": "You have an etcd snapshot at `/opt/backup.db` taken from a kubeadm control plane. Write the full `etcdctl snapshot restore` command that restores it into the data directory `/var/lib/etcd-restored` to the file `/tmp/exam/q17_etcd_restore.txt`.\n\n> Note: this cluster is k3d, so you cannot run the restore for real here — the task validates that you can recall the exact command. On the real exam you would also update the etcd static pod manifest's `--data-dir` and `hostPath` to match.\n",
       "concepts": [
         "clusterarch",
         "etcd",
@@ -442,7 +458,8 @@
           "expectedOutput": "0",
           "weightage": 4
         }
-      ]
+      ],
+      "question_ka": "თქვენ გაქვთ etcd-ის სნეპშოტი მისამართზე `/opt/backup.db`, აღებული kubeadm control plane-იდან. ჩაწერეთ სრული `etcdctl snapshot restore` ბრძანება, რომელიც მას აღადგენს მონაცემთა დირექტორიაში `/var/lib/etcd-restored`, ფაილში `/tmp/exam/q17_etcd_restore.txt`.\n\n> შენიშვნა: ეს კლასტერი k3d-ია, ამიტომ აქ რეალურ აღდგენას ვერ გაუშვებთ. დავალება ამოწმებს, გახსოვთ თუ არა ზუსტი ბრძანება. რეალურ გამოცდაზე დამატებით უნდა განაახლოთ etcd-ის სტატიკური პოდის მანიფესტში `--data-dir` და `hostPath`."
     }
   ]
 }

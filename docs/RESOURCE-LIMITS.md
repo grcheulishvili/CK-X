@@ -113,3 +113,22 @@ the boundary that counts.
   stack to untrusted users or to a public network.
 - Only nginx publishes a host port (`30080`). Everything else is reachable only on the
   internal compose network.
+
+---
+
+## Which machine candidates work on
+
+`ssh controlplane` resolves to the **jumphost** container, and that is deliberate:
+
+- it is the only container with kubectl, helm, docker and jq plus the candidate's
+  `KUBECONFIG`;
+- `prepare-exam-env` runs every question's **setup** script there;
+- the facilitator runs every **validation** script there.
+
+Any task that touches the filesystem (write a manifest, save command output to a file,
+build a Docker image) must therefore happen on that machine, or the validator cannot see it.
+
+The k3d/dind container (`cluster`, formerly aliased `controlplane`) is the cluster backend.
+Candidates do not ssh into it: it is not a Kubernetes node itself, since k3s runs inside the
+k3d node containers it hosts. Pointing questions at it silently broke every filesystem task,
+because setup and validation still ran on the jumphost.

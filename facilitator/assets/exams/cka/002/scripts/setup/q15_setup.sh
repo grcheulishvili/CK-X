@@ -5,7 +5,7 @@ set -e
 kubectl create namespace monitoring --dry-run=client -o yaml | kubectl apply -f -
 
 # Pre-pull the resource consumer image to speed up deployment
-kubectl run pull-resource-consumer --image=gcr.io/kubernetes-e2e-test-images/resource-consumer:1.5 -n monitoring --dry-run=client -o yaml | kubectl apply -f -
+kubectl run pull-resource-consumer --image=registry.k8s.io/e2e-test-images/resource-consumer:1.13 -n monitoring --dry-run=client -o yaml | kubectl apply -f -
 
 # Wait for the pull pod to complete
 sleep 10

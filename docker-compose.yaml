@@ -171,7 +171,9 @@ services:
     pull_policy: build   # never pull from a remote registry; always build locally
     build:
       context: ./jumphost
-    hostname: jumphost
+    hostname: controlplane
+    # Candidate-facing name. This is the machine questions tell you to ssh into:
+    # setup scripts and validators run here, so filesystem tasks must land here.
     privileged: true
     # No external port mappings - only accessible internally
     expose:
@@ -189,7 +191,11 @@ services:
           cpus: "0.5"
           memory: 512M
     networks:
-      - ckx-network
+      ckx-network:
+        aliases:
+          - controlplane
+          - jumphost      # facilitator connects by this name (SSH_HOST)
+          - ckad9999      # legacy name kept so older question text still resolves
     healthcheck:
       test: ["CMD", "nc", "-z", "localhost", "22"]
       interval: 10s
@@ -261,7 +267,7 @@ services:
     build:
       context: ./kind-cluster
     container_name: kind-cluster
-    hostname: controlplane
+    hostname: cluster
     privileged: true # Required for running containers inside KIND
     expose:
       - "6443"
@@ -281,9 +287,7 @@ services:
     networks:
       ckx-network:
         aliases:
-         - controlplane
-         - node01
-         - ckad9999
+         - cluster   # internal only; candidates do not ssh here
     healthcheck:
       test: ["CMD", "ls", "/ready"]
       interval: 30s

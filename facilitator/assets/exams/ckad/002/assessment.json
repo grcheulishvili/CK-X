@@ -496,7 +496,7 @@
     },
     {
       "id": "12",
-      "namespace": "docker-basics",
+      "namespace": "default",
       "machineHostname": "controlplane",
       "question": "Create a simple Docker image and run it:\n\n1. Create a file `/tmp/Dockerfile` with these contents:\n`\nFROM nginx:alpine\nCOPY index.html /usr/share/nginx/html/\nEXPOSE 80\n`\n\n2. Create a file `/tmp/index.html` with this content:\n`\n<!DOCTYPE html>\n<html>\n<body>\n<h1>Hello from CKAD Docker Question!</h1>\n</body>\n</html>\n`\n\n3. Build the Docker image with tag `my-nginx:v1`\n\n4. Run a container from this image with name `my-web` and publish port 80 to 8080 on the host\n\nNote: You'll need to use the Docker command line tools for this task.",
       "concepts": [

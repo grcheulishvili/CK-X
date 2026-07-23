@@ -32,7 +32,8 @@
           "expectedOutput": "0",
           "weightage": 2
         }
-      ]
+      ],
+      "question_ka": "შექმენით დინამიური PVC სახელად `data-pvc` შემდეგი პარამეტრებით:\n\n- Storage Class: `standard`\n- წვდომის რეჟიმი: `ReadWriteOnce`\n- მოთხოვნილი მოცულობა: `2Gi`\n\nშემდეგ შექმენით პოდი სახელად `data-pod` `nginx` იმიჯით, რომელიც ამ PVC-ს მიამაგრებს ვოლუმად სახელით `data` მისამართზე `/usr/share/nginx/html`.\n\nდარწმუნდით, რომ როგორც PVC, ისე პოდი `storage-task` namespace-შია."
     },
     {
       "id": "2",
@@ -65,7 +66,8 @@
           "expectedOutput": "0",
           "weightage": 1
         }
-      ]
+      ],
+      "question_ka": "შექმენით ახალი StorageClass სახელად `fast-local` შემდეგი პარამეტრებით:\n\n- Provisioner: `rancher.io/local-path`\n- VolumeBindingMode: `WaitForFirstConsumer`\n- დააყენეთ იგი `default` StorageClass-ად\n\nშენიშვნა: დარწმუნდით, რომ არსებული ნაგულისხმევი StorageClass აღარ არის მონიშნული ნაგულისხმევად."
     },
     {
       "id": "3",
@@ -99,7 +101,8 @@
           "expectedOutput": "0",
           "weightage": 1
         }
-      ]
+      ],
+      "question_ka": "შექმენით PersistentVolume სახელად `manual-pv` შემდეგი პარამეტრებით:\n\n- მოცულობა: `1Gi`\n- წვდომის რეჟიმი: `ReadWriteOnce`\n- Host Path: `/mnt/data`\n- Node Affinity: უნდა გაეშვას node-ზე `k3d-cluster-agent-0`\n\nშემდეგ შექმენით PersistentVolumeClaim სახელად `manual-pvc`, რომელიც ამ PV-ს დაუკავშირდება.\n\nბოლოს შექმენით პოდი სახელად `manual-pod` `busybox` იმიჯით, რომელიც ამ PVC-ს მიამაგრებს მისამართზე `/data` და გაუშვებს ბრძანებას `sleep 3600`."
     },
     {
       "id": "4",
@@ -133,7 +136,8 @@
           "expectedOutput": "0",
           "weightage": 1
         }
-      ]
+      ],
+      "question_ka": "შექმენით Deployment სახელად `scaling-app` შემდეგი პარამეტრებით:\n\n- იმიჯი: `nginx`\n- საწყისი რეპლიკები: `2`\n- რესურსების მოთხოვნა (requests): CPU: `200m`, მეხსიერება: `256Mi`\n- რესურსების ლიმიტები (limits): CPU: `500m`, მეხსიერება: `512Mi`\n\nშემდეგ შექმენით `HorizontalPodAutoscaler` ამ deployment-ისთვის:\n- გამოიყენეთ apiVersion: `autoscaling/v1`\n- მინიმალური რეპლიკები: `2`\n- მაქსიმალური რეპლიკები: `5`\n- CPU-ს სამიზნე გამოყენება: `70%`"
     },
     {
       "id": "5",
@@ -167,7 +171,8 @@
           "expectedOutput": "0",
           "weightage": 2
         }
-      ]
+      ],
+      "question_ka": "შექმენით deployment სახელად `app-scheduling` `3` რეპლიკით `nginx` იმიჯის გამოყენებით, რომელიც უნდა გაეშვას მხოლოდ node-ზე `k3d-cluster-agent-1` node affinity-ის საშუალებით (და არა node selector-ით).\n\nმოთხოვნები:\n- გამოიყენეთ `requiredDuringSchedulingIgnoredDuringExecution`\n- node შეარჩიეთ მისი hostname-ით\n- deployment-ის შექმნამდე მიანიჭეთ სამიზნე node-ს ლეიბლი `disk=ssd`"
     },
     {
       "id": "6",
@@ -193,7 +198,8 @@
           "expectedOutput": "0",
           "weightage": 2
         }
-      ]
+      ],
+      "question_ka": "დააკონფიგურირეთ Pod Security `security` namespace-ისთვის და შექმენით უსაფრთხო პოდი `nginx` იმიჯით:\n\n1. შექმენით `security` namespace Pod Security Admission (PSA) კონტროლით\n   - დააყენეთ namespace-ზე 'restricted' უსაფრთხოების პროფილის აღსრულება\n   - გამოიყენეთ უსაფრთხოების პროფილის უახლესი ვერსია\n\n2. შექმენით უსაფრთხო პოდი სახელად `secure-pod` `security` namespace-ში შემდეგი პარამეტრებით:\n   - გამოიყენეთ `nginx` იმიჯი\n   - პოდის დონის უსაფრთხოების კონტექსტი:\n     * გაეშვას არა-root მომხმარებლით UID `1000`\n     * ჩართეთ `runAsNonRoot`\n\n   - კონტეინერის დონის უსაფრთხოების კონტექსტი:\n     * აკრძალეთ პრივილეგიების ესკალაცია\n     * გაეშვას არა-root მომხმარებლით (UID `1000`)\n     * მოხსენით ყველა (ALL) Linux capability\n\n   - დაამატეთ ვოლუმის მიმაგრება:\n     * შექმენით emptyDir ვოლუმი სახელად 'html'\n     * მიამაგრეთ ვოლუმი მისამართზე '/usr/share/nginx/html'\n გამოიყენეთ ნაგულისხმევი seccomp პროფილი"
     },
     {
       "id": "7",
@@ -227,7 +233,8 @@
           "expectedOutput": "0",
           "weightage": 2
         }
-      ]
+      ],
+      "question_ka": "დააკონფიგურირეთ node `k3d-cluster-agent-1` taint-ით `key=special-workload`, `value=true` და `effect=NoSchedule`.\n\nშემდეგ შექმენით deployment სახელად `toleration-deploy` `2` რეპლიკით `nginx` იმიჯით, რომელსაც შეუძლია ამ taint-ის დაშვება (tolerate).\n\nბოლოს შექმენით კიდევ ერთი deployment სახელად `normal-deploy` `2` რეპლიკით, რომელიც არ უნდა გაეშვას taint-ის მქონე node-ზე."
     },
     {
       "id": "8",
@@ -261,7 +268,8 @@
           "expectedOutput": "0",
           "weightage": 1
         }
-      ]
+      ],
+      "question_ka": "შექმენით StatefulSet სახელად `web` `3` რეპლიკით `nginx` იმიჯის გამოყენებით. მოთხოვნები:\n\n- შექმენით headless სერვისი სახელად `web-svc` StatefulSet-ის გამოსაქვეყნებლად\n- თითოეულ პოდს უნდა ჰქონდეს ვოლუმი მიმაგრებული მისამართზე `/usr/share/nginx/html`\n- დინამიური მიწოდებისთვის გამოიყენეთ StorageClass `cold`\n- volume claim template-მა უნდა მოითხოვოს 1Gi მოცულობა\n\nდარწმუნდით, რომ პოდები იქმნება თანმიმდევრობით და მათზე წვდომა შესაძლებელია მათი მდგრადი ქსელური იდენტობით."
     },
     {
       "id": "9",
@@ -295,7 +303,8 @@
           "expectedOutput": "0",
           "weightage": 1
         }
-      ]
+      ],
+      "question_ka": "მოამზადეთ DNS სერვის-აღმოჩენის სატესტო გარემო:\n\n1. შექმენით deployment სახელად `web-app` `3` რეპლიკით `nginx` იმიჯით\n\n2. შექმენით `ClusterIP` სერვისი სახელად `web-svc` deployment-ის გამოსაქვეყნებლად\n\n3. შექმენით პოდი სახელად `dns-test` `busybox` იმიჯით, რომელიც:\n   - გაუშვებს ბრძანებას `wget -qO- http://web-svc && wget -qO- http://web-svc.dns-debug.svc.cluster.local && sleep 36000`\n   - დაადასტურებს, რომ ახერხებს სერვისის DNS-ის ამოხსნას (`web-svc.dns-debug.svc.cluster.local`)\n   - დაადასტურებს, რომ ახერხებს პოდის DNS ჩანაწერების ამოხსნას\n4. შექმენით ConfigMap სახელად `dns-config` სატესტო პოდისთვის საკუთარი საძიებო დომენებით"
     },
     {
       "id": "10",
@@ -329,7 +338,8 @@
           "expectedOutput": "0",
           "weightage": 1
         }
-      ]
+      ],
+      "question_ka": "მოამზადეთ საბაზისო DNS სერვის-აღმოჩენა:\n\n1. შექმენით deployment სახელად `dns-app` 2 რეპლიკით `nginx` იმიჯით\n2. შექმენით სერვისი სახელად `dns-svc` deployment-ის გამოსაქვეყნებლად\n3. შექმენით პოდი სახელად `dns-tester` `infoblox/dnstools` იმიჯით, რომელიც:\n   - გაუშვებს ბრძანებას სერვისის DNS რეზოლუციის შესამოწმებლად\n   - დაადასტურებს სერვისის DNS-ს (`dns-svc.dns-config.svc.cluster.local`)\n   - შეინახავს ტესტის შედეგებს პოდის შიგნით ფაილში `/tmp/dns-test.txt`\n\nშენიშვნა: შედეგები უნდა მოიცავდეს როგორც სერვისის DNS რეზოლუციას, ისე FQDN რეზოლუციას."
     },
     {
       "id": "11",
@@ -362,13 +372,14 @@
           "expectedOutput": "0",
           "weightage": 2
         }
-      ]
+      ],
+      "question_ka": "Helm-ის გამოყენებით:\n\n1. დაამატეთ bitnami რეპოზიტორია `https://charts.bitnami.com/bitnami`\n2. დააინსტალირეთ `nginx` chart bitnami-დან release-ის სახელით `web-release` namespace-ში `helm-test`\n3. დააკონფიგურირეთ სერვისის ტიპი როგორც `NodePort` და რეპლიკების რაოდენობა `2`\n4. დაადასტურეთ, რომ განთავსება წარმატებულია და პოდები მუშაობს"
     },
     {
       "id": "12",
       "namespace": "kustomize",
       "machineHostname": "controlplane",
-      "question": "Using Kustomize: in the directory `/tmp/exam/kustomize/` \n\n1. Create a base deployment for `nginx` with `2` replicas\n2. Create an overlay that:\n   - Adds a label `environment=production`\n   - Increases replicas to `3`\n   - Adds a ConfigMap named `nginx-config` with key `index.html` and value `Welcome to Production`, mount config map as volume named `nginx-index`\n3. Apply the overlay to create resources in the `kustomize` namespace",
+      "question": "Using Kustomize, with the base in `/tmp/exam/kustomize/base` and the overlay in `/tmp/exam/kustomize/overlays/production`:\n\n1. Create a base deployment for `nginx` with `2` replicas\n2. Create an overlay that:\n   - Adds a label `environment=production`\n   - Increases replicas to `3`\n   - Adds a ConfigMap named `nginx-config` with key `index.html` and value `Welcome to Production`, mount config map as volume named `nginx-index`\n3. Apply the overlay to create resources in the `kustomize` namespace",
       "concepts": [
         "kustomize",
         "configuration-management"
@@ -395,7 +406,8 @@
           "expectedOutput": "0",
           "weightage": 1
         }
-      ]
+      ],
+      "question_ka": "Kustomize-ის გამოყენებით, დირექტორიაში `/tmp/exam/kustomize/`:\n\n1. შექმენით საბაზისო (base) deployment `nginx`-ისთვის `2` რეპლიკით\n2. შექმენით overlay, რომელიც:\n   - დაამატებს ლეიბლს `environment=production`\n   - გაზრდის რეპლიკებს `3`-მდე\n   - დაამატებს ConfigMap-ს სახელად `nginx-config` გასაღებით `index.html` და მნიშვნელობით `Welcome to Production`, და მიამაგრებს ამ ConfigMap-ს ვოლუმად სახელით `nginx-index`\n3. გამოიყენეთ overlay რესურსების შესაქმნელად `kustomize` namespace-ში"
     },
     {
       "id": "13",
@@ -428,7 +440,8 @@
           "expectedOutput": "0",
           "weightage": 1
         }
-      ]
+      ],
+      "question_ka": "დააკონფიგურირეთ Gateway API რესურსები:\n\n1. შექმენით Gateway სახელად `main-gateway`, რომელიც უსმენს პორტს `80`\n2. შექმენით HTTPRoute ტრაფიკის backend სერვისებზე მიმართვისთვის:\n   - გზა `/app1` უნდა მიმართოს სერვისზე `app1-svc` პორტზე `8080`\n   - გზა `/app2` უნდა მიმართოს სერვისზე `app2-svc` პორტზე `8080`\n3. შექმენით ორი deployment (`app1` და `app2`) შესაბამისი სერვისებით მარშრუტიზაციის შესამოწმებლად"
     },
     {
       "id": "14",
@@ -462,13 +475,14 @@
           "expectedOutput": "0",
           "weightage": 1
         }
-      ]
+      ],
+      "question_ka": "დააკონფიგურირეთ რესურსების მართვა:\n\n1. შექმენით LimitRange namespace-ში `limits`:\n   - ნაგულისხმევი მოთხოვნა (request): CPU: `100m`, მეხსიერება: `128Mi`\n   - ნაგულისხმევი ლიმიტი: CPU: `200m`, მეხსიერება: `256Mi`\n   - მაქსიმალური ლიმიტი: CPU: `500m`, მეხსიერება: `512Mi`\n\n2. შექმენით ResourceQuota ამ namespace-ისთვის:\n   - მაქსიმალური ჯამური CPU: `2`\n   - მაქსიმალური ჯამური მეხსიერება: `2Gi`\n   - პოდების მაქსიმალური რაოდენობა: `5`\n\n3. შექმენით deployment სახელად `test-limits` `2` რეპლიკით ლიმიტების მოქმედების შესამოწმებლად"
     },
     {
       "id": "15",
       "namespace": "monitoring",
       "machineHostname": "controlplane",
-      "question": "Create a deployment named `resource-consumer` with 3 replicas that:\n\n1. Uses the image `gcr.io/kubernetes-e2e-test-images/resource-consumer:1.5`\n2. Sets resource requests:\n   - CPU: `100m`\n   - Memory: `128Mi`\n3. Sets resource limits:\n   - CPU: `200m`\n   - Memory: `256Mi`\n4. Create a `HorizontalPodAutoscaler` for this deployment:\n   - Min replicas: `3`\n   - Max replicas: `6`\n   - Target CPU utilization: `50%`\n\nNote: metrics-server is already installed in the cluster.",
+      "question": "Create a deployment named `resource-consumer` with 3 replicas that:\n\n1. Uses the image `registry.k8s.io/e2e-test-images/resource-consumer:1.13`\n2. Sets resource requests:\n   - CPU: `100m`\n   - Memory: `128Mi`\n3. Sets resource limits:\n   - CPU: `200m`\n   - Memory: `256Mi`\n4. Create a `HorizontalPodAutoscaler` for this deployment:\n   - Min replicas: `3`\n   - Max replicas: `6`\n   - Target CPU utilization: `50%`\n\nNote: metrics-server is already installed in the cluster.",
       "concepts": [
         "monitoring",
         "resource-management",
@@ -496,7 +510,8 @@
           "expectedOutput": "0",
           "weightage": 1
         }
-      ]
+      ],
+      "question_ka": "შექმენით deployment სახელად `resource-consumer` 3 რეპლიკით, რომელიც:\n\n1. იყენებს იმიჯს `registry.k8s.io/e2e-test-images/resource-consumer:1.13`\n2. აყენებს რესურსების მოთხოვნებს:\n   - CPU: `100m`\n   - მეხსიერება: `128Mi`\n3. აყენებს რესურსების ლიმიტებს:\n   - CPU: `200m`\n   - მეხსიერება: `256Mi`\n4. შექმენით `HorizontalPodAutoscaler` ამ deployment-ისთვის:\n   - მინიმალური რეპლიკები: `3`\n   - მაქსიმალური რეპლიკები: `6`\n   - CPU-ს სამიზნე გამოყენება: `50%`\n\nშენიშვნა: metrics-server უკვე დაინსტალირებულია კლასტერში."
     },
     {
       "id": "16",
@@ -530,7 +545,8 @@
           "expectedOutput": "0",
           "weightage": 2
         }
-      ]
+      ],
+      "question_ka": "შეასრულეთ კლასტერის ადმინისტრირების შემდეგი დავალებები:\n\n1. შექმენით ServiceAccount სახელად `app-admin` `cluster-admin` namespace-ში\n2. შექმენით Role, რომელიც დაუშვებს:\n   - `list`, `get`, `watch` ოპერაციებს `pods`-სა და `deployments`-ზე\n   - `create` და `delete` ოპერაციებს `configmaps`-ზე\n   - `update` ოპერაციებს `deployments`-ზე\n3. დააკავშირეთ Role ამ ServiceAccount-თან\n4. შექმენით სატესტო პოდი სახელად `admin-pod`, რომელიც იყენებს ამ ServiceAccount-ს:\n   - იმიჯი: `bitnami/kubectl:latest`\n   - ბრძანება: `sleep 3600`\n   - მიამაგრეთ ServiceAccount-ის ტოკენი ვოლუმად\n\nდაადასტურეთ, რომ პოდს შეუძლია დაშვებული ოპერაციების შესრულება, მაგრამ არა სხვა ოპერაციებისა (მაგალითად, პოდების შექმნა)."
     },
     {
       "id": "17",
@@ -557,7 +573,8 @@
           "expectedOutput": "0",
           "weightage": 2
         }
-      ]
+      ],
+      "question_ka": "დააკონფიგურირეთ ქსელური პოლიტიკები:\n\n1. შექმენით deployment სახელად `web` `nginx` იმიჯით და ლეიბლით `app=web`\n2. შექმენით deployment სახელად `api` `nginx` იმიჯით და ლეიბლით `app=api`\n3. შექმენით deployment სახელად `db` `postgres` იმიჯით, ლეიბლით `app=db` და გარემოს ცვლადით `POSTGRES_HOST_AUTH_METHOD=trust`\n4. შექმენით NetworkPolicy-ები, რომლებიც:\n   - დაუშვებენ web-ის კომუნიკაციას მხოლოდ api-სთან\n   - დაუშვებენ api-ის კომუნიკაციას მხოლოდ db-სთან\n   - აკრძალავენ პოდებს შორის ყველა სხვა ტრაფიკს"
     },
     {
       "id": "18",
@@ -591,7 +608,8 @@
           "expectedOutput": "0",
           "weightage": 2
         }
-      ]
+      ],
+      "question_ka": "შეასრულეთ rolling update:\n\n1. შექმენით deployment სახელად `app-v1` `4` რეპლიკით `nginx:1.19` იმიჯით\n2. შეასრულეთ rolling update `nginx:1.20`-მდე შემდეგი პარამეტრებით:\n   - Max unavailable: 1\n   - Max surge: 1\n3. დააფიქსირეთ (record) განახლება\n4. შეინახეთ `kubectl rollout history deployment app-v1 -n upgrade` ბრძანების შედეგი ფაილში `/tmp/exam/rollout-history.txt`\n5. დაბრუნდით წინა ვერსიაზე"
     },
     {
       "id": "19",
@@ -625,7 +643,8 @@
           "expectedOutput": "0",
           "weightage": 1
         }
-      ]
+      ],
+      "question_ka": "დააკონფიგურირეთ გაფართოებული დაგეგმვა:\n\n1. შექმენით პოდი სახელად `high-priority` PriorityClass-ის პრიორიტეტით `1000`\n2. შექმენით პოდი სახელად `low-priority` PriorityClass-ის პრიორიტეტით `100`\n3. დააკონფიგურირეთ pod anti-affinity ისე, რომ ეს პოდები ერთსა და იმავე node-ზე არ გაეშვას\n4. შექმენით საკმარისი რესურსული დატვირთვა პოდის გამოძევების (eviction) გამოსაწვევად და დააკვირდით პრიორიტეტის ქცევას\n\nშენიშვნა რესურსული დატვირთვის ტესტირებისთვის:\n- გამოიყენეთ რესურსტევადი იმიჯი, მაგალითად `polinux/stress`\n- მაგალითი: შექმენით პოდი ბრძანებით `stress -c 4 -m 2 --vm-bytes 1G` CPU-სა და მეხსიერების დასატვირთად\n- განათავსეთ რამდენიმე რესურსტევადი პოდი node-ის რესურსების ამოწურვის სიმულაციისთვის"
     },
     {
       "id": "20",
@@ -666,7 +685,8 @@
           "expectedOutput": "0",
           "weightage": 2
         }
-      ]
+      ],
+      "question_ka": "`troubleshoot` namespace-ში შექმნილია deployment სახელად `failing-app`, მაგრამ პოდები არ მუშაობს. deployment იყენებს იმიჯს `nginx:1.25` და უნდა ჰქონდეს 3 რეპლიკა.\n\nგაასწორეთ შემდეგი პრობლემები:\n\n1. deployment იყენებს არასწორ კონტეინერის პორტს (8080 პორტი 80-ის ნაცვლად)\n2. პოდები ვერ ეშვება არასაკმარისი მეხსიერების გამო (მიმდინარე ლიმიტია 64Mi, უნდა იყოს 256Mi)\n3. არასწორადაა კონფიგურირებული liveness probe, რომელიც ამოწმებს პორტს 8080 პორტ 80-ის ნაცვლად\n\nდარწმუნდით, რომ შესწორებების შემდეგ ყველა პოდი წარმატებით მუშაობს."
     }
   ]
 }

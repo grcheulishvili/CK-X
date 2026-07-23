@@ -228,13 +228,13 @@ kubectl get pods -n helm-test
 ## Q12 — Kustomize base + overlay
 
 ```bash
-mkdir -p /tmp/exam/kustomize/base /tmp/exam/kustomize/overlay
+mkdir -p /tmp/exam/kustomize/base /tmp/exam/kustomize/overlays/production
 kubectl create deployment nginx --image=nginx --replicas=2 $do > /tmp/exam/kustomize/base/deployment.yaml
 cat > /tmp/exam/kustomize/base/kustomization.yaml <<EOF
 resources: [deployment.yaml]
 EOF
-cat > /tmp/exam/kustomize/overlay/kustomization.yaml <<EOF
-resources: [../base]
+cat > /tmp/exam/kustomize/overlays/production/kustomization.yaml <<EOF
+resources: [../../base]
 namespace: kustomize
 commonLabels: {environment: production}
 replicas: [{name: nginx, count: 3}]
@@ -252,7 +252,7 @@ patches:
       value: [{name: nginx-index, mountPath: /usr/share/nginx/html}]
 EOF
 kubectl create namespace kustomize
-kubectl apply -k /tmp/exam/kustomize/overlay
+kubectl apply -k /tmp/exam/kustomize/overlays/production
 ```
 
 ## Q13 — Gateway API
@@ -311,7 +311,7 @@ kubectl create deployment test-limits -n limits --image=nginx --replicas=2
 
 ```bash
 kubectl create deployment resource-consumer -n monitoring \
-  --image=gcr.io/kubernetes-e2e-test-images/resource-consumer:1.5 --replicas=3
+  --image=registry.k8s.io/e2e-test-images/resource-consumer:1.13 --replicas=3
 kubectl set resources deployment resource-consumer -n monitoring \
   --requests=cpu=100m,memory=128Mi --limits=cpu=200m,memory=256Mi
 kubectl autoscale deployment resource-consumer -n monitoring --min=3 --max=6 --cpu-percent=50

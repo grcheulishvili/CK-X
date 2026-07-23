@@ -453,7 +453,7 @@
     },
     {
       "id": "14",
-      "namespace": "cluster-admin",
+      "namespace": "web",
       "machineHostname": "controlplane",
       "question": "Deploy the Bitnami Nginx chart in the `web` namespace using Helm. \n\nFirst, add the Bitnami repository (`https://charts.bitnami.com/bitnami`) if not already present. \n\nThen, deploy the `Bitnami` `nginx` chart with exactly `2` replicas to ensure high availability. \n\nVerify the deployment is successful by checking that pods are running and the service is correctly configured.",
       "concepts": [
@@ -481,7 +481,7 @@
     },
     {
       "id": "15",
-      "namespace": "cluster-admin",
+      "namespace": "default",
       "machineHostname": "controlplane",
       "question": "To support a custom backup solution, you need to extend the Kubernetes API. \n\nCreate a CustomResourceDefinition (CRD) named `backups.data.example.com` that defines a new resource type `Backup` in API group `data.example.com` with version `v1alpha1`. \n\nThis custom resource should include a schema that validates two required fields: `spec.source` (a string representing the source data location) and `spec.destination` (a string representing where backups should be stored). \n\nConfigure appropriate additional fields like shortNames, scope, and descriptions to make this CRD user-friendly.",
       "concepts": [
@@ -684,7 +684,7 @@
     },
     {
       "id": "21",
-      "namespace": "docker-oci",
+      "namespace": "default",
       "machineHostname": "controlplane",
       "question": "For improved container image distribution and portability, you need to work with the Open Container Initiative (OCI) format. \n\nComplete the following steps: \n\n1. Pull the `nginx:latest` image from Docker Hub using the `docker pull` command \n\n2. Create a directory at `/root/oci-images` if it doesn`t already exist \n\n3. Using the appropriate docker commands, export the nginx image in OCI format and store it in this directory \n\nThis will help standardize the container image format and improve portability across different container runtimes.",
       "concepts": [

@@ -16,8 +16,8 @@ fi
 
 # Check image
 IMAGE=$(kubectl get deployment resource-consumer -n monitoring -o jsonpath='{.spec.template.spec.containers[0].image}')
-if [[ "$IMAGE" != "gcr.io/kubernetes-e2e-test-images/resource-consumer:1.5" ]]; then
-    echo "Incorrect image. Expected gcr.io/kubernetes-e2e-test-images/resource-consumer:1.5, got $IMAGE"
+if [[ "$IMAGE" != "registry.k8s.io/e2e-test-images/resource-consumer:1.13" ]]; then
+    echo "Incorrect image. Expected registry.k8s.io/e2e-test-images/resource-consumer:1.13, got $IMAGE"
     exit 1
 fi
 

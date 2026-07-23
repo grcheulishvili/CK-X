@@ -25,24 +25,20 @@ kubectl get pod nginx-pod -n app-team1 -o wide
 
 ---
 
-## Question 2 — Static pod
+## Question 2 - Static pod manifest
 
-**Approach:** generate the manifest imperatively and drop it in the kubelet's static-pod
-directory. The kubelet (not the API server) creates it, and the running pod's name gets the
-node name appended (e.g. `static-web-controlplane`).
+**Approach:** generate the manifest imperatively, then write it to the static-pod directory.
 
 ```bash
 kubectl run static-web --image=nginx:1.19 --port=80 \
   --dry-run=client -o yaml > /etc/kubernetes/manifests/static-web.yaml
-# kubelet picks it up automatically; confirm from the API:
-kubectl get pods | grep static-web
+cat /etc/kubernetes/manifests/static-web.yaml
 ```
 
-> On a real kubeadm node the path is `/etc/kubernetes/manifests`. On this k3d-backed lab the
-> static-pod path is set by the kubelet's `--pod-manifest-path`; the concept and command are
-> what the exam tests.
-
----
+On a real kubeadm node the kubelet picks this up within seconds and the running pod is named
+`static-web-<nodename>`; check with `kubectl get pods`. In this lab nothing watches the path,
+so the manifest itself is what is graded. The exam skill is knowing the directory and that
+`--dry-run=client -o yaml` writes the manifest for you.
 
 ## Question 3 — StorageClass + PVC
 

@@ -18,7 +18,8 @@
           "expectedOutput": "0",
           "weightage": 5
         }
-      ]
+      ],
+      "question_ka": "`backend` namespace-ში აპლიკაციას სჭირდება `frontend` namespace-ში არსებულ სერვისთან დაკავშირება DNS-ის საშუალებით. სერვისის სახელია `web-ui` და ის იყენებს პორტს 3000.\n\nაპლიკაციის კონფიგურაციას სჭირდება სრული DNS სახელი. რომელია სწორი DNS სახელი კლასტერში, რომელიც backend აპლიკაციამ უნდა გამოიყენოს?\n\nჩაწერეთ ზუსტი DNS სახელი ფაილში `/tmp/exam/q1_dns_name.txt`.\n\nასევე შეამოწმეთ, რომ პოდებს შორის DNS რეზოლუცია მუშაობს nslookup-ის ან dig-ის გამოყენებით სატესტო პოდიდან."
     },
     {
       "id": "2",
@@ -38,7 +39,8 @@
           "expectedOutput": "0",
           "weightage": 5
         }
-      ]
+      ],
+      "question_ka": "deployment `payment-service` განახლდა ახალი იმიჯის ვერსიით, რომელმაც შეცდომა შემოიტანა. მომხმარებლები აფიქსირებენ პრობლემებს. საჭიროა:\n1. შეამოწმოთ deployment-ის rollout-ის ისტორია\n2. დაადგინოთ, რომელ რევიზიაში იყო პრობლემა\n3. დაბრუნდეთ წინა სტაბილურ ვერსიაზე\n4. დაადასტუროთ, რომ rollback წარმატებით დასრულდა"
     },
     {
       "id": "3",
@@ -65,7 +67,8 @@
           "expectedOutput": "0",
           "weightage": 3
         }
-      ]
+      ],
+      "question_ka": "პოდს სჭირდება წვდომა მონაცემთა ბაზის რეკვიზიტებზე:\n- მომხმარებელი: `dbuser`\n- პაროლი: `secret123`\n- ბაზა: `appdb`\n\nშექმენით Secret სახელად `db-creds` და მიამაგრეთ ის deployment-ში სახელად `app-deploy` გარემოს ცვლადების სახით (და არა ფაილებად).\n\nშეამოწმეთ, რომ პოდს აქვს წვდომა ამ ცვლადებზე ისე, რომ ისინი პოდის ლოგებში არ ჩანდეს."
     },
     {
       "id": "4",
@@ -92,7 +95,8 @@
           "expectedOutput": "0",
           "weightage": 3
         }
-      ]
+      ],
+      "question_ka": "მონიტორინგის აგენტი უნდა გაეშვას კლასტერის ყველა node-ზე, control plane node-ების ჩათვლით. ამჟამად ზოგიერთ node-ზე აგენტი არ არის taint-ების გამო.\n\nშექმენით ან განაახლეთ DaemonSet სახელად `monitoring-agent` ისე, რომ:\n1. გაუშვას იმიჯი `datadog/agent:latest` ყველა node-ზე\n2. დაუშვას (tolerate) taint `node-role.kubernetes.io/control-plane:NoSchedule`\n3. შეამოწმეთ, რომ აგენტი მუშაობს ყველა node-ზე"
     },
     {
       "id": "5",
@@ -111,7 +115,8 @@
           "expectedOutput": "0",
           "weightage": 5
         }
-      ]
+      ],
+      "question_ka": "API სერვერი, როგორც ჩანს, ნელა პასუხობს. საჭიროა:\n1. შეამოწმოთ API სერვერის ლოგები შეცდომებსა და გაფრთხილებებზე\n2. დაადასტუროთ, რომ API სერვერი უსმენს პორტს 6443\n\nჩაწერეთ ბრძანება, რომელსაც გამოიყენებდით API სერვერის ლოგების შესამოწმებლად, ფაილში `/tmp/exam/q5_command.txt`."
     },
     {
       "id": "6",
@@ -131,7 +136,8 @@
           "expectedOutput": "0",
           "weightage": 5
         }
-      ]
+      ],
+      "question_ka": "kubeadm-ით მართულ control plane-ზე etcd მუშაობს სტატიკურ პოდად და მისი სერტიფიკატები მდებარეობს `/etc/kubernetes/pki/etcd/`-ში.\n\nჩაწერეთ სრული `etcdctl snapshot save` ბრძანება, რომელსაც გამოიყენებდით etcd-ის `/tmp/etcd-backup.db`-ში ბექაფისთვის, ფაილში `/tmp/exam/q6_etcd_backup.txt`. ბრძანება უნდა შეიცავდეს ფლაგებს `--endpoints`, `--cacert`, `--cert` და `--key`."
     },
     {
       "id": "7",
@@ -165,7 +171,8 @@
           "expectedOutput": "0",
           "weightage": 2
         }
-      ]
+      ],
+      "question_ka": "1. მიანიჭეთ node-ს `k3d-cluster-agent-0` taint `dedicated=special:NoSchedule`\n2. შექმენით პოდი სახელად `toleration-pod` (იმიჯი `nginx`) `default` namespace-ში, რომელიც **დაუშვებს** (tolerate) ამ taint-ს\n3. შეამოწმეთ, რომ პოდი მუშაობს"
     },
     {
       "id": "8",
@@ -199,7 +206,8 @@
           "expectedOutput": "0",
           "weightage": 2
         }
-      ]
+      ],
+      "question_ka": "შექმენით პოდი სახელად `init-demo` `default` namespace-ში, რომელსაც აქვს:\n\n1. საერთო `emptyDir` ვოლუმი სახელად `work`\n2. **initContainer** (იმიჯი `busybox`), რომელიც ჩაწერს სიტყვას `hello` ფაილში `/work/index.html`\n3. მთავარი კონტეინერი (იმიჯი `nginx`), რომელიც `work` ვოლუმს მიამაგრებს მისამართზე `/usr/share/nginx/html`"
     },
     {
       "id": "9",
@@ -225,7 +233,8 @@
           "expectedOutput": "0",
           "weightage": 3
         }
-      ]
+      ],
+      "question_ka": "1. შექმენით ServiceAccount სახელად `build-sa` `default` namespace-ში\n2. შექმენით პოდი სახელად `sa-pod` (იმიჯი `nginx`) `default`-ში, რომელიც გაეშვება `build-sa` ServiceAccount-ით"
     },
     {
       "id": "10",
@@ -251,7 +260,8 @@
           "expectedOutput": "0",
           "weightage": 3
         }
-      ]
+      ],
+      "question_ka": "1. შექმენით PriorityClass სახელად `high-prio` მნიშვნელობით `1000000` (ის **არ** უნდა იყოს გლობალური ნაგულისხმევი)\n2. შექმენით პოდი სახელად `prio-pod` (იმიჯი `nginx`) `default`-ში, რომელიც ამ PriorityClass-ს იყენებს"
     },
     {
       "id": "11",
@@ -277,7 +287,8 @@
           "expectedOutput": "0",
           "weightage": 2
         }
-      ]
+      ],
+      "question_ka": "1. შექმენით PersistentVolumeClaim სახელად `data-pvc` `default`-ში `1Gi` მოთხოვნით და წვდომის რეჟიმით `ReadWriteOnce`, კლასტერის **ნაგულისხმევი** StorageClass-ის (`local-path`) გამოყენებით\n2. შექმენით პოდი სახელად `pvc-pod` (იმიჯი `nginx`), რომელიც ამ PVC-ს მიამაგრებს მისამართზე `/data`\n3. დაადასტურეთ, რომ PVC ხდება `Bound`"
     },
     {
       "id": "12",
@@ -303,7 +314,8 @@
           "expectedOutput": "0",
           "weightage": 3
         }
-      ]
+      ],
+      "question_ka": "`default`-ში Deployment სახელად `frontend` არასოდეს ხდება მზად: მისი `readinessProbe` მიმართავს პორტს `8080`, მაგრამ nginx მუშაობს პორტზე `80`.\n\nგაასწორეთ readinessProbe ისე, რომ გამოიყენოს პორტი `80` და Deployment გახდეს ხელმისაწვდომი."
     },
     {
       "id": "13",
@@ -330,7 +342,8 @@
           "expectedOutput": "0",
           "weightage": 4
         }
-      ]
+      ],
+      "question_ka": "`apps` namespace-ში Deployment `cfg-app` არ ეშვება: მისი პოდები `CreateContainerConfigError` მდგომარეობაშია, რადგან ის (`envFrom`-ის საშუალებით) მიმართავს ConfigMap-ს `app-cfg`, რომელიც არ არსებობს.\n\nშექმენით დაკარგული ConfigMap `app-cfg` `apps`-ში გასაღებით `MODE=prod`, რათა Deployment გახდეს ხელმისაწვდომი."
     },
     {
       "id": "14",
@@ -357,7 +370,8 @@
           "expectedOutput": "0",
           "weightage": 3
         }
-      ]
+      ],
+      "question_ka": "`default`-ში Deployment `web2` (nginx, მუშაობს პორტზე 80) გამოქვეყნებულია სერვისით `web2-svc`, მაგრამ მოთხოვნები ვერ სრულდება, რადგან სერვისის `targetPort` არასწორ პორტს (`8080`) მიუთითებს.\n\nგაასწორეთ `web2-svc` ისე, რომ მიმართოს პორტს `80`."
     },
     {
       "id": "15",
@@ -384,7 +398,8 @@
           "expectedOutput": "0",
           "weightage": 3
         }
-      ]
+      ],
+      "question_ka": "`production` namespace-ში შექმენით NetworkPolicy სახელად `backend-allow`, რომელიც დაუშვებს **შემომავალ** (ingress) ტრაფიკს `app=backend` ლეიბლის მქონე პოდებზე TCP პორტზე `8080`, მაგრამ **მხოლოდ** იმ პოდებიდან, რომლებიც ერთდროულად:\n\n- არიან `env=prod` ლეიბლის მქონე namespace-ში, **და**\n- აქვთ ლეიბლი `app=frontend`\n\nეს უნდა იყოს ერთი გაერთიანებული `from` ჩანაწერი (namespaceSelector **და** podSelector ერთად) და არა ორი ცალკეული ჩანაწერი.\n\n> კლასტერის CNI (flannel) არ ახორციელებს NetworkPolicy-ის აღსრულებას, ამიტომ შეფასება ხდება პოლიტიკის **სპეციფიკაციის** მიხედვით."
     },
     {
       "id": "16",
@@ -403,7 +418,8 @@
           "expectedOutput": "0",
           "weightage": 5
         }
-      ]
+      ],
+      "question_ka": "გამოაქვეყნეთ Deployment `np-app` `default`-ში **NodePort** ტიპის სერვისით სახელად `np-svc`:\n\n- სერვისის პორტი `80`\n- სამიზნე პორტი `80`\n- NodePort **ზუსტად** `30080`"
     },
     {
       "id": "17",
@@ -424,7 +440,8 @@
           "expectedOutput": "0",
           "weightage": 5
         }
-      ]
+      ],
+      "question_ka": "ჩაწერეთ ბრძანებების თანმიმდევრობა **kubelet**-ის `v1.33.1`-მდე განახლებისთვის **worker** node-ზე kubeadm კლასტერში, ფაილში `/tmp/exam/q17_upgrade.txt`. თქვენი პასუხი უნდა შეიცავდეს: node-ის drain-ს, `kubeadm upgrade node`-ს, kubelet-ის განახლებასა და გადატვირთვას, და node-ის uncordon-ს.\n\n> ეს კლასტერი k3d-ია, ამიტომ ბრძანებების თანმიმდევრობას იხსენებთ და არ უშვებთ."
     }
   ]
 }

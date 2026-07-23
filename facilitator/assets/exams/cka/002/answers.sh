@@ -664,7 +664,7 @@ spec:
     spec:
       containers:
       - name: resource-consumer
-        image: gcr.io/kubernetes-e2e-test-images/resource-consumer:1.5
+        image: registry.k8s.io/e2e-test-images/resource-consumer:1.13
         resources:
           requests:
             cpu: 100m

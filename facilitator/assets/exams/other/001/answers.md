@@ -39,14 +39,18 @@ DF
 docker build -t multi-stage:latest /tmp/exam/q4
 ```
 
-## Q5 — systemd cgroup driver
+## Q5 - systemd cgroup driver
+
 ```bash
 cat > /etc/docker/daemon.json <<'JSON'
 { "exec-opts": ["native.cgroupdriver=systemd"] }
 JSON
-systemctl restart docker
-docker info | grep -i "Cgroup Driver"    # -> systemd
+cat /etc/docker/daemon.json
 ```
+
+Do **not** restart the daemon on this lab machine: there is no init system here and the
+remaining Docker questions need the running daemon. On a real host the change takes effect
+with `systemctl restart docker`, verified by `docker info | grep "Cgroup Driver"`.
 
 ## Q6 — json-file logging with rotation
 ```bash
