@@ -1,0 +1,22 @@
+! Zutty terminal: the ConSol desktop ships zutty, whose default 9x18 bitmap font
+! is hard to read over a scaled VNC link. Bigger font, dark high-contrast palette
+! and real scrollback so long kubectl output can be reviewed.
+zutty.font:         10x20
+zutty.fontsize:     20
+zutty.saveLines:    10000
+zutty.bg:           #0f1720
+zutty.fg:           #e6ecf2
+zutty.cr:           #5b8db8
+! Class form, in case the resource is looked up by class rather than instance.
+Zutty.font:         10x20
+Zutty.fontsize:     20
+Zutty.saveLines:    10000
+Zutty.bg:           #0f1720
+Zutty.fg:           #e6ecf2
+
+! XTerm fallback, if the panel launcher uses it instead.
+XTerm*faceName:     DejaVu Sans Mono
+XTerm*faceSize:     13
+XTerm*background:   #0f1720
+XTerm*foreground:   #e6ecf2
+XTerm*saveLines:    10000

@@ -161,30 +161,39 @@ EOF
 
 ---
 
-## Question 7 — Deployment + NodePort + pod anti-affinity
+## Question 7 - Deployment + NodePort + pod anti-affinity
 
 **Approach:** create the Deployment and Service imperatively; add anti-affinity by editing the
-Deployment (no flag for it).
+Deployment (there is no flag for it).
 
 ```bash
 kubectl create deployment web-app --image=nginx:1.19 --replicas=3
-kubectl expose deployment web-app --name=web-service --port=80 --type=NodePort
+kubectl expose deployment web-app --name=web-service --port=80 --target-port=80 --type=NodePort
 kubectl edit deployment web-app     # add the affinity block below under spec.template.spec
 ```
 
 ```yaml
       affinity:
         podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchLabels:
-                app: web-app
-            topologyKey: kubernetes.io/hostname
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app: web-app
+              topologyKey: kubernetes.io/hostname
 ```
 
 ```bash
-kubectl get pods -l app=web-app -o wide   # confirm spread across nodes
+kubectl rollout status deployment/web-app
+kubectl get pods -l app=web-app -o wide   # spread across nodes, all Running
 ```
+
+**Why preferred, not required:** a `required` rule with `topologyKey: kubernetes.io/hostname`
+allows at most one replica per node. This cluster has 3 schedulable nodes, so 3 replicas fit -
+but the moment replicas exceed node count the extras stay `Pending` forever and the deployment
+never becomes fully available. `preferred` still spreads the pods but degrades gracefully.
+Knowing that difference is the actual exam skill here.
 
 ---
 

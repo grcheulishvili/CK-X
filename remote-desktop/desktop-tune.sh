@@ -14,10 +14,42 @@ SOLID="/usr/share/backgrounds/ckx-solid.png"
 
 export DISPLAY="${DISPLAY:-:1}"
 
+# --- Watchdog -------------------------------------------------------------
+# ConSol redirects the vncserver command's output to a file, so when Xvnc fails
+# the container still looks fine: noVNC keeps serving on 6901, nothing listens on
+# 5901, and the browser just says "connection is closed" with no reason anywhere
+# in `docker compose logs`. Surface the actual error on stderr so it shows up
+# there. Runs detached; never affects startup.
+(
+    sleep 25
+    # Probe the X11 socket, never the VNC port: connecting to 5901 and dropping
+    # is what TigerVNC blacklists, and blacklisting 127.0.0.1 breaks websockify.
+    if [ -S /tmp/.X11-unix/X1 ]; then
+        echo "[ckx] Xvnc is running (X11 socket present)." >&2
+    else
+        echo "[ckx] ===============================================================" >&2
+        echo "[ckx] Xvnc IS NOT RUNNING - the desktop will not load." >&2
+        echo "[ckx] Dumping the startup logs that ConSol writes to disk:" >&2
+        for f in /dockerstartup/*.log "$HOME"/.vnc/*.log /root/.vnc/*.log; do
+            [ -f "$f" ] || continue
+            echo "[ckx] --- $f ---" >&2
+            tail -n 40 "$f" >&2
+        done
+        echo "[ckx] ===============================================================" >&2
+    fi
+) &
+# --------------------------------------------------------------------------
+
 # Wait for the X server (started by vnc_startup.sh) to accept connections.
 for _ in $(seq 1 60); do
     if xset q >/dev/null 2>&1 || xrdb -query >/dev/null 2>&1; then break; fi
     sleep 1
+done
+
+# Terminal readability: load our X resources (zutty/xterm font + colours).
+# Best-effort: a missing file or xrdb must never stop the desktop coming up.
+for RES in /etc/X11/Xresources.ckx "$HOME/.Xresources" /root/.Xresources; do
+    [ -f "$RES" ] && xrdb -merge "$RES" >/dev/null 2>&1
 done
 
 # Solid root window, and no blanking/power management during a long exam.
@@ -41,26 +73,31 @@ for prop in /general/box_move /general/box_resize; do
 done
 
 # Backdrop: monitor property names vary by X/VNC setup (monitor0, monitorVNC-0,
-# monitorVirtual-1 ...), so enumerate whatever this session actually created
-# instead of guessing a path.
-for prop in $(xfconf-query -c xfce4-desktop -l 2>/dev/null | grep -E '/image-style$'); do
-    xfconf-query -c xfce4-desktop -p "$prop" -s 0 >/dev/null 2>&1
-done
-for prop in $(xfconf-query -c xfce4-desktop -l 2>/dev/null | grep -E '/color-style$'); do
-    xfconf-query -c xfce4-desktop -p "$prop" -s 0 >/dev/null 2>&1
-done
-for prop in $(xfconf-query -c xfce4-desktop -l 2>/dev/null | grep -E '/last-image$'); do
-    xfconf-query -c xfce4-desktop -p "$prop" -s "$SOLID" >/dev/null 2>&1
+# monitorVirtual-1 ...) and the properties only exist once xfdesktop has painted
+# at least once. Retry for a while instead of a single early pass.
+for attempt in 1 2 3 4 5 6 7 8 9 10; do
+    for prop in $(xfconf-query -c xfce4-desktop -l 2>/dev/null | grep -E '/last-image$'); do
+        xfconf-query -c xfce4-desktop -p "$prop" -s "$SOLID" >/dev/null 2>&1
+    done
+    for prop in $(xfconf-query -c xfce4-desktop -l 2>/dev/null | grep -E '/image-style$'); do
+        xfconf-query -c xfce4-desktop -p "$prop" -s 0 >/dev/null 2>&1
+    done
+    for prop in $(xfconf-query -c xfce4-desktop -l 2>/dev/null | grep -E '/color-style$'); do
+        xfconf-query -c xfce4-desktop -p "$prop" -s 0 >/dev/null 2>&1
+    done
+    # Also write the paths xfdesktop uses before any monitor is enumerated.
+    for base in /backdrop/screen0/monitor0/workspace0 \
+                /backdrop/screen0/monitorVNC-0/workspace0 \
+                /backdrop/screen0/monitorscreen/workspace0; do
+        xfconf-query -c xfce4-desktop -p "$base/image-style" -n -t int -s 0 >/dev/null 2>&1
+        xfconf-query -c xfce4-desktop -p "$base/last-image" -n -t string -s "$SOLID" >/dev/null 2>&1
+    done
+    xfdesktop --reload >/dev/null 2>&1
+    sleep 3
 done
 
-# If xfdesktop had already painted the stock wallpaper, make it re-read the config.
-if command -v xfdesktop >/dev/null 2>&1; then
-    xfdesktop --reload >/dev/null 2>&1 &
-fi
-
-# Last resort: if xfdesktop is still drawing something, drop it and leave the
+# Last resort: if a wallpaper is still being drawn, drop xfdesktop and leave the
 # solid root window. The lab desktop needs no icons or desktop right-click menu.
-sleep 3
 if [ "${CKX_KILL_XFDESKTOP:-false}" = "true" ]; then
     pkill -x xfdesktop >/dev/null 2>&1
     xsetroot -solid "$BG" >/dev/null 2>&1

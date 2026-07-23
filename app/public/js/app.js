@@ -5,7 +5,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     connectBtn.addEventListener('click', function() {
         // Connect to the VNC server through the service
-        vncFrame.src = `http://${window.location.hostname}:${window.location.port}/vnc-proxy/`;
+        // Same reasoning as remote-desktop-service.js: the proxy root serves
+        // noVNC's vnc_lite.html, which ignores sizing parameters. Use the full UI.
+        vncFrame.src = `/vnc-proxy/vnc.html?autoconnect=true&resize=remote&reconnect=true`;
     });
     
     fullscreenBtn.addEventListener('click', function() {

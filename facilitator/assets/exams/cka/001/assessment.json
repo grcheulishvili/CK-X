@@ -184,7 +184,7 @@
       "id": "7",
       "namespace": "default",
       "machineHostname": "controlplane",
-      "question": "Create a deployment named `web-app` in the `default` namespace with `3` replicas using the `nginx:1.19` image.\n\nCreate a NodePort service named `web-service` that exposes the deployment on port `80`.\n\nEnsure the pods are distributed across multiple nodes using an appropriate pod anti-affinity rule.",
+      "question": "Create a deployment named `web-app` in the `default` namespace with `3` replicas using the `nginx:1.19` image.\n\nCreate a NodePort service named `web-service` that exposes the deployment on port `80`.\n\nSpread the pods across nodes with a pod anti-affinity rule. All 3 replicas must end up `Running`.\n\n> Use a **preferred** (soft) rule. A `required` rule with `topologyKey: kubernetes.io/hostname` caps the deployment at one pod per node, so any replica beyond the node count would stay `Pending` and the task would fail.",
       "concepts": [
         "deployments",
         "services",
@@ -206,7 +206,7 @@
           "weightage": 2
         }
       ],
-      "question_ka": "შექმენით deployment სახელად `web-app` `default` namespace-ში `3` რეპლიკით, იმიჯით `nginx:1.19`.\n\nშექმენით NodePort ტიპის სერვისი სახელად `web-service`, რომელიც deployment-ს გამოაქვეყნებს პორტზე `80`.\n\nუზრუნველყავით პოდების განაწილება რამდენიმე node-ზე შესაბამისი pod anti-affinity წესის გამოყენებით."
+      "question_ka": "შექმენით deployment სახელად `web-app` `default` namespace-ში `3` რეპლიკით, იმიჯით `nginx:1.19`.\n\nშექმენით NodePort ტიპის სერვისი სახელად `web-service`, რომელიც deployment-ს გამოაქვეყნებს პორტზე `80`.\n\nგაანაწილეთ პოდები node-ებზე pod anti-affinity წესით. სამივე რეპლიკა უნდა იყოს `Running`.\n\n> გამოიყენეთ **preferred** (რბილი) წესი. `required` წესი `topologyKey: kubernetes.io/hostname`-ით ზღუდავს ერთ პოდს თითო node-ზე, ამიტომ node-ების რაოდენობაზე მეტი რეპლიკა დარჩებოდა `Pending` და დავალება ჩავარდებოდა."
     },
     {
       "id": "8",

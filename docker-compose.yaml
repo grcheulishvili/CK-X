@@ -17,6 +17,11 @@ services:
     pull_policy: build   # never pull from a remote registry; always build locally
     build:
       context: ./remote-desktop
+      args:
+        # Desktop base image. Override to roll back if a new upstream tag misbehaves:
+        #   VNC_BASE_IMAGE=consol/ubuntu-xfce-vnc:1.3.0   (old 16.04 base, deprecated)
+        #   VNC_BASE_IMAGE=ckx/vnc-base:local             (self-hosted, see vnc-base/)
+        VNC_BASE_IMAGE: ${VNC_BASE_IMAGE:-consol/debian-xfce-vnc:nightly}
     hostname: terminal
     expose:
       - "5901" # VNC port (internal only)
@@ -29,12 +34,27 @@ services:
       - VNC_PASSWORD=bakku-the-wizard
       - VNC_VIEW_ONLY=false
       - VNC_RESOLUTION=1280x800
+      # TigerVNC's vncserver resolves the invoking user from USER/LOGNAME. In a
+      # container started as root with no login shell these are often unset, and
+      # newer TigerVNC then refuses to start Xvnc - the noVNC page still serves on
+      # 6901 while nothing listens on 5901, which the browser reports as
+      # "connection is closed". Setting them explicitly is harmless either way.
+      - USER=root
+      - LOGNAME=root
       # Set true only if a wallpaper still appears: drops xfdesktop entirely and
       # leaves a solid root window (no desktop icons or right-click menu).
       - CKX_KILL_XFDESKTOP=false
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:6901/"]
-      interval: 10s
+      # Verify the noVNC web server (6901) AND that Xvnc is actually running.
+      #
+      # NEVER open a TCP connection to 5901 from here. TigerVNC counts repeated
+      # connect-then-drop as a brute-force attempt and blacklists the source IP;
+      # because websockify proxies from 127.0.0.1, blacklisting localhost kills
+      # the real desktop session and the browser reports "connection is closed".
+      # The X11 socket exists only while Xvnc is alive, so it proves the same
+      # thing without touching the VNC port.
+      test: ["CMD-SHELL", "curl -sf http://localhost:6901/ >/dev/null && [ -S /tmp/.X11-unix/X1 ]"]
+      interval: 30s
       timeout: 5s
       retries: 3
     deploy:

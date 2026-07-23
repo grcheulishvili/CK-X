@@ -55,11 +55,23 @@ RUN chmod -R 0777 /headless/.config
 # xfdesktop renders whatever file is configured, so replacing the file content
 # guarantees a flat background even if a config we don't control wins.
 # (GdkPixbuf sniffs content, so a PNG kept under a .jpg name still loads.)
+# Terminal font/colour resources (loaded at session start by desktop-tune.sh).
+COPY xfce/Xresources /etc/X11/Xresources.ckx
+RUN cp /etc/X11/Xresources.ckx /headless/.Xresources 2>/dev/null || true; \
+    cp /etc/X11/Xresources.ckx /root/.Xresources 2>/dev/null || true
+
 COPY xfce/solid-bg.png /usr/share/backgrounds/ckx-solid.png
 RUN set -eux; \
-    for d in /usr/share/xfce4/backdrops /usr/share/backgrounds/xfce; do \
+    for d in /usr/share/xfce4/backdrops \
+             /usr/share/backgrounds/xfce \
+             /usr/share/backgrounds \
+             /usr/share/images/desktop-base \
+             /usr/share/wallpapers; do \
         [ -d "$d" ] || continue; \
-        for f in "$d"/*; do [ -f "$f" ] && cp -f /usr/share/backgrounds/ckx-solid.png "$f"; done; \
+        for f in "$d"/*; do \
+            case "$f" in */ckx-solid.png) continue;; esac; \
+            [ -f "$f" ] && cp -f /usr/share/backgrounds/ckx-solid.png "$f"; \
+        done; \
     done; true
 
 COPY desktop-tune.sh /usr/local/bin/desktop-tune.sh
