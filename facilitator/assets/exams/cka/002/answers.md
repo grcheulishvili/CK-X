@@ -1,4 +1,4 @@
-# CKA Assessment 02 — Solutions (imperative-first)
+# CKA Assessment 02 - Solutions (imperative-first)
 
 Reach for a `kubectl` generator first; drop to YAML only for resources with no generator
 (PV/PVC/SC, StatefulSet, NetworkPolicy, Gateway, LimitRange/Quota, multi-rule Role, probes,
@@ -7,7 +7,7 @@ cold: `export do='--dry-run=client -o yaml'`.
 
 ---
 
-## Q1 — Dynamic PVC + pod mount
+## Q1 - Dynamic PVC + pod mount
 
 ```bash
 kubectl create namespace storage-task
@@ -35,7 +35,7 @@ spec:
     - {name: data, mountPath: /usr/share/nginx/html}
 ```
 
-## Q2 — Default StorageClass
+## Q2 - Default StorageClass
 
 ```bash
 cat <<EOF | kubectl apply -f -
@@ -53,7 +53,7 @@ kubectl annotate sc local-path storageclass.kubernetes.io/is-default-class-
 kubectl get sc            # only fast-local should show (default)
 ```
 
-## Q3 — Static PV with node affinity + PVC + pod
+## Q3 - Static PV with node affinity + PVC + pod
 
 ```bash
 kubectl create namespace manual-storage
@@ -84,7 +84,7 @@ kubectl run manual-pod -n manual-storage --image=busybox \
   --overrides='{"spec":{"volumes":[{"name":"d","persistentVolumeClaim":{"claimName":"manual-pvc"}}],"containers":[{"name":"manual-pod","image":"busybox","command":["sleep","3600"],"volumeMounts":[{"name":"d","mountPath":"/data"}]}]}}'
 ```
 
-## Q4 — Deployment + resources + HPA (autoscaling/v1)
+## Q4 - Deployment + resources + HPA (autoscaling/v1)
 
 ```bash
 kubectl create deployment scaling-app -n scaling --image=nginx --replicas=2
@@ -94,7 +94,7 @@ kubectl autoscale deployment scaling-app -n scaling --min=2 --max=5 --cpu-percen
 # kubectl autoscale emits an autoscaling/v1 HPA by default
 ```
 
-## Q5 — Deployment pinned by node affinity
+## Q5 - Deployment pinned by node affinity
 
 ```bash
 kubectl label node k3d-cluster-agent-1 disk=ssd
@@ -110,7 +110,7 @@ Add under `spec.template.spec` then apply:
               - {key: kubernetes.io/hostname, operator: In, values: ["k3d-cluster-agent-1"]}
 ```
 
-## Q6 — Pod Security Admission (restricted) + secure pod
+## Q6 - Pod Security Admission (restricted) + secure pod
 
 ```bash
 kubectl create namespace security
@@ -141,7 +141,7 @@ spec:
 EOF
 ```
 
-## Q7 — Taint + toleration deploy + normal deploy
+## Q7 - Taint + toleration deploy + normal deploy
 
 ```bash
 kubectl taint node k3d-cluster-agent-1 special-workload=true:NoSchedule
@@ -156,7 +156,7 @@ Toleration block for `tol.yaml`:
 ```
 > A toleration only *permits* scheduling on the tainted node; `normal-deploy` has none, so the taint repels it there.
 
-## Q8 — StatefulSet + headless Service + volumeClaimTemplate
+## Q8 - StatefulSet + headless Service + volumeClaimTemplate
 
 ```bash
 cat <<EOF | kubectl apply -f -
@@ -192,7 +192,7 @@ EOF
 kubectl get pods -n stateful -w   # web-0, web-1, web-2 come up in order
 ```
 
-## Q9 — Service discovery test (busybox)
+## Q9 - Service discovery test (busybox)
 
 ```bash
 kubectl create deployment web-app -n dns-debug --image=nginx --replicas=3
@@ -203,7 +203,7 @@ kubectl create configmap dns-config -n dns-debug --from-literal=searches=dns-deb
 kubectl logs dns-test -n dns-debug     # confirm both fetches returned HTML
 ```
 
-## Q10 — DNS resolution to a file
+## Q10 - DNS resolution to a file
 
 ```bash
 kubectl create deployment dns-app -n dns-config --image=nginx --replicas=2
@@ -213,7 +213,7 @@ kubectl run dns-tester -n dns-config --image=infoblox/dnstools \
 kubectl exec dns-tester -n dns-config -- cat /tmp/dns-test.txt
 ```
 
-## Q11 — Helm install
+## Q11 - Helm install
 
 ```bash
 helm repo add bitnami https://charts.bitnami.com/bitnami
@@ -225,7 +225,7 @@ helm list -n helm-test
 kubectl get pods -n helm-test
 ```
 
-## Q12 — Kustomize base + overlay
+## Q12 - Kustomize base + overlay
 
 ```bash
 mkdir -p /tmp/exam/kustomize/base /tmp/exam/kustomize/overlays/production
@@ -255,7 +255,7 @@ kubectl create namespace kustomize
 kubectl apply -k /tmp/exam/kustomize/overlays/production
 ```
 
-## Q13 — Gateway API
+## Q13 - Gateway API
 
 ```bash
 cat <<EOF | kubectl apply -f -
@@ -284,7 +284,7 @@ for a in app1 app2; do
 done
 ```
 
-## Q14 — LimitRange + ResourceQuota
+## Q14 - LimitRange + ResourceQuota
 
 ```bash
 cat <<EOF | kubectl apply -f -
@@ -307,7 +307,7 @@ EOF
 kubectl create deployment test-limits -n limits --image=nginx --replicas=2
 ```
 
-## Q15 — resource-consumer + HPA
+## Q15 - resource-consumer + HPA
 
 ```bash
 kubectl create deployment resource-consumer -n monitoring \
@@ -317,7 +317,7 @@ kubectl set resources deployment resource-consumer -n monitoring \
 kubectl autoscale deployment resource-consumer -n monitoring --min=3 --max=6 --cpu-percent=50
 ```
 
-## Q16 — SA + multi-rule Role + binding + pod
+## Q16 - SA + multi-rule Role + binding + pod
 
 ```bash
 kubectl create serviceaccount app-admin -n cluster-admin
@@ -339,7 +339,7 @@ kubectl auth can-i list pods --as=system:serviceaccount:cluster-admin:app-admin 
 kubectl auth can-i create pods --as=system:serviceaccount:cluster-admin:app-admin -n cluster-admin  # no
 ```
 
-## Q17 — Tiered NetworkPolicies (web→api→db)
+## Q17 - Tiered NetworkPolicies (web->api->db)
 
 ```bash
 for d in web api; do kubectl create deployment $d -n network --image=nginx; kubectl label deploy $d -n network app=$d --overwrite; done
@@ -370,7 +370,7 @@ spec:
 EOF
 ```
 
-## Q18 — Rolling update, record, history, rollback
+## Q18 - Rolling update, record, history, rollback
 
 ```bash
 kubectl create deployment app-v1 -n upgrade --image=nginx:1.19 --replicas=4
@@ -384,7 +384,7 @@ kubectl rollout history deployment app-v1 -n upgrade > /tmp/exam/rollout-history
 kubectl rollout undo deployment app-v1 -n upgrade
 ```
 
-## Q19 — PriorityClasses + anti-affinity
+## Q19 - PriorityClasses + anti-affinity
 
 ```bash
 cat <<EOF | kubectl apply -f -
@@ -408,7 +408,7 @@ kubectl run low-priority -n scheduling --image=nginx \
 ```
 > Under node pressure the scheduler evicts `low-priority` first; simulate load with `polinux/stress` pods (`stress -c 4 -m 2 --vm-bytes 1G`).
 
-## Q20 — Troubleshoot `failing-app`
+## Q20 - Troubleshoot `failing-app`
 
 ```bash
 kubectl -n troubleshoot patch deployment failing-app --type=json -p='[
@@ -420,4 +420,4 @@ kubectl -n troubleshoot rollout status deployment/failing-app
 kubectl -n troubleshoot get pods    # all 3 Running
 ```
 > If the paths differ, `kubectl -n troubleshoot edit deployment failing-app` and fix the three
-> fields directly (containerPort 8080→80, memory 64Mi→256Mi, livenessProbe port 8080→80).
+> fields directly (containerPort 8080->80, memory 64Mi->256Mi, livenessProbe port 8080->80).

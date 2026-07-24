@@ -1,30 +1,30 @@
-# Docker Speedrun — Solutions
+# Docker Speedrun - Solutions
 
 All tasks are Docker CLI workflows. Commands assume the referenced files already exist under
 `/tmp/exam/qN` where the task provides them.
 
 ---
 
-## Q1 — Build and tag
+## Q1 - Build and tag
 ```bash
 docker build -t docker-speedrun:v1 /tmp/exam/q1
 docker tag docker-speedrun:v1 docker-speedrun:latest
 docker images | grep docker-speedrun
 ```
 
-## Q2 — Run detached with port + env
+## Q2 - Run detached with port + env
 ```bash
 docker run -d --name web-server -p 8080:80 -e NGINX_HOST=localhost nginx:alpine
 ```
 
-## Q3 — Named volume
+## Q3 - Named volume
 ```bash
 docker volume create data-volume
 docker run --name volume-test -v data-volume:/app/data alpine:latest \
   sh -c "echo 'Docker volumes test' > /app/data/test.txt"
 ```
 
-## Q4 — Multi-stage build
+## Q4 - Multi-stage build
 ```bash
 cat > /tmp/exam/q4/Dockerfile <<'DF'
 FROM golang:1.17-alpine AS build
@@ -52,21 +52,21 @@ Do **not** restart the daemon on this lab machine: there is no init system here 
 remaining Docker questions need the running daemon. On a real host the change takes effect
 with `systemctl restart docker`, verified by `docker info | grep "Cgroup Driver"`.
 
-## Q6 — json-file logging with rotation
+## Q6 - json-file logging with rotation
 ```bash
 docker run -d --name logging-test \
   --log-driver json-file --log-opt max-size=10m --log-opt max-file=3 \
   nginx:alpine
 ```
 
-## Q7 — Custom bridge network + DNS
+## Q7 - Custom bridge network + DNS
 ```bash
 docker network create --subnet 172.18.0.0/16 app-network
 docker run -d --name app1 --network app-network alpine sleep 3600
 docker run --name app2 --network app-network alpine ping -c 3 app1
 ```
 
-## Q8 — HEALTHCHECK image
+## Q8 - HEALTHCHECK image
 ```bash
 cat > /tmp/exam/q8/Dockerfile <<'DF'
 FROM nginx:alpine
@@ -79,7 +79,7 @@ docker run -d --name healthy-app healthy-app:latest
 docker inspect --format '{{.State.Health.Status}}' healthy-app
 ```
 
-## Q9 — Manifest + platforms
+## Q9 - Manifest + platforms
 ```bash
 mkdir -p /tmp/exam/q9
 docker manifest inspect nginx:1.21.0 > /tmp/exam/q9/manifest.json
@@ -88,13 +88,13 @@ jq -r '.manifests[].platform | .os+"/"+.architecture' /tmp/exam/q9/manifest.json
 # (if manifest inspect is disabled: docker buildx imagetools inspect nginx:1.21.0)
 ```
 
-## Q10 — Resource-limited container
+## Q10 - Resource-limited container
 ```bash
 docker run -d --name limited-resources --cpus=0.5 --memory=256m \
   stress stress --cpu 1
 ```
 
-## Q11 — docker-compose stack
+## Q11 - docker-compose stack
 ```bash
 cat > /tmp/exam/q11/docker-compose.yml <<'YML'
 services:
@@ -118,7 +118,7 @@ YML
 docker compose -f /tmp/exam/q11/docker-compose.yml up -d
 ```
 
-## Q12 — Image inspection report
+## Q12 - Image inspection report
 ```bash
 mkdir -p /tmp/exam/q12
 {
@@ -130,7 +130,7 @@ mkdir -p /tmp/exam/q12
 } > /tmp/exam/q12/image-report.txt
 ```
 
-## Q13 — Troubleshoot broken-container
+## Q13 - Troubleshoot broken-container
 ```bash
 mkdir -p /tmp/exam/q13
 docker logs broken-container 2>&1 | tail -20
@@ -144,7 +144,7 @@ docker exec broken-container sh -c 'echo "{}" > /app/config.json'
 } > /tmp/exam/q13/diagnosis.txt
 ```
 
-## Q14 — Non-root user image
+## Q14 - Non-root user image
 ```bash
 cat > /tmp/exam/q14/Dockerfile <<'DF'
 FROM python:3.9-slim
@@ -158,7 +158,7 @@ docker build -t secure-app:latest /tmp/exam/q14
 docker run -d --name secure-app secure-app:latest
 ```
 
-## Q15 — Optimize (caching, .dockerignore, fewer layers)
+## Q15 - Optimize (caching, .dockerignore, fewer layers)
 ```bash
 cat > /tmp/exam/q15/.dockerignore <<'IGN'
 .git
@@ -178,7 +178,7 @@ DF
 docker build -t optimized-app:latest /tmp/exam/q15
 ```
 
-## Q16 — Docker Content Trust
+## Q16 - Docker Content Trust
 ```bash
 mkdir -p /tmp/exam/q16
 cat > /tmp/exam/q16/dct-commands.sh <<'SH'

@@ -1,7 +1,7 @@
-# CKA / CKS Readiness Map — what this simulator does and does not prepare you for
+# CKA / CKS Readiness Map - what this simulator does and does not prepare you for
 
 The real CKA/CKS are hands-on: pattern recognition, troubleshooting, and `kubectl` muscle
-memory under a 2-hour clock. This lab is very good for most of that — **but it runs on
+memory under a 2-hour clock. This lab is very good for most of that - **but it runs on
 k3d (k3s-in-docker), not a kubeadm cluster**, and that boundary decides what can and cannot
 be practiced here for real. Read this before you rely on it as your only prep.
 
@@ -11,23 +11,23 @@ be practiced here for real. Read this before you rely on it as your only prep.
 
 | Exam area | Real exam | This simulator |
 |-----------|-----------|----------------|
-| Create / edit / troubleshoot API objects (pods, deploys, svcs, cfgmaps, secrets, PV/PVC, RBAC, jobs, netpol specs) | live | **Live, fully graded** — this is ~60–65% of CKA and the sim nails it |
+| Create / edit / troubleshoot API objects (pods, deploys, svcs, cfgmaps, secrets, PV/PVC, RBAC, jobs, netpol specs) | live | **Live, fully graded** - this is ~60-65% of CKA and the sim nails it |
 | Scheduling (nodeSelector, affinity, taints/tolerations, priorityclass) | live | **Live** |
 | Rollouts / rollback / scaling | live | **Live** |
-| App troubleshooting (CrashLoop, ImagePull, Pending, probes, config/secret errors, service selector/port) | live | **Live** — the highest-value practice here |
+| App troubleshooting (CrashLoop, ImagePull, Pending, probes, config/secret errors, service selector/port) | live | **Live** - the highest-value practice here |
 | Ingress | live (nginx ingress) | **Live** (k3s ships Traefik) |
 | Dynamic storage / default StorageClass | live | **Live** (k3s ships `local-path`) |
-| **NetworkPolicy runtime enforcement** | CNI enforces | **Spec-only** — flannel does **not** enforce. You practice writing correct policy; you cannot see traffic actually blocked here. |
+| **NetworkPolicy runtime enforcement** | CNI enforces | **Spec-only** - flannel does **not** enforce. You practice writing correct policy; you cannot see traffic actually blocked here. |
 | **kubeadm install / join / upgrade** | live on real nodes | **Recall only** (command-file tasks). No kubeadm here. |
-| **etcd backup / restore** | live against static-pod etcd | **Recall only** — k3d has no static-pod etcd. |
-| **Static pods, editing `/etc/kubernetes/manifests`, cert renewal** | live, SSH to node | **Not testable** — you don't get an OS-level node shell. |
+| **etcd backup / restore** | live against static-pod etcd | **Recall only** - k3d has no static-pod etcd. |
+| **Static pods, editing `/etc/kubernetes/manifests`, cert renewal** | live, SSH to node | **Not testable** - you don't get an OS-level node shell. |
 | **Node-level troubleshooting** (kubelet down, CNI broken, swap, `journalctl -u kubelet`) | live | **Recall only** |
 
 ### The honest gap
 Roughly the **kubeadm / etcd / static-pod / node-OS slice of Cluster Architecture (25%) and
 control-plane Troubleshooting (30%)** cannot be practiced *for real* in k3d. In this repo those
 appear as **command-recall tasks** (write the exact command to a file, which is graded) so you
-still build the muscle memory — but you must also practice them on a **real kubeadm cluster**
+still build the muscle memory - but you must also practice them on a **real kubeadm cluster**
 (VMs / cloud instances) or on **killer.sh** (free with your exam voucher). Do not skip that.
 
 ---
@@ -41,7 +41,7 @@ now the largest domain, matching the exam.
 |-----------------|:-------:|:-------:|:--------:|
 | Cluster Architecture (25%) | 3 | 4 | 21% |
 | Workloads & Scheduling (15%) | 4 | 5 | 26% |
-| Services & Networking (20%) | 3 | 1* | 12–24%* |
+| Services & Networking (20%) | 3 | 1* | 12-24%* |
 | Storage (10%) | 1 | 2 | 9% |
 | Troubleshooting (30%) | 6 | 5 | **32%** |
 
@@ -50,7 +50,7 @@ Troubleshooting because that's the skill under test; real networking exposure is
 raw 12% suggests (Ingress, NodePort, NetworkPolicy AND/OR, DNS, ClusterIP are all present).
 
 The `cka/001` and `cka/002` **practice labs** are intentionally object-drill heavy (Workloads /
-Storage) — use them to build speed on specific resource types, and use the **mocks** for timed,
+Storage) - use them to build speed on specific resource types, and use the **mocks** for timed,
 exam-shaped simulation.
 
 ---
@@ -78,7 +78,7 @@ exam-shaped simulation.
 2. First 60 seconds, set up your shell: `alias k=kubectl`, `source <(kubectl completion bash)`,
    `export KUBE_EDITOR=vim`, `complete -F __start_kubectl k`.
 3. Triage by weight; **time-box each task to ~5 minutes** and flag anything longer.
-4. `kubectl get <resource> -n <ns>` after every task — verify before moving on.
+4. `kubectl get <resource> -n <ns>` after every task - verify before moving on.
 5. Grade, then review **every** missed task against `answers.md`. Re-attempt failures cold the
    next day. The exam rewards repetition of the same ~40 patterns until they're automatic.
 
@@ -91,9 +91,9 @@ booking, because the real clock and unfamiliar cluster contexts cost time.
 
 `cks/001` covers the object-gradeable slice of CKS well: NetworkPolicy, RBAC least-privilege,
 Pod Security Admission labels, securityContext (non-root, read-only FS, dropped capabilities),
-ServiceAccount token automount, secrets. The parts of CKS that need node/host access —
+ServiceAccount token automount, secrets. The parts of CKS that need node/host access -
 **Falco rule authoring + reload, AppArmor/seccomp profile loading, Trivy/kubesec scanning,
-API-server audit-policy and encryption-at-rest, ImagePolicyWebhook** — are only partially
+API-server audit-policy and encryption-at-rest, ImagePolicyWebhook** - are only partially
 representable here for the same k3d reasons above and should be drilled on killer.sh.
 A second CKS mock (`cks-002`) shaped like these CKA mocks is the recommended next addition.
 
@@ -101,8 +101,8 @@ A second CKS mock (`cks-002`) shaped like these CKA mocks is the recommended nex
 
 ## 6. Where to supplement (do not skip)
 
-- **killer.sh** — free with your CKA/CKS voucher, kubeadm-based, harder than the real exam; the
+- **killer.sh** - free with your CKA/CKS voucher, kubeadm-based, harder than the real exam; the
   single best complement to this sim for the node/etcd/kubeadm gaps.
-- **A kubeadm cluster in VMs** — practice install, `kubeadm upgrade`, etcd backup/restore, static
+- **A kubeadm cluster in VMs** - practice install, `kubeadm upgrade`, etcd backup/restore, static
   pod edits, cert renewal, and node-NotReady recovery for real at least twice.
 - Official curriculum + `kubernetes.io/docs` navigation speed.

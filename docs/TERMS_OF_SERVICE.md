@@ -24,7 +24,7 @@ CK-X is **not affiliated with, endorsed by, or associated with the Cloud Native 
 
 ## 6. Contributions
 - Contributions to CK-X are welcome.
-- By submitting code or content, you agree that it can be used and distributed under the CK-X project’s open-source license.
+- By submitting code or content, you agree that it can be used and distributed under the CK-X project's open-source license.
 
 ## 7. Security Disclaimer
 - CK-X is designed for educational use only and should **not** be deployed in production environments.

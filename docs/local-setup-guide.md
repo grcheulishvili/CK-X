@@ -24,4 +24,4 @@ After making any changes to the code, you can redeploy with:
 docker compose up -d
 ```
 
-This setup has been tested on Mac and Linux environments. 
+This setup has been tested on Mac and Linux environments.

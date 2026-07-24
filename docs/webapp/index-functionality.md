@@ -316,10 +316,10 @@ The `index.html` file serves as the main entry point for the CK-X Simulator, pro
 document.addEventListener('DOMContentLoaded', async () => {
     // Check for existing exam
     await checkCurrentExamStatus();
-    
+
     // Preload labs data
     await fetchLabs(false);
-    
+
     // Initialize UI elements
     initializeUI();
 });
@@ -331,7 +331,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 document.getElementById('startExamBtn').addEventListener('click', async () => {
     // Check for active exam
     const currentExam = await checkCurrentExamStatus();
-    
+
     if (currentExam) {
         showActiveExamWarningModal(currentExam);
     } else {
@@ -396,13 +396,13 @@ async function checkCurrentExamStatus() {
 async function fetchLabs(showLoader = true) {
     try {
         if (showLoader) showLoadingOverlay('Loading available labs...');
-        
+
         const response = await fetch('/facilitator/api/v1/assements/');
         const data = await response.json();
-        
+
         // Update exam options
         updateExamOptions(data);
-        
+
         return data;
     } catch (error) {
         console.error('Error fetching labs:', error);
@@ -419,7 +419,7 @@ async function fetchLabs(showLoader = true) {
 async function startSelectedExam(examId) {
     try {
         showLoadingOverlay('Creating exam session...');
-        
+
         const response = await fetch('/facilitator/api/v1/exams', {
             method: 'POST',
             headers: {
@@ -427,12 +427,12 @@ async function startSelectedExam(examId) {
             },
             body: JSON.stringify({ examId })
         });
-        
+
         if (!response.ok) throw new Error('Failed to create exam session');
-        
+
         const data = await response.json();
         await pollExamStatus(data.id);
-        
+
         // Redirect to exam page
         window.location.href = `/exam.html?id=${data.id}`;
     } catch (error) {
@@ -456,9 +456,9 @@ function showExamSelectionModal() {
 function showActiveExamWarningModal(exam) {
     const modal = new bootstrap.Modal(document.getElementById('activeExamWarningModal'));
     modal.show();
-    
+
     // Update modal content
-    document.getElementById('examInfo').textContent = 
+    document.getElementById('examInfo').textContent =
         `You have an active ${exam.type} exam session.`;
 }
 ```
@@ -469,7 +469,7 @@ function showActiveExamWarningModal(exam) {
 function validateExamSelection() {
     const category = document.getElementById('examCategory').value;
     const exam = document.getElementById('examName').value;
-    
+
     const startButton = document.getElementById('startSelectedExam');
     startButton.disabled = !category || !exam;
 }
@@ -478,7 +478,7 @@ function validateExamSelection() {
 function updateExamDescription() {
     const exam = document.getElementById('examName').value;
     const description = document.getElementById('examDescription');
-    
+
     if (exam) {
         const examData = getExamData(exam);
         description.textContent = examData.description;
@@ -517,7 +517,7 @@ function clearCurrentExam() {
 function updateResultsButtonVisibility() {
     const container = document.querySelector('.view-results-btn-container');
     const currentExam = getCurrentExam();
-    
+
     if (currentExam && currentExam.status === 'EVALUATED') {
         container.style.display = 'block';
     } else {
@@ -529,7 +529,7 @@ function updateResultsButtonVisibility() {
 function updateLoadingState(isLoading, message = '') {
     const loader = document.getElementById('pageLoader');
     const loaderMessage = document.getElementById('loaderMessage');
-    
+
     if (isLoading) {
         loader.style.display = 'flex';
         if (message) loaderMessage.textContent = message;
@@ -551,9 +551,9 @@ function showError(message) {
         ${message}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     `;
-    
+
     document.querySelector('.container').prepend(errorDiv);
-    
+
     // Auto-dismiss after 5 seconds
     setTimeout(() => {
         errorDiv.remove();
@@ -563,7 +563,7 @@ function showError(message) {
 // Handle API Errors
 function handleApiError(error, context) {
     console.error(`Error in ${context}:`, error);
-    
+
     let message = 'An unexpected error occurred.';
     if (error.response) {
         switch (error.response.status) {
@@ -580,7 +580,7 @@ function handleApiError(error, context) {
                 message = error.response.data.message || message;
         }
     }
-    
+
     showError(message);
 }
 ```
@@ -615,4 +615,4 @@ Key aspects of the implementation include:
 - Comprehensive error handling and user feedback
 - Efficient state management using localStorage
 - Responsive design for various screen sizes
-- Clear user flow for exam selection and management 
+- Clear user flow for exam selection and management

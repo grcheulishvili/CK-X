@@ -3,7 +3,9 @@
 A self-hosted practice environment for the Kubernetes certification exams. It runs a real
 cluster in Docker, gives you a browser-based Linux desktop and terminal, and grades every
 task automatically against the live cluster.
+
 ![SCREENSHOT](SCREENSHOT.png)
+
 ## Purpose
 
 Passing CKA, CKAD or CKS is mostly about speed and pattern recognition under a clock, which

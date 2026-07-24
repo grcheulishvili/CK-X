@@ -112,12 +112,12 @@ The `exam.html` file serves as the main exam interface for the CK-X Simulator. H
     <div class="question-panel" id="questionPanel">
         <!-- Question navigation and content -->
     </div>
-    
+
     <!-- Resizable Divider -->
     <div class="panel-divider" id="panelDivider">
         <!-- Resize controls -->
     </div>
-    
+
     <!-- VNC Panel -->
     <div class="vnc-panel" id="vncPanel">
         <!-- Terminal and VNC containers -->
@@ -523,10 +523,10 @@ async function initializeExamSession(examId) {
     try {
         const response = await fetch(`/facilitator/api/v1/exams/${examId}`);
         if (!response.ok) throw new Error('Failed to load exam session');
-        
+
         const data = await response.json();
         setupExamSession(data);
-        
+
         return data;
     } catch (error) {
         console.error('Error initializing exam session:', error);
@@ -542,10 +542,10 @@ async function loadQuestion(questionId) {
     try {
         const response = await fetch(`/facilitator/api/v1/exams/${examId}/questions/${questionId}`);
         if (!response.ok) throw new Error('Failed to load question');
-        
+
         const data = await response.json();
         displayQuestion(data);
-        
+
         return data;
     } catch (error) {
         console.error('Error loading question:', error);
@@ -561,10 +561,10 @@ async function initializeEnvironment() {
     try {
         const response = await fetch(`/facilitator/api/v1/exams/${examId}/environment`);
         if (!response.ok) throw new Error('Failed to initialize environment');
-        
+
         const data = await response.json();
         setupEnvironment(data);
-        
+
         return data;
     } catch (error) {
         console.error('Error initializing environment:', error);
@@ -595,12 +595,12 @@ function updateModalContent(state) {
     const newExamContent = document.getElementById('newExamContent');
     const inProgressContent = document.getElementById('examInProgressContent');
     const completedContent = document.getElementById('examCompletedContent');
-    
+
     // Hide all content
     [newExamContent, inProgressContent, completedContent].forEach(el => {
         el.style.display = 'none';
     });
-    
+
     // Show relevant content
     switch (state) {
         case 'new':
@@ -654,7 +654,7 @@ function saveExamState() {
         answers: submittedAnswers,
         environment: environmentState
     };
-    
+
     localStorage.setItem('examState', JSON.stringify(state));
 }
 
@@ -693,7 +693,7 @@ function saveUIPreferences() {
         viewMode: currentViewMode,
         fullscreen: document.fullscreenElement !== null
     };
-    
+
     localStorage.setItem('uiPreferences', JSON.stringify(preferences));
 }
 
@@ -715,7 +715,7 @@ function loadUIPreferences() {
 function handleVNCError(error) {
     console.error('VNC Connection Error:', error);
     showError('Failed to connect to exam environment');
-    
+
     // Attempt recovery
     attemptVNCReconnect();
 }
@@ -724,7 +724,7 @@ function handleVNCError(error) {
 function handleTerminalError(error) {
     console.error('Terminal Connection Error:', error);
     showError('Failed to connect to terminal');
-    
+
     // Attempt recovery
     attemptTerminalReconnect();
 }
@@ -740,7 +740,7 @@ function showError(message) {
         </div>
         <div class="toast-body">${message}</div>
     `;
-    
+
     document.getElementById('toastContainer').appendChild(toast);
     const bsToast = new bootstrap.Toast(toast);
     bsToast.show();
@@ -754,13 +754,13 @@ async function attemptStateRecovery() {
     try {
         // Check exam status
         const examStatus = await checkExamStatus();
-        
+
         if (examStatus.isActive) {
             // Restore exam state
             await restoreExamState(examStatus);
             return true;
         }
-        
+
         return false;
     } catch (error) {
         console.error('State Recovery Error:', error);
@@ -785,4 +785,4 @@ Key aspects of the implementation include:
 - Dual interface support (VNC and Terminal)
 - Comprehensive error handling and recovery
 - Secure session management
-- Responsive and adaptive design 
+- Responsive and adaptive design

@@ -104,4 +104,4 @@ If you encounter any issues:
 3. Ensure all directories referenced in the script exist
 4. Make sure you're running the script from the correct location (inside the `script` directory)
 5. Check that you have the necessary permissions to build and push images
-6. Verify your Docker Hub account has sufficient privileges 
+6. Verify your Docker Hub account has sufficient privileges

@@ -122,4 +122,4 @@ The service is accessible at:
 
 ## License
 
-ISC 
+ISC

@@ -1,11 +1,11 @@
-# CKS Assessment 01 — Solutions (imperative-first)
+# CKS Assessment 01 - Solutions (imperative-first)
 
 `export do='--dry-run=client -o yaml'`. Use imperative for namespaces, PSA labels, RBAC,
 secrets; concise YAML for NetworkPolicy / securityContext / Ingress-TLS (no generators).
 
 ---
 
-## Q1 — NetworkPolicy: backend ingress + egress
+## Q1 - NetworkPolicy: backend ingress + egress
 ```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: networking.k8s.io/v1
@@ -23,14 +23,14 @@ spec:
 EOF
 ```
 
-## Q2 — TLS Ingress
+## Q2 - TLS Ingress
 ```bash
 kubectl create ingress secure-app -n secure-ingress \
   --rule="secure-app.example.com/*=web-service:80,tls=secure-app-tls"
 kubectl get ingress secure-app -n secure-ingress -o yaml   # confirm spec.tls + rules
 ```
 
-## Q3 — PSA baseline + compliant pod + RBAC to view PSS labels
+## Q3 - PSA baseline + compliant pod + RBAC to view PSS labels
 ```bash
 kubectl create namespace api-security
 kubectl label namespace api-security pod-security.kubernetes.io/enforce=baseline
@@ -41,7 +41,7 @@ kubectl create clusterrolebinding pss-viewer-binding \
   --clusterrole=ns-viewer --serviceaccount=api-security:pss-viewer
 ```
 
-## Q4 — Block node-metadata egress
+## Q4 - Block node-metadata egress
 ```bash
 kubectl run test-pod -n metadata-protect --image=busybox -- sleep 3600
 cat <<EOF | kubectl apply -f -
@@ -59,7 +59,7 @@ spec:
 EOF
 ```
 
-## Q5 — Read-only hostPath + hash host binaries
+## Q5 - Read-only hostPath + hash host binaries
 ```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
@@ -75,7 +75,7 @@ spec:
 EOF
 ```
 
-## Q6 — Least-privilege Role (no secrets/configmaps)
+## Q6 - Least-privilege Role (no secrets/configmaps)
 ```bash
 kubectl create role app-reader-role -n rbac-minimize \
   --verb=get,list,watch --resource=pods,services,deployments
@@ -85,7 +85,7 @@ kubectl create rolebinding app-reader-binding -n rbac-minimize \
 kubectl auth can-i get secrets --as=system:serviceaccount:rbac-minimize:app-reader -n rbac-minimize   # no
 ```
 
-## Q7 — Deployment with token automount disabled
+## Q7 - Deployment with token automount disabled
 ```bash
 kubectl create serviceaccount minimal-sa -n service-account-caution
 kubectl patch serviceaccount minimal-sa -n service-account-caution -p '{"automountServiceAccountToken":false}'
@@ -99,7 +99,7 @@ Pod-template fields to add under `spec.template.spec`:
       automountServiceAccountToken: false
 ```
 
-## Q8 — Restrict egress to API server (allow only role=admin)
+## Q8 - Restrict egress to API server (allow only role=admin)
 ```bash
 kubectl run admin-pod -n api-restrict --image=busybox --labels=role=admin -- sleep 3600
 kubectl run restricted-pod -n api-restrict --image=busybox --labels=role=restricted -- sleep 3600
@@ -117,10 +117,10 @@ spec:
     ports: [{protocol: TCP, port: 443}]
 EOF
 ```
-> Selecting only `role=admin` leaves `restricted-pod` unselected (all egress allowed) — for a
+> Selecting only `role=admin` leaves `restricted-pod` unselected (all egress allowed) - for a
 > true deny you'd add a default-deny-egress selecting `{}` and this allow for admin.
 
-## Q9 — Hardened container (caps, read-only FS, uid/gid)
+## Q9 - Hardened container (caps, read-only FS, uid/gid)
 ```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
@@ -148,7 +148,7 @@ EOF
 > nginx needs writable `/var/cache/nginx`, `/var/run`, `/tmp`; with a read-only rootfs those
 > must be emptyDir mounts or the container crashes.
 
-## Q10 — Seccomp RuntimeDefault + profile ConfigMap
+## Q10 - Seccomp RuntimeDefault + profile ConfigMap
 ```bash
 kubectl create configmap seccomp-config -n seccomp-profile --from-file=profile.json=/dev/stdin <<'JSON'
 {
@@ -169,7 +169,7 @@ spec:
 EOF
 ```
 
-## Q11 — PSA baseline: compliant vs violating pod
+## Q11 - PSA baseline: compliant vs violating pod
 ```bash
 kubectl label namespace pod-security pod-security.kubernetes.io/enforce=baseline
 kubectl run compliant-pod -n pod-security --image=nginx     # allowed
@@ -179,7 +179,7 @@ kubectl run non-compliant-pod -n pod-security --image=nginx \
   2> /tmp/violation.txt || cat /tmp/violation.txt
 ```
 
-## Q12 — Secret as files + as env vars
+## Q12 - Secret as files + as env vars
 ```bash
 kubectl create secret generic db-creds -n secrets-management \
   --from-literal=username=admin --from-literal=password='SecretP@ssw0rd'

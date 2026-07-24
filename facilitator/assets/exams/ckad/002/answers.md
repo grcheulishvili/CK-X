@@ -1,17 +1,17 @@
-# CKAD Assessment 02 — Solutions (imperative-first)
+# CKAD Assessment 02 - Solutions (imperative-first)
 
 `export do='--dry-run=client -o yaml'`. Imperative first; generate-then-edit for pods needing
 volumes/probes/security/env-remap, and for PV/PVC/NetworkPolicy/CRD (no generators).
 
 ---
 
-## Q1 — Namespace + labelled pod
+## Q1 - Namespace + labelled pod
 ```bash
 kubectl create namespace core-concepts
 kubectl run nginx-pod -n core-concepts --image=nginx --labels=app=web,env=prod
 ```
 
-## Q2 — Multi-container pod (shared emptyDir)
+## Q2 - Multi-container pod (shared emptyDir)
 ```bash
 kubectl create namespace multi-container
 cat <<EOF | kubectl apply -f -
@@ -29,7 +29,7 @@ spec:
 EOF
 ```
 
-## Q3 — Deployment + ClusterIP service
+## Q3 - Deployment + ClusterIP service
 ```bash
 kubectl create namespace pod-design
 kubectl create deployment frontend -n pod-design --image=nginx:1.19.0 --replicas=3
@@ -39,7 +39,7 @@ kubectl patch deployment frontend -n pod-design -p \
 kubectl expose deployment frontend -n pod-design --name=frontend-svc --port=80 --target-port=80 --type=ClusterIP
 ```
 
-## Q4 — ConfigMap (env) + Secret (volume) + pod
+## Q4 - ConfigMap (env) + Secret (volume) + pod
 ```bash
 kubectl create namespace configuration
 kubectl create configmap app-config -n configuration \
@@ -60,7 +60,7 @@ spec:
 EOF
 ```
 
-## Q5 — Probes + resources
+## Q5 - Probes + resources
 ```bash
 kubectl create namespace observability
 kubectl run probes-pod -n observability --image=nginx $do > p.yaml
@@ -74,7 +74,7 @@ Add to the container, then apply:
       limits:   {cpu: 200m, memory: 256Mi}
 ```
 
-## Q6 — Deployment + three service types
+## Q6 - Deployment + three service types
 ```bash
 kubectl create namespace services
 kubectl create deployment web-app -n services --image=nginx:alpine --replicas=3
@@ -87,7 +87,7 @@ kubectl expose deployment web-app -n services --name=web-svc-nodeport --port=80 
 kubectl apply -f np.yaml
 ```
 
-## Q7 — PV + PVC + MySQL pod
+## Q7 - PV + PVC + MySQL pod
 ```bash
 kubectl create namespace state
 cat <<EOF | kubectl apply -f -
@@ -124,7 +124,7 @@ spec:
 EOF
 ```
 
-## Q8 — CronJob (every 5 min, OnFailure, deadline)
+## Q8 - CronJob (every 5 min, OnFailure, deadline)
 ```bash
 kubectl create namespace pod-design 2>/dev/null
 kubectl create cronjob backup-job -n pod-design --image=busybox --schedule="*/5 * * * *" \
@@ -133,7 +133,7 @@ kubectl -n pod-design patch cronjob backup-job -p \
   '{"spec":{"jobTemplate":{"spec":{"activeDeadlineSeconds":100,"template":{"spec":{"restartPolicy":"OnFailure"}}}}}}'
 ```
 
-## Q9 — Troubleshoot `broken-deployment`
+## Q9 - Troubleshoot `broken-deployment`
 ```bash
 kubectl -n troubleshooting describe deploy broken-deployment
 kubectl -n troubleshooting get pods
@@ -145,7 +145,7 @@ kubectl -n troubleshooting set resources deploy/broken-deployment --requests=cpu
 kubectl -n troubleshooting rollout status deploy/broken-deployment
 ```
 
-## Q10 — NetworkPolicy (ingress + egress) + test pods
+## Q10 - NetworkPolicy (ingress + egress) + test pods
 ```bash
 kubectl create namespace networking
 kubectl run secure-db -n networking --image=postgres:12 --labels=app=db
@@ -167,7 +167,7 @@ spec:
 EOF
 ```
 
-## Q11 — Security context pod
+## Q11 - Security context pod
 ```bash
 kubectl create namespace security
 cat <<EOF | kubectl apply -f -
@@ -186,7 +186,7 @@ spec:
 EOF
 ```
 
-## Q12 — Build + run a Docker image
+## Q12 - Build + run a Docker image
 ```bash
 cat > /tmp/Dockerfile <<'DF'
 FROM nginx:alpine
@@ -200,7 +200,7 @@ docker build -t my-nginx:v1 -f /tmp/Dockerfile /tmp
 docker run -d --name my-web -p 8080:80 my-nginx:v1
 ```
 
-## Q13 — Job (Never, backoffLimit 4, deadline 30)
+## Q13 - Job (Never, backoffLimit 4, deadline 30)
 ```bash
 kubectl create namespace jobs
 kubectl create job data-processor -n jobs --image=busybox \
@@ -209,7 +209,7 @@ kubectl -n jobs patch job data-processor -p '{"spec":{"backoffLimit":4,"activeDe
 # kubectl create job sets restartPolicy: Never already
 ```
 
-## Q14 — Init container waits for a service
+## Q14 - Init container waits for a service
 ```bash
 kubectl create namespace init-containers
 kubectl create deployment myservice -n init-containers --image=nginx
@@ -230,7 +230,7 @@ spec:
 EOF
 ```
 
-## Q15 — Helm install + save notes
+## Q15 - Helm install + save notes
 ```bash
 kubectl create namespace helm-basics
 helm repo add bitnami https://charts.bitnami.com/bitnami
@@ -239,7 +239,7 @@ helm install nginx-release bitnami/nginx -n helm-basics
 helm get notes nginx-release -n helm-basics > /tmp/release-notes.txt
 ```
 
-## Q16 — Startup + liveness + readiness probes
+## Q16 - Startup + liveness + readiness probes
 ```bash
 kubectl create namespace health-checks
 kubectl run health-check-pod -n health-checks --image=nginx $do > h.yaml
@@ -251,7 +251,7 @@ Add to the container, then apply:
     readinessProbe: {httpGet: {path: /, port: 80}, initialDelaySeconds: 5,  periodSeconds: 3, failureThreshold: 3}
 ```
 
-## Q17 — Lifecycle hooks + grace period
+## Q17 - Lifecycle hooks + grace period
 ```bash
 kubectl create namespace pod-lifecycle
 cat <<EOF | kubectl apply -f -
@@ -269,7 +269,7 @@ spec:
 EOF
 ```
 
-## Q18 — CRD + custom resource
+## Q18 - CRD + custom resource
 ```bash
 kubectl create namespace crd-demo
 cat <<EOF | kubectl apply -f -
@@ -303,7 +303,7 @@ spec: {image: nginx:1.19.0, replicas: 3}
 EOF
 ```
 
-## Q19 — kubectl custom-columns / jsonpath to files
+## Q19 - kubectl custom-columns / jsonpath to files
 ```bash
 kubectl create namespace custom-columns-demo
 kubectl get pods -A \
@@ -314,7 +314,7 @@ kubectl get pods -A \
   > /tmp/all-container-images.txt
 ```
 
-## Q20 — Pod pulling env from literals + ConfigMap + Secret + CM volume
+## Q20 - Pod pulling env from literals + ConfigMap + Secret + CM volume
 ```bash
 kubectl create namespace pod-configuration
 kubectl create configmap app-config -n pod-configuration \

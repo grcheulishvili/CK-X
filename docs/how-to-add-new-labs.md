@@ -266,4 +266,4 @@ Before submitting your lab:
 3. Test thoroughly
 4. Submit a pull request with a description of your lab
 
-Thank you for contributing to the CK-X community! 
+Thank you for contributing to the CK-X community!

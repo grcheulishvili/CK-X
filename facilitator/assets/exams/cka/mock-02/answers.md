@@ -193,7 +193,7 @@ spec:
       port: 8080
 ```
 
-> If `namespaceSelector` and `podSelector` were in two separate `- ` list items, they would be ORed instead of ANDed — the classic exam trap.
+> If `namespaceSelector` and `podSelector` were in two separate `- ` list items, they would be ORed instead of ANDed - the classic exam trap.
 
 ## Question 16
 

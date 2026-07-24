@@ -17,7 +17,7 @@ This guide provides instructions for deploying the CK-X Simulator on different o
 Open Terminal and run:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/grcheulishvili/CK-X/master/scripts/install.sh | bash   
+curl -fsSL https://raw.githubusercontent.com/grcheulishvili/CK-X/master/scripts/install.sh | bash
 ```
 
 or, if the current user does not have the permission to run docker commands:
@@ -49,7 +49,7 @@ irm https://raw.githubusercontent.com/grcheulishvili/CK-X/master/scripts/install
    docker compose up -d
    ```
 
-### Via Script 
+### Via Script
 
 If you prefer to install manually or the quick install doesn't work:
 
@@ -103,7 +103,7 @@ docker compose up -d
 ### Common Issues
 
 1. **Port 30080 Already in Use**
-   - Check what's using the port: 
+   - Check what's using the port:
      - Windows: `netstat -ano | findstr :30080`
      - Linux/Mac: `lsof -i :30080`
    - Stop the conflicting service or change the port in docker-compose.yml

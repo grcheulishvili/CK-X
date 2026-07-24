@@ -1,4 +1,4 @@
-# CKA Assessment 01 — Solutions (imperative-first)
+# CKA Assessment 01 - Solutions (imperative-first)
 
 These solutions use the **real exam workflow**: reach for an imperative `kubectl` command
 first, and only drop to YAML when a resource has no generator (StorageClass, PVC,
@@ -12,7 +12,7 @@ export do='--dry-run=client -o yaml'   # k run x --image=nginx $do > x.yaml
 
 ---
 
-## Question 1 — Pod in a namespace with a label
+## Question 1 - Pod in a namespace with a label
 
 **Approach:** fully imperative.
 
@@ -40,10 +40,10 @@ On a real kubeadm node the kubelet picks this up within seconds and the running 
 so the manifest itself is what is graded. The exam skill is knowing the directory and that
 `--dry-run=client -o yaml` writes the manifest for you.
 
-## Question 3 — StorageClass + PVC
+## Question 3 - StorageClass + PVC
 
 **Approach:** no imperative generator exists for StorageClass or PVC, so apply a small YAML.
-Keep this skeleton bookmarked — you'll reuse it every exam.
+Keep this skeleton bookmarked - you'll reuse it every exam.
 
 ```bash
 kubectl create namespace storage
@@ -67,13 +67,13 @@ spec:
     requests:
       storage: 1Gi
 EOF
-# verify (PVC stays Pending until a pod consumes it — WaitForFirstConsumer)
+# verify (PVC stays Pending until a pod consumes it - WaitForFirstConsumer)
 kubectl get sc fast-storage; kubectl get pvc -n storage
 ```
 
 ---
 
-## Question 4 — Multi-container pod sharing an emptyDir
+## Question 4 - Multi-container pod sharing an emptyDir
 
 **Approach:** `kubectl run` only makes single-container pods, so generate one container, then
 edit in the second container and the shared volume.
@@ -111,9 +111,9 @@ kubectl get pod logger -n monitoring
 
 ---
 
-## Question 5 — RBAC (ServiceAccount + Role + RoleBinding)
+## Question 5 - RBAC (ServiceAccount + Role + RoleBinding)
 
-**Approach:** fully imperative — the `kubectl create role/rolebinding` generators are faster
+**Approach:** fully imperative - the `kubectl create role/rolebinding` generators are faster
 and less error-prone than writing the RBAC YAML by hand.
 
 ```bash
@@ -126,9 +126,9 @@ kubectl auth can-i list pods --as=system:serviceaccount:default:app-sa
 
 ---
 
-## Question 6 — NetworkPolicy (allow one label, deny the rest)
+## Question 6 - NetworkPolicy (allow one label, deny the rest)
 
-**Approach:** NetworkPolicy has no generator → YAML. Selecting `role=db` for Ingress with a
+**Approach:** NetworkPolicy has no generator -> YAML. Selecting `role=db` for Ingress with a
 single `from` allowing `role=frontend` implicitly denies all other ingress to `role=db`.
 
 ```bash
@@ -156,7 +156,7 @@ EOF
 ```
 
 > This lab's CNI (flannel) doesn't enforce NetworkPolicy, so it's graded on the spec. On the
-> real exam the CNI enforces it — test with a temporary pod:
+> real exam the CNI enforces it - test with a temporary pod:
 > `kubectl run t --rm -it --image=busybox -- wget -qO- <db-ip>:3306`.
 
 ---
@@ -197,7 +197,7 @@ Knowing that difference is the actual exam skill here.
 
 ---
 
-## Question 8 — Pod with resource requests/limits
+## Question 8 - Pod with resource requests/limits
 
 **Approach:** generate, then add the resources block (`kubectl run` can't express both
 requests and limits cleanly).
@@ -225,7 +225,7 @@ kubectl get pod resource-pod -n monitoring
 
 ---
 
-## Question 9 — ConfigMap mounted as a volume
+## Question 9 - ConfigMap mounted as a volume
 
 **Approach:** ConfigMap imperatively; mount it by editing a generated pod (volume mounts have
 no flag).
@@ -258,7 +258,7 @@ kubectl exec config-pod -- cat /etc/config/APP_COLOR   # -> blue
 
 ---
 
-## Question 10 — Liveness and readiness probes
+## Question 10 - Liveness and readiness probes
 
 **Approach:** generate, then add both probes.
 

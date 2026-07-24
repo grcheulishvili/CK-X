@@ -30,11 +30,11 @@ images** (`node`, `ubuntu`, `nginx`, `alpine`, `docker:dind`, `redis`) and the o
 
    **Verified:** `nishanb/ck-x-simulator-vnc-base:v3` was `consol/ubuntu-xfce-vnc`
    (Ubuntu 16.04, XFCE 4.12), which upstream has since deprecated in favour of the
-   Debian-based images; the default now tracks `consol/debian-xfce-vnc` — confirmed from the running image's ConSol labels and its
+   Debian-based images; the default now tracks `consol/debian-xfce-vnc` - confirmed from the running image's ConSol labels and its
    verbatim `vnc_startup.sh`. The swap is transparent because **all VNC settings are injected
    at runtime by `docker-compose.yaml`** (`VNC_PW` / `VNC_PASSWORD=bakku-the-wizard`,
    `VNC_RESOLUTION=1280x800`, `VNC_VIEW_ONLY=false`), and the webapp auto-connects noVNC with
-   that same password — so whatever a base image bakes in is overridden. Nothing hardcodes a
+   that same password - so whatever a base image bakes in is overridden. Nothing hardcodes a
    value that only `v3` had.
 
 3. **The installer builds locally.** `scripts/install.sh` now uses the repo's own
@@ -64,15 +64,15 @@ echo 'VNC_BASE_IMAGE=ckx/vnc-base:local' >> .env    # picked up by compose build
 or change the `ARG VNC_BASE_IMAGE=` default in `remote-desktop/Dockerfile`.
 
 > **Status:** `v3` was ConSol `ubuntu-xfce-vnc` on **Ubuntu 16.04 / XFCE 4.12** (now EOL, so a
-> faithful 16.04 rebuild is fragile — the apt archives have moved). This `vnc-base` is a
+> faithful 16.04 rebuild is fragile - the apt archives have moved). This `vnc-base` is a
 > **modernized equivalent on Ubuntu 22.04** that satisfies the same contract. It's the one
 > piece that couldn't be verified against a live desktop here; if the desktop doesn't come up,
-> check `docker logs ck-x-remote-desktop-1` — it's almost certainly the `vnc_startup.sh`
+> check `docker logs ck-x-remote-desktop-1` - it's almost certainly the `vnc_startup.sh`
 > VNC/noVNC invocation for your package versions. Tier 1 (ConSol default) is the exact `v3`
 > lineage and already removes the nishanb dependency, so rely on that while tuning `vnc-base`.
 
 ## Optional: publish your own copies
 
 If you'd rather not rebuild each time, push the locally built images to **your own** registry
-and update the `image:` names — but keep `pull_policy: build` off only for the machines that
+and update the `image:` names - but keep `pull_policy: build` off only for the machines that
 should pull. The point is that no name in this repo references `nishanb` anymore.

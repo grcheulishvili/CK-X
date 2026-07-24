@@ -444,7 +444,7 @@
       "id": "17",
       "namespace": "default",
       "machineHostname": "controlplane",
-      "question": "You have an etcd snapshot at `/opt/backup.db` taken from a kubeadm control plane. Write the full `etcdctl snapshot restore` command that restores it into the data directory `/var/lib/etcd-restored` to the file `/tmp/exam/q17_etcd_restore.txt`.\n\n> Note: this cluster is k3d, so you cannot run the restore for real here — the task validates that you can recall the exact command. On the real exam you would also update the etcd static pod manifest's `--data-dir` and `hostPath` to match.\n",
+      "question": "You have an etcd snapshot at `/opt/backup.db` taken from a kubeadm control plane. Write the full `etcdctl snapshot restore` command that restores it into the data directory `/var/lib/etcd-restored` to the file `/tmp/exam/q17_etcd_restore.txt`.\n\n> Note: this cluster is k3d, so you cannot run the restore for real here - the task validates that you can recall the exact command. On the real exam you would also update the etcd static pod manifest's `--data-dir` and `hostPath` to match.\n",
       "concepts": [
         "clusterarch",
         "etcd",

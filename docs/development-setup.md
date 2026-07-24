@@ -136,7 +136,7 @@ k8s-api-server:
   hostname: k8s-api-server
   privileged: true  # Required for running containers inside KIND
   expose:
-    - "6443:6443" 
+    - "6443:6443"
     - "22"
   volumes:
     - kube-config:/home/candidate/.kube  # Shared volume for Kubernetes config
@@ -275,4 +275,4 @@ volumes:
 - [Docker Compose Documentation](https://docs.docker.com/compose/)
 - [Kubernetes Documentation](https://kubernetes.io/docs/)
 - [KIND Documentation](https://kind.sigs.k8s.io/)
-- [VNC Documentation](https://www.realvnc.com/en/connect/docs/) 
+- [VNC Documentation](https://www.realvnc.com/en/connect/docs/)

@@ -1,54 +1,54 @@
-# Helm Speedrun — Solutions
+# Helm Speedrun - Solutions
 
 All tasks are Helm CLI workflows.
 
 ---
 
-## Q1 — Helm version
+## Q1 - Helm version
 ```bash
 mkdir -p /tmp/exam/q1
 helm version > /tmp/exam/q1/helm-version.txt
 ```
 
-## Q2 — Add + update repo
+## Q2 - Add + update repo
 ```bash
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo update
 helm repo list
 ```
 
-## Q3 — Search chart
+## Q3 - Search chart
 ```bash
 mkdir -p /tmp/exam/q3
 helm search repo bitnami/nginx > /tmp/exam/q3/nginx-charts.txt
 ```
 
-## Q4 — Install with value overrides
+## Q4 - Install with value overrides
 ```bash
 helm install web-server bitnami/nginx -n default \
   --set service.type=NodePort --set service.nodePorts.http=30080
 ```
 
-## Q5 — List releases (all namespaces)
+## Q5 - List releases (all namespaces)
 ```bash
 mkdir -p /tmp/exam/q5
 helm list -A > /tmp/exam/q5/releases.txt
 ```
 
-## Q6 — Status + rendered manifests
+## Q6 - Status + rendered manifests
 ```bash
 mkdir -p /tmp/exam/q6
 helm status web-server -n default > /tmp/exam/q6/web-server-status.txt
 helm get manifest web-server -n default > /tmp/exam/q6/web-server-manifests.txt
 ```
 
-## Q7 — Upgrade replica count
+## Q7 - Upgrade replica count
 ```bash
 helm upgrade web-server bitnami/nginx -n default --reuse-values --set replicaCount=3
 kubectl get pods -n default -l app.kubernetes.io/instance=web-server
 ```
 
-## Q8 — Values file install
+## Q8 - Values file install
 ```bash
 mkdir -p /tmp/exam/q8
 cat > /tmp/exam/q8/redis-values.yaml <<'YML'
@@ -65,7 +65,7 @@ YML
 helm install cache-db bitnami/redis -n default -f /tmp/exam/q8/redis-values.yaml
 ```
 
-## Q9 — Create + edit a chart
+## Q9 - Create + edit a chart
 ```bash
 cd /tmp/exam/q9 2>/dev/null || cd /tmp
 helm create webapp
@@ -73,7 +73,7 @@ sed -i 's/^description:.*/description: A simple web application/' webapp/Chart.y
 sed -i 's/^appVersion:.*/appVersion: "1.2.3"/' webapp/Chart.yaml
 ```
 
-## Q10 — Package + local repo
+## Q10 - Package + local repo
 ```bash
 helm package webapp
 mkdir -p /tmp/exam/q10/charts
@@ -83,7 +83,7 @@ helm repo add localrepo /tmp/exam/q10/charts
 helm repo list
 ```
 
-## Q11 — Rollback to first revision
+## Q11 - Rollback to first revision
 ```bash
 helm history web-server -n default
 helm rollback web-server 1 -n default
@@ -91,7 +91,7 @@ helm history web-server -n default          # confirm new revision points back t
 kubectl get pods -n default -l app.kubernetes.io/instance=web-server
 ```
 
-## Q12 — Debug a broken release
+## Q12 - Debug a broken release
 ```bash
 mkdir -p /tmp/exam/q12
 helm status buggy-app -n default

@@ -1,17 +1,17 @@
-# CKAD Assessment 01 — Solutions (imperative-first)
+# CKAD Assessment 01 - Solutions (imperative-first)
 
 `export do='--dry-run=client -o yaml'`. Use imperative generators; generate-then-edit for
 anything without one (PV/PVC/SC, multi-container pods, probes, secrets-as-env-mapping, CRD).
 
 ---
 
-## Q1 — Deployment in a namespace
+## Q1 - Deployment in a namespace
 ```bash
 kubectl create namespace dev
 kubectl create deployment nginx-deployment -n dev --image=nginx:latest --replicas=3
 ```
 
-## Q2 — PersistentVolume (hostPath, Retain)
+## Q2 - PersistentVolume (hostPath, Retain)
 ```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
@@ -25,7 +25,7 @@ spec:
 EOF
 ```
 
-## Q3 — StorageClass (no-provisioner, WaitForFirstConsumer)
+## Q3 - StorageClass (no-provisioner, WaitForFirstConsumer)
 ```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: storage.k8s.io/v1
@@ -36,7 +36,7 @@ volumeBindingMode: WaitForFirstConsumer
 EOF
 ```
 
-## Q4 — PVC using that StorageClass
+## Q4 - PVC using that StorageClass
 ```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
@@ -49,8 +49,8 @@ spec:
 EOF
 ```
 
-## Q5 — Troubleshoot `broken-app`
-**Workflow:** read state → find the cause → fix the field.
+## Q5 - Troubleshoot `broken-app`
+**Workflow:** read state -> find the cause -> fix the field.
 ```bash
 kubectl -n troubleshooting get pods
 kubectl -n troubleshooting describe deploy broken-app        # Events / image / resources
@@ -64,7 +64,7 @@ kubectl -n troubleshooting rollout status deploy/broken-app
 ```
 (If it's a resources/probe fault instead, `kubectl -n troubleshooting edit deploy broken-app` and correct that field.)
 
-## Q6 — Sidecar pod (shared emptyDir)
+## Q6 - Sidecar pod (shared emptyDir)
 ```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
@@ -81,7 +81,7 @@ spec:
 EOF
 ```
 
-## Q7 — Troubleshoot Service `web-service`
+## Q7 - Troubleshoot Service `web-service`
 ```bash
 kubectl -n troubleshooting get svc web-service -o wide
 kubectl -n troubleshooting get endpoints web-service        # empty => selector/port wrong
@@ -91,7 +91,7 @@ kubectl -n troubleshooting patch svc web-service -p '{"spec":{"selector":{"app":
 kubectl -n troubleshooting get endpoints web-service        # now populated
 ```
 
-## Q8 — Cap CPU/memory on the hot container in `logging-pod`
+## Q8 - Cap CPU/memory on the hot container in `logging-pod`
 ```bash
 kubectl -n troubleshooting top pod logging-pod --containers   # find the greedy container
 kubectl -n troubleshooting get pod logging-pod -o yaml > lp.yaml
@@ -99,7 +99,7 @@ kubectl -n troubleshooting get pod logging-pod -o yaml > lp.yaml
 kubectl -n troubleshooting replace --force -f lp.yaml         # pods are immutable -> recreate
 ```
 
-## Q9 — ConfigMap + pod env + resources
+## Q9 - ConfigMap + pod env + resources
 ```bash
 kubectl create configmap app-config -n workloads \
   --from-literal=APP_ENV=production --from-literal=LOG_LEVEL=info
@@ -113,7 +113,7 @@ Add `envFrom` + `resources`, then apply:
       limits:   {cpu: 200m, memory: 256Mi}
 ```
 
-## Q10 — Secret + MySQL pod (env key remap)
+## Q10 - Secret + MySQL pod (env key remap)
 ```bash
 kubectl create secret generic db-credentials -n workloads \
   --from-literal=username=admin --from-literal=random=true --from-literal=password=securepass
@@ -132,7 +132,7 @@ spec:
 EOF
 ```
 
-## Q11 — CronJob (hourly, Forbid, history limits)
+## Q11 - CronJob (hourly, Forbid, history limits)
 ```bash
 kubectl create cronjob log-cleaner -n workloads --image=busybox --schedule="0 * * * *" \
   -- find /var/log -type f -name "*.log" -mtime +7 -delete
@@ -140,7 +140,7 @@ kubectl -n workloads patch cronjob log-cleaner -p \
   '{"spec":{"concurrencyPolicy":"Forbid","successfulJobsHistoryLimit":3,"failedJobsHistoryLimit":1}}'
 ```
 
-## Q12 — Pod with liveness (HTTP) + readiness (TCP) probes
+## Q12 - Pod with liveness (HTTP) + readiness (TCP) probes
 ```bash
 kubectl run health-pod -n workloads --image=emilevauge/whoami $do > health-pod.yaml
 ```
@@ -158,14 +158,14 @@ Add to the container, then apply:
       initialDelaySeconds: 5
 ```
 
-## Q13 — ClusterRole + ClusterRoleBinding for user `jane`
+## Q13 - ClusterRole + ClusterRoleBinding for user `jane`
 ```bash
 kubectl create clusterrole pod-reader --verb=get,watch,list --resource=pods
 kubectl create clusterrolebinding read-pods --clusterrole=pod-reader --user=jane
 kubectl auth can-i list pods --as=jane -A
 ```
 
-## Q14 — Helm: Bitnami nginx, 2 replicas
+## Q14 - Helm: Bitnami nginx, 2 replicas
 ```bash
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo update
@@ -174,7 +174,7 @@ helm install nginx bitnami/nginx -n web --set replicaCount=2
 kubectl get pods,svc -n web
 ```
 
-## Q15 — CustomResourceDefinition
+## Q15 - CustomResourceDefinition
 ```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: apiextensions.k8s.io/v1
@@ -201,7 +201,7 @@ spec:
 EOF
 ```
 
-## Q16 — NetworkPolicy (frontend → web:80)
+## Q16 - NetworkPolicy (frontend -> web:80)
 ```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: networking.k8s.io/v1
@@ -216,7 +216,7 @@ spec:
 EOF
 ```
 
-## Q17 — ClusterIP service (80 → 8080, selects app=backend)
+## Q17 - ClusterIP service (80 -> 8080, selects app=backend)
 ```bash
 kubectl create service clusterip internal-app -n networking --tcp=80:8080 $do > svc.yaml
 # the generator sets selector app=internal-app; change it to app=backend, then apply
@@ -224,7 +224,7 @@ sed -i 's/app: internal-app/app: backend/' svc.yaml
 kubectl apply -f svc.yaml
 ```
 
-## Q18 — NodePort service (80 → 8080, nodePort 30080)
+## Q18 - NodePort service (80 -> 8080, nodePort 30080)
 ```bash
 kubectl expose deployment web-frontend -n networking --name=public-web \
   --port=80 --target-port=8080 --type=NodePort $do > public-web.yaml
@@ -232,13 +232,13 @@ kubectl expose deployment web-frontend -n networking --name=public-web \
 kubectl apply -f public-web.yaml
 ```
 
-## Q19 — Ingress (host-based)
+## Q19 - Ingress (host-based)
 ```bash
 kubectl create ingress api-ingress -n networking \
   --rule="api.example.com/*=api-service:80"
 ```
 
-## Q20 — Job (run once, deadline 30s, restartPolicy Never)
+## Q20 - Job (run once, deadline 30s, restartPolicy Never)
 ```bash
 kubectl create job hello-job -n networking --image=busybox \
   -- sh -c "echo 'Hello from Kubernetes job!'"
@@ -246,7 +246,7 @@ kubectl -n networking patch job hello-job -p '{"spec":{"activeDeadlineSeconds":3
 # kubectl create job already sets restartPolicy: Never
 ```
 
-## Q21 — Export image in OCI format
+## Q21 - Export image in OCI format
 ```bash
 docker pull nginx:latest
 mkdir -p /root/oci-images

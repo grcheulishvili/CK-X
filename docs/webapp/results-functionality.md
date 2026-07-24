@@ -333,10 +333,10 @@ async function fetchExamResults(examId) {
     try {
         const response = await fetch(`/facilitator/api/v1/exams/${examId}/results`);
         if (!response.ok) throw new Error('Failed to fetch results');
-        
+
         const data = await response.json();
         processResults(data);
-        
+
         return data;
     } catch (error) {
         console.error('Error fetching results:', error);
@@ -352,10 +352,10 @@ async function fetchQuestionDetails(questionId) {
     try {
         const response = await fetch(`/facilitator/api/v1/exams/${examId}/questions/${questionId}`);
         if (!response.ok) throw new Error('Failed to fetch question details');
-        
+
         const data = await response.json();
         displayQuestionDetails(data);
-        
+
         return data;
     } catch (error) {
         console.error('Error fetching question details:', error);
@@ -372,12 +372,12 @@ async function terminateSession() {
         const response = await fetch(`/facilitator/api/v1/exams/${examId}/terminate`, {
             method: 'POST'
         });
-        
+
         if (!response.ok) throw new Error('Failed to terminate session');
-        
+
         clearSessionData();
         redirectToDashboard();
-        
+
         return true;
     } catch (error) {
         console.error('Error terminating session:', error);
@@ -454,7 +454,7 @@ function saveResultsState() {
         results: currentResults,
         timestamp: Date.now()
     };
-    
+
     localStorage.setItem('resultsState', JSON.stringify(state));
 }
 
@@ -490,7 +490,7 @@ function saveUIPreferences() {
         sortOrder: currentSortOrder,
         filterSettings: currentFilters
     };
-    
+
     localStorage.setItem('uiPreferences', JSON.stringify(preferences));
 }
 
@@ -512,10 +512,10 @@ function loadUIPreferences() {
 function showError(message) {
     const errorElement = document.getElementById('errorMessage');
     const errorText = document.getElementById('errorText');
-    
+
     errorText.textContent = message;
     errorElement.style.display = 'block';
-    
+
     // Auto-hide after 5 seconds
     setTimeout(() => {
         hideError();
@@ -568,4 +568,4 @@ Key aspects of the implementation include:
 - Flexible review options
 - Robust error handling
 - Secure session management
-- Responsive and intuitive interface 
+- Responsive and intuitive interface
