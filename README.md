@@ -1,8 +1,8 @@
 # CK-X Simulator
 
-A self-hosted practice environment for the Kubernetes certification exams. It runs a real
-cluster in Docker, gives you a browser-based Linux desktop and terminal, and grades every
-task automatically against the live cluster.
+A self-hosted exam simulator for the Kubernetes certifications: CKA, CKAD and CKS. It runs a
+real Kubernetes cluster in Docker, gives you a browser-based Linux desktop and terminal, and
+grades all 145 practice tasks automatically against the live cluster.
 
 ![SCREENSHOT](SCREENSHOT.png)
 
