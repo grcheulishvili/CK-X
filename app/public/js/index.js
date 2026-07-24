@@ -1,3 +1,9 @@
+// Short alias for translated strings; falls back to the key's English default
+// when i18n has not loaded yet.
+function T(key, fallback) {
+    return (window.i18n && window.i18n.t) ? window.i18n.t(key) : fallback;
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const startExamBtn = document.getElementById('startExamBtn');
     const pageLoader = document.getElementById('pageLoader');
@@ -125,19 +131,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content rounded">
                         <div class="modal-header bg-dark text-white rounded-top">
-                            <h5 class="modal-title text-white" id="activeExamWarningModalLabel">Active Exam Detected</h5>
+                            <h5 class="modal-title text-white" id="activeExamWarningModalLabel">${T('exam.activeTitle', 'Active Exam Detected')}</h5>
                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <div class="alert alert-info">
-                                <p>You already have an active exam session:</p>
-                                <p><strong>${examData.info?.name || 'Unknown Exam'}</strong></p>
-                                <p class="mb-0">Only one active exam session can be present at a time.</p>
+                                <p>${T('exam.activeBody', 'You already have an active exam session:')}</p>
+                                <p><strong>${examData.info?.name || T('exam.unknown', 'Unknown Exam')}</strong></p>
+                                <p class="mb-0">${T('exam.activeOnlyOne', 'Only one active exam session can be present at a time.')}</p>
                             </div>
                         </div>
                         <div class="modal-footer rounded-bottom">
-                            <button type="button" class="btn btn-sm btn-primary" id="continueSessionBtn">CONTINUE CURRENT SESSION</button>
-                            <button type="button" class="btn btn-sm btn-danger" id="terminateAndProceedBtn">TERMINATE AND PROCEED</button>
+                            <button type="button" class="btn btn-sm btn-primary" id="continueSessionBtn">${T('exam.continue', 'CONTINUE CURRENT SESSION')}</button>
+                            <button type="button" class="btn btn-sm btn-danger" id="terminateAndProceedBtn">${T('exam.terminate', 'TERMINATE AND PROCEED')}</button>
                         </div>
                     </div>
                 </div>
@@ -176,7 +182,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Update button to show progress
             const terminateBtn = document.getElementById('terminateAndProceedBtn');
             terminateBtn.disabled = true;
-            terminateBtn.innerHTML = '<div class="d-flex align-items-center justify-content-center"><span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span><span>TERMINATING...</span></div>';
+            terminateBtn.innerHTML = '<div class="d-flex align-items-center justify-content-center"><span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span><span>' + T('exam.terminating', 'TERMINATING...') + '</span></div>';
             
             // Show loading overlay
             showLoadingOverlay();
@@ -217,9 +223,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Reset button state
                 terminateBtn.disabled = false;
-                terminateBtn.innerHTML = 'Terminate and Proceed';
+                terminateBtn.innerHTML = T('exam.terminateRetry', 'Terminate and Proceed');
                 
-                alert('Failed to terminate the active exam. Please try again later.');
+                alert(T('exam.terminateFailed', 'Failed to terminate the active exam. Please try again later.'));
             });
             
             // Clean up the modal when it's hidden
@@ -247,7 +253,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Fetching labs, showLoader:', showLoader);
         if (showLoader) {
             pageLoader.style.display = 'flex';
-            loaderMessage.textContent = 'Loading labs...';
+            loaderMessage.textContent = T('exam.loadingLabs', 'Loading labs...');
         }
         
         fetch('/facilitator/api/v1/assements/')
@@ -297,7 +303,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const filteredLabs = labs.filter(lab => lab.category === category);
         
         // Clear existing options
-        examNameSelect.innerHTML = '<option value="">Select a lab</option>';
+        examNameSelect.innerHTML = '<option value="">' + T('modal.selectLab', 'Select a lab') + '</option>';
         
         // Add filtered labs to the dropdown
         filteredLabs.forEach(lab => {
@@ -315,7 +321,7 @@ document.addEventListener('DOMContentLoaded', function() {
             examNameSelect.value = filteredLabs[0].id;
             updateLabDescription(filteredLabs[0]);
         } else {
-            examDescription.textContent = 'No labs available for this category.';
+            examDescription.textContent = T('exam.noLabsCategory', 'No labs available for this category.');
             startSelectedExamBtn.disabled = true;
         }
     }
@@ -380,14 +386,14 @@ document.addEventListener('DOMContentLoaded', function() {
             if (lab) {
                 updateLabDescription(lab);
                 examDescription.style.display = 'block';
-                startSelectedExamBtn.textContent = 'START EXAM';
+                startSelectedExamBtn.textContent = T('exam.start', 'START EXAM');
             }
         } else {
-            examDescription.textContent = 'No lab selected.';
+            examDescription.textContent = T('exam.noLabSelected', 'No lab selected.');
             examDescription.style.display = 'block';
             selectedLab = null;
             startSelectedExamBtn.disabled = true;
-            startSelectedExamBtn.textContent = 'START EXAM';
+            startSelectedExamBtn.textContent = T('exam.start', 'START EXAM');
         }
     });
     
