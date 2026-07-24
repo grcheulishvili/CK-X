@@ -17,7 +17,8 @@
           "expectedOutput": "0",
           "weightage": 4
         }
-      ]
+      ],
+      "question_ka": "შეამოწმეთ Helm-ის არსებული ინსტალაცია კლასტერში ვერსიის შემოწმებით.\n\nგაუშვით version ბრძანება და შეინახეთ გამოსავალი ფაილში `/tmp/exam/q1/helm-version.txt`.\n\nგამოსავალში უნდა ჩანდეს როგორც კლიენტის, ისე სერვერის ვერსია."
     },
     {
       "id": "2",
@@ -36,7 +37,8 @@
           "expectedOutput": "0",
           "weightage": 4
         }
-      ]
+      ],
+      "question_ka": "დაამატეთ Bitnami-ს chart რეპოზიტორია Helm-ის კონფიგურაციაში სახელით `bitnami` და URL-ით `https://charts.bitnami.com/bitnami`.\n\nგანაახლეთ რეპოზიტორია უახლესი ინფორმაციის მისაღებად. შედეგი დაადასტურეთ ყველა რეპოზიტორიის ჩამონათვალით."
     },
     {
       "id": "3",
@@ -55,7 +57,8 @@
           "expectedOutput": "0",
           "weightage": 4
         }
-      ]
+      ],
+      "question_ka": "მოძებნეთ nginx chart Bitnami-ს რეპოზიტორიაში.\n\nშეინახეთ ძიების შედეგები ფაილში `/tmp/exam/q3/nginx-charts.txt`."
     },
     {
       "id": "4",
@@ -82,7 +85,8 @@
           "expectedOutput": "0",
           "weightage": 2
         }
-      ]
+      ],
+      "question_ka": "დააინსტალირეთ Bitnami-ს nginx chart release-ის სახელით `web-server` `default` namespace-ში.\n\nდარწმუნდით, რომ სერვისის ტიპია `NodePort` და პორტი `30080`. შეცვალეთ მხოლოდ საჭირო მნიშვნელობები, დანარჩენი ნაგულისხმევი პარამეტრების შეუცვლელად."
     },
     {
       "id": "5",
@@ -101,7 +105,8 @@
           "expectedOutput": "0",
           "weightage": 4
         }
-      ]
+      ],
+      "question_ka": "ჩამოთვალეთ Helm-ის ყველა release ყველა namespace-ში.\n\nშეინახეთ გამოსავალი ფაილში `/tmp/exam/q5/releases.txt`."
     },
     {
       "id": "6",
@@ -127,7 +132,8 @@
           "expectedOutput": "0",
           "weightage": 2
         }
-      ]
+      ],
+      "question_ka": "მიიღეთ `web-server` release-ის სტატუსი და შეინახეთ გამოსავალი ფაილში `/tmp/exam/q6/web-server-status.txt`.\n\nასევე მიიღეთ chart-ის მიერ დაგენერირებული მანიფესტების შეჯამება და შეინახეთ ფაილში `/tmp/exam/q6/web-server-manifests.txt`."
     },
     {
       "id": "7",
@@ -153,7 +159,8 @@
           "expectedOutput": "0",
           "weightage": 2
         }
-      ]
+      ],
+      "question_ka": "განაახლეთ `web-server` release ისე, რომ რეპლიკების რაოდენობა იყოს 3.\n\nშეამოწმეთ განახლების წარმატება პოდების რაოდენობის შემოწმებით."
     },
     {
       "id": "8",
@@ -180,7 +187,8 @@
           "expectedOutput": "0",
           "weightage": 2
         }
-      ]
+      ],
+      "question_ka": "შექმენით ახალი values ფაილი `/tmp/exam/q8/redis-values.yaml` Redis-ის ინსტალაციისთვის შემდეგი კონფიგურაციით:\n\n- პაროლი: \"password123\"\n- ჩართული persistence\n- რესურსების ლიმიტები: 256Mi მეხსიერება და 100m CPU\n\nშემდეგ დააინსტალირეთ Bitnami-ს Redis chart ამ values ფაილით, release-ის სახელით `cache-db` `default` namespace-ში."
     },
     {
       "id": "9",
@@ -206,7 +214,8 @@
           "expectedOutput": "0",
           "weightage": 2
         }
-      ]
+      ],
+      "question_ka": "შექმენით ახალი Helm chart სახელად `webapp` `helm create` ბრძანებით.\n\nდაარედაქტირეთ Chart.yaml ისე, რომ შეიცავდეს აღწერას: \"A simple web application\" და appVersion იყოს \"1.2.3\"."
     },
     {
       "id": "10",
@@ -233,7 +242,8 @@
           "expectedOutput": "0",
           "weightage": 2
         }
-      ]
+      ],
+      "question_ka": "შეფუთეთ თქვენ მიერ შექმნილი `webapp` chart `.tgz` ფაილში.\n\nშემდეგ შექმენით ლოკალური chart რეპოზიტორია:\n1. შექმენით დირექტორია `/tmp/exam/q10/charts`\n2. გადაიტანეთ შეფუთული chart ამ დირექტორიაში\n3. შექმენით index ფაილი ამ რეპოზიტორიისთვის\n4. დაამატეთ ეს ლოკალური რეპოზიტორია Helm-ში სახელით `localrepo`"
     },
     {
       "id": "11",
@@ -259,7 +269,8 @@
           "expectedOutput": "0",
           "weightage": 2
         }
-      ]
+      ],
+      "question_ka": "დააბრუნეთ `web-server` release პირველ რევიზიაზე (თავდაპირველ ინსტალაციაზე).\n\nშეამოწმეთ rollback-ის წარმატება რევიზიის ნომრისა და რეპლიკების საწყისი რაოდენობის დადასტურებით."
     },
     {
       "id": "12",
@@ -286,7 +297,8 @@
           "expectedOutput": "0",
           "weightage": 2
         }
-      ]
+      ],
+      "question_ka": "დაადგინეთ და აღმოფხვერით ხარვეზი არსებულ პრობლემურ release-ში სახელად `buggy-app` `default` namespace-ში.\n\n1. Helm-ის სადიაგნოსტიკო საშუალებებით დაადგინეთ პრობლემა\n2. შექმენით ფაილი `/tmp/exam/q12/diagnosis.txt` პრობლემის აღწერით\n3. გაასწორეთ release საჭირო განახლებით ან ხელახალი ინსტალაციით"
     }
   ]
 }

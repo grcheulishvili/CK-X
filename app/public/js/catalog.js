@@ -65,7 +65,7 @@
                 ? labs.length
                 : labs.filter(function (l) { return categoryKey(l.category) === cat; }).length;
             const on = cat === activeCategory ? ' is-active' : '';
-            const label = cat === 'All' ? t('filter.all') : cat;
+            const label = cat === 'All' ? t('filter.all') : t('category.' + cat);
             return '<button type="button" role="tab" class="chip' + on + '" ' +
                 'data-category="' + esc(cat) + '" aria-selected="' + (cat === activeCategory) + '">' +
                 esc(label) + '<span class="chip-count">' + count + '</span></button>';
@@ -89,7 +89,7 @@
                 '<span class="lab-body">' +
                     '<span class="lab-head">' +
                         '<span class="lab-name">' + esc(localised(lab, 'name') || lab.id) + '</span>' +
-                        '<span class="tag">' + esc(cat) + '</span>' +
+                        '<span class="tag">' + esc(t('category.' + cat)) + '</span>' +
                     '</span>' +
                     '<span class="lab-desc">' + esc(localised(lab, 'description')) + '</span>' +
                 '</span>' +
@@ -115,7 +115,7 @@
             const rows = sortLabs(labs.filter(function (l) { return categoryKey(l.category) === cat; }));
             return '<section class="group">' +
                 '<header class="group-head">' +
-                    '<h2 class="group-title">' + esc(cat) + '</h2>' +
+                    '<h2 class="group-title">' + esc(t('category.' + cat)) + '</h2>' +
                     '<p class="group-blurb">' + esc(t('group.' + cat)) + '</p>' +
                     '<span class="group-count">' + rows.length + ' ' +
                         esc(rows.length === 1 ? t('lab.one') : t('lab.many')) + '</span>' +

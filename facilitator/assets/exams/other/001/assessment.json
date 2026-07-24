@@ -25,7 +25,8 @@
           "expectedOutput": "0",
           "weightage": 3
         }
-      ]
+      ],
+      "question_ka": "შექმენით Docker იმიჯი სახელად `docker-speedrun:v1` `/tmp/exam/q1` დირექტორიაში მოცემული Dockerfile-ით.\n\nდაატეგეთ იმიჯი ასევე როგორც `docker-speedrun:latest`."
     },
     {
       "id": "2",
@@ -67,7 +68,8 @@
           "expectedOutput": "0",
           "weightage": 2
         }
-      ]
+      ],
+      "question_ka": "გაუშვით კონტეინერი სახელად `web-server` `nginx:alpine` იმიჯით. კონტეინერმა უნდა:\n\n- იმუშაოს detached რეჟიმში\n- ჰოსტის პორტი `8080` მიაბას კონტეინერის პორტს `80`\n- დააყენოს გარემოს ცვლადი `NGINX_HOST=localhost`"
     },
     {
       "id": "3",
@@ -101,7 +103,8 @@
           "expectedOutput": "0",
           "weightage": 4
         }
-      ]
+      ],
+      "question_ka": "შექმენით Docker ვოლუმი სახელად `data-volume` და შემდეგ გაუშვით კონტეინერი სახელად `volume-test` `alpine:latest` იმიჯით, რომელიც:\n\n- მიამაგრებს `data-volume`-ს კონტეინერში `/app/data`-ზე\n- შექმნის ფაილს `/app/data/test.txt` შიგთავსით 'Docker volumes test'\n- დაასრულებს მუშაობას ამ მოქმედებების შემდეგ"
     },
     {
       "id": "4",
@@ -135,7 +138,8 @@
           "expectedOutput": "0",
           "weightage": 2
         }
-      ]
+      ],
+      "question_ka": "შექმენით მრავალეტაპიანი (multi-stage) Dockerfile `/tmp/exam/q4/Dockerfile`-ში, რომელიც:\n\n- აგების ეტაპად იყენებს `golang:1.17-alpine`-ს\n- აგებს მარტივ Go აპლიკაციას `/tmp/exam/q4/main.go`-დან\n- საბოლოო ეტაპად იყენებს `alpine:latest`-ს\n- საბოლოო ეტაპზე გადააქვს მხოლოდ დაკომპილირებული ბინარი\n- entrypoint-ად აყენებს ამ ბინარის გაშვებას\n\nშემდეგ ააგეთ ეს იმიჯი ტეგით `multi-stage:latest`."
     },
     {
       "id": "5",
@@ -163,7 +167,8 @@
           "expectedOutput": "0",
           "weightage": 4
         }
-      ]
+      ],
+      "question_ka": "დააკონფიგურირეთ Docker daemon `systemd` cgroup დრაივერის გამოსაყენებლად.\n\nდაარედაქტირეთ `/etc/docker/daemon.json` ისე, რომ დააყენოს `\"exec-opts\": [\"native.cgroupdriver=systemd\"]`.\n\n> რეალურ ჰოსტზე შემდეგ გაუშვებდით `systemctl restart docker`-ს. ამ ლაბორატორიის მანქანას არ აქვს init სისტემა და შემდგომ დავალებებს Docker სჭირდებათ, ამიტომ **აქ ნუ გადატვირთავთ daemon-ს** - ფასდება მხოლოდ კონფიგურაციის ფაილი."
     },
     {
       "id": "6",
@@ -197,7 +202,8 @@
           "expectedOutput": "0",
           "weightage": 3
         }
-      ]
+      ],
+      "question_ka": "გაუშვით კონტეინერი სახელად `logging-test` `nginx:alpine` იმიჯით, რომელიც:\n\n- მუშაობს detached რეჟიმში\n- იყენებს 'json-file' ლოგირების დრაივერს\n- ლოგების როტაციისთვის ინახავს მაქსიმუმ 3 ფაილს, თითო 10m ზომის"
     },
     {
       "id": "7",
@@ -231,7 +237,8 @@
           "expectedOutput": "0",
           "weightage": 4
         }
-      ]
+      ],
+      "question_ka": "შექმენით საკუთარი bridge ქსელი სახელად `app-network` ქვექსელით `172.18.0.0/16`. შემდეგ გაუშვით ორი კონტეინერი:\n\n- კონტეინერი `app1` `alpine` იმიჯით, ქსელით `app-network` და ბრძანებით, რომელიც მას გაშვებულს ტოვებს\n- კონტეინერი `app2` `alpine` იმიჯით, ქსელით `app-network` და ბრძანებით, რომელიც `app1`-ს 3-ჯერ პინგავს"
     },
     {
       "id": "8",
@@ -265,7 +272,8 @@
           "expectedOutput": "0",
           "weightage": 2
         }
-      ]
+      ],
+      "question_ka": "შექმენით Dockerfile `/tmp/exam/q8/Dockerfile`-ში, რომელიც ვებ-აპლიკაციისთვის healthcheck-ს ნერგავს:\n\n- საბაზისო იმიჯი: `nginx:alpine`\n- healthcheck-მა curl-ით უნდა შეამოწმოს, პასუხობს თუ არა სერვერი პორტზე 80\n- ინტერვალი: 30 წამი\n- ტაიმაუტი: 10 წამი\n- საწყისი პერიოდი: 5 წამი\n- ცდები: 3\n\nშემდეგ ააგეთ და გაუშვით ეს კონტეინერი სახელით `healthy-app`."
     },
     {
       "id": "9",
@@ -292,7 +300,8 @@
           "expectedOutput": "0",
           "weightage": 3
         }
-      ]
+      ],
+      "question_ka": "ჩამოტვირთეთ `nginx:1.21.0`-ის იმიჯის manifest და შეინახეთ ფაილში `/tmp/exam/q9/manifest.json`. შემდეგ ამოიღეთ და შეინახეთ მხარდაჭერილი პლატფორმების სია ფაილში `/tmp/exam/q9/platforms.txt`."
     },
     {
       "id": "10",
@@ -326,7 +335,8 @@
           "expectedOutput": "0",
           "weightage": 2
         }
-      ]
+      ],
+      "question_ka": "გაუშვით კონტეინერი სახელად `limited-resources` `stress` იმიჯით, რომელიც:\n\n- შეზღუდულია მაქსიმუმ 0.5 CPU ბირთვით\n- შეზღუდულია მაქსიმუმ 256MB მეხსიერებით\n- უშვებს CPU სტრეს-ტესტს 1 CPU-ზე\n- მუშაობს detached რეჟიმში"
     },
     {
       "id": "11",
@@ -361,7 +371,8 @@
           "expectedOutput": "0",
           "weightage": 3
         }
-      ]
+      ],
+      "question_ka": "შექმენით Docker Compose ფაილი `/tmp/exam/q11/docker-compose.yml`-ში, რომელიც განსაზღვრავს მარტივ ვებ-აპლიკაციას ორი სერვისით:\n\n- სერვისი `web`: nginx:alpine, გამოქვეყნებული პორტზე 8080\n- სერვისი `db`: postgres:13, მონაცემთა ბაზის credential-ების გარემოს ცვლადებით\n- განსაზღვრეთ ვოლუმი ბაზის მონაცემებისთვის\n- განსაზღვრეთ საკუთარი ქსელი სერვისებისთვის\n\nშემდეგ Docker Compose-ით გაუშვით სერვისები detached რეჟიმში."
     },
     {
       "id": "12",
@@ -395,7 +406,8 @@
           "expectedOutput": "0",
           "weightage": 4
         }
-      ]
+      ],
+      "question_ka": "გააანალიზეთ არსებული იმიჯი `webapp:latest` და შექმენით ანგარიში `/tmp/exam/q12/image-report.txt`-ში, რომელიც შეიცავს:\n\n- გამოყენებულ საბაზისო იმიჯს\n- შრეების რაოდენობას\n- გამოქვეყნებულ პორტებს\n- გარემოს ცვლადებს\n- entrypoint ბრძანებას"
     },
     {
       "id": "13",
@@ -423,7 +435,8 @@
           "expectedOutput": "0",
           "weightage": 6
         }
-      ]
+      ],
+      "question_ka": "კონტეინერი სახელად `broken-container` გაშვებულია, მაგრამ სწორად არ მუშაობს. Docker-ის სადიაგნოსტიკო ხერხებით:\n\n- შეამოწმეთ კონტეინერის ლოგები\n- შედით კონტეინერში ფაილების დასათვალიერებლად\n- გაასწორეთ პრობლემა (აკლია ფაილი `/app/config.json`)\n- შედეგები შეინახეთ ფაილში `/tmp/exam/q13/diagnosis.txt`"
     },
     {
       "id": "14",
@@ -450,7 +463,8 @@
           "expectedOutput": "0",
           "weightage": 5
         }
-      ]
+      ],
+      "question_ka": "შექმენით Dockerfile `/tmp/exam/q14/Dockerfile`-ში, რომელიც არა-root მომხმარებელს ნერგავს:\n\n- საბაზისო იმიჯი: `python:3.9-slim`\n- შექმენით მომხმარებელი `appuser` UID 1001-ით\n- სამუშაო დირექტორიად დააყენეთ `/app`\n- გადმოიტანეთ სანიმუშო app.py ფაილიდან `/tmp/exam/q14/app.py`\n- entrypoint-ამდე დააყენეთ მომხმარებელი `appuser`\n- entrypoint-ად განსაზღვრეთ Python სკრიპტის გაშვება\n\nააგეთ და გაუშვით ეს კონტეინერი სახელით `secure-app`."
     },
     {
       "id": "15",
@@ -485,7 +499,8 @@
           "expectedOutput": "0",
           "weightage": 3
         }
-      ]
+      ],
+      "question_ka": "მოახდინეთ არსებული Docker იმიჯის ოპტიმიზაცია `/tmp/exam/q15/Dockerfile`-ში აგების ეფექტურობისა და ზომის გასაუმჯობესებლად:\n\n- გააუმჯობესეთ შრეების თანმიმდევრობა უკეთესი ქეშირებისთვის\n- დაამატეთ შესაბამისი `.dockerignore` ფაილი\n- შეამცირეთ შრეების რაოდენობა\n- შეამცირეთ საბოლოო იმიჯის ზომა\n\nააგეთ ოპტიმიზირებული იმიჯი ტეგით `optimized-app:latest`."
     },
     {
       "id": "16",
@@ -513,7 +528,8 @@
           "expectedOutput": "0",
           "weightage": 5
         }
-      ]
+      ],
+      "question_ka": "დააკონფიგურირეთ და გამოიყენეთ Docker Content Trust (DCT) იმიჯების ხელმოსაწერად და შესამოწმებლად:\n\n- ჩართეთ Docker Content Trust\n- ჩამოტვირთეთ ხელმოწერილი იმიჯი (docker.io/library/alpine:latest)\n- დააკონფიგურირეთ პაროლი ხელმოწერისთვის\n- ააგეთ, ხელი მოაწერეთ და ატვირთეთ საკუთარი იმიჯი ლოკალურ რეესტრში\n\nდააფიქსირეთ თქვენი ბრძანებები ფაილში `/tmp/exam/q16/dct-commands.sh`."
     }
   ]
 }

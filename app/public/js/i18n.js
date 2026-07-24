@@ -18,6 +18,10 @@
             'stats.unavailable': 'Catalog unavailable',
 
             'filter.all': 'All',
+            'category.CKA': 'CKA',
+            'category.CKAD': 'CKAD',
+            'category.CKS': 'CKS',
+            'category.Other': 'Other',
 
             'group.CKA': 'Cluster administration, networking, storage, troubleshooting.',
             'group.CKAD': 'Application design, configuration, observability, deployment.',
@@ -81,14 +85,18 @@
             'stats.unavailable': 'კატალოგი მიუწვდომელია',
 
             'filter.all': 'ყველა',
+            'category.CKA': 'CKA',
+            'category.CKAD': 'CKAD',
+            'category.CKS': 'CKS',
+            'category.Other': 'სხვა',
 
-            'group.CKA': 'კლასტერის ადმინისტრირება, ქსელი, საცავი, გამართვა.',
+            'group.CKA': 'კლასტერის ადმინისტრირება, ქსელი, საცავი, ხარვეზების აღმოფხვრა.',
             'group.CKAD': 'აპლიკაციის დიზაინი, კონფიგურაცია, დაკვირვებადობა, განთავსება.',
-            'group.CKS': 'კლასტერის გამკაცრება, მიწოდების ჯაჭვი, უსაფრთხოება.',
+            'group.CKS': 'უსაფრთხოების გაძლიერება, მიწოდების ჯაჭვი, გაშვების დროის დაცვა.',
             'group.Other': 'დამხმარე ხელსაწყოები Kubernetes-ის სერტიფიკაციებისთვის.',
 
             'lab.tasks': 'დავალება',
-            'lab.minutes': 'წთ',
+            'lab.minutes': 'წუთი',
             'lab.one': 'ლაბორატორია',
             'lab.many': 'ლაბორატორია',
 

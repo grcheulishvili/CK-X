@@ -24,7 +24,7 @@
       "examDurationInMinutes": 120,
       "questionCount": 20,
       "name_ka": "CKAD სავარჯიშო ლაბორატორია 02",
-      "description_ka": "CKAD სავარჯიშოები: მრავალკონტეინერიანი პოდები, სერვისები, საიდუმლოებები, init კონტეინერები, უსაფრთხოების კონტექსტი და გამართვა."
+      "description_ka": "CKAD სავარჯიშოები: მრავალკონტეინერიანი პოდები, სერვისები, საიდუმლოებები, init კონტეინერები, უსაფრთხოების კონტექსტი და ხარვეზების აღმოფხვრა."
     },
     {
       "id": "cks-001",
@@ -50,7 +50,7 @@
       "examDurationInMinutes": 120,
       "questionCount": 20,
       "name_ka": "CKA სავარჯიშო ლაბორატორია 02",
-      "description_ka": "გაფართოებული CKA სავარჯიშოები: საცავი, დაგეგმვა, StatefulSet, Helm, Kustomize, Gateway API და გამართვა."
+      "description_ka": "გაფართოებული CKA სავარჯიშოები: საცავი, დაგეგმვა, StatefulSet, Helm, Kustomize, Gateway API და ხარვეზების აღმოფხვრა."
     },
     {
       "id": "cka-001",
@@ -76,7 +76,7 @@
       "examDurationInMinutes": 120,
       "questionCount": 17,
       "name_ka": "CKA საცდელი გამოცდა 01",
-      "description_ka": "სრული CKA საცდელი გამოცდა: 17 დავალება რეალური გამოცდის წონების მიხედვით (25% არქიტექტურა, 15% სამუშაო დატვირთვები, 20% ქსელი, 10% საცავი, 30% გამართვა)."
+      "description_ka": "სრული CKA საცდელი გამოცდა: 17 დავალება რეალური გამოცდის წონების მიხედვით (25% არქიტექტურა, 15% Workload-ები, 20% ქსელი, 10% საცავი, 30% ხარვეზების აღმოფხვრა)."
     },
     {
       "id": "cka-mock-02",
@@ -89,7 +89,7 @@
       "examDurationInMinutes": 120,
       "questionCount": 17,
       "name_ka": "CKA საცდელი გამოცდა 02",
-      "description_ka": "მეორე CKA საცდელი გამოცდა: etcd-ის ბექაფი და აღდგენა, kubeadm-ის განახლება, NetworkPolicy, NodePort, DNS და გამართვის რამდენიმე სცენარი."
+      "description_ka": "მეორე CKA საცდელი გამოცდა: etcd-ის ბექაფი და აღდგენა, kubeadm-ის განახლება, NetworkPolicy, NodePort, DNS და ხარვეზების აღმოფხვრის რამდენიმე სცენარი."
     },
     {
       "id": "docker-001",

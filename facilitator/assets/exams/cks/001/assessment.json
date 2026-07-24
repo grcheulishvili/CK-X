@@ -32,7 +32,8 @@
           "expectedOutput": "0",
           "weightage": 1
         }
-      ]
+      ],
+      "question_ka": "შექმენით NetworkPolicy სახელად `secure-backend` `network-security` namespace-ში, რომელიც `app=backend` ლეიბლის მქონე პოდებზე შემომავალ ტრაფიკს დაუშვებს მხოლოდ `app=frontend` ლეიბლის მქონე პოდებიდან პორტზე 8080.\n\nდამატებით უზრუნველყავით, რომ ამ backend პოდებს გამავალი კავშირი შეეძლოთ მხოლოდ `app=database` ლეიბლის მქონე პოდებთან პორტზე 5432."
     },
     {
       "id": "2",
@@ -65,7 +66,8 @@
           "expectedOutput": "0",
           "weightage": 3
         }
-      ]
+      ],
+      "question_ka": "შექმენით TLS-ით დაცული Ingress რესურსი სახელად `secure-app` `secure-ingress` namespace-ში სერვისისთვის `web-service` (პორტი 80).\n\nIngress-მა უნდა:\n- უპასუხოს ჰოსტს `secure-app.example.com`\n- გამოიყენოს TLS secret სახელად `secure-app-tls`\n\nTLS secret უკვე შექმნილია `secure-ingress` namespace-ში."
     },
     {
       "id": "3",
@@ -99,7 +101,8 @@
           "expectedOutput": "0",
           "weightage": 2
         }
-      ]
+      ],
+      "question_ka": "გააძლიერეთ Kubernetes API სერვერის უსაფრთხოება Pod Security Standard-ის (PSS) კონფიგურაციით:\n\n1. შექმენით namespace სახელად `api-security`\n\n2. დაადეთ namespace-ს ლეიბლი `baseline` Pod Security Standard-ის აღსასრულებლად: `pod-security.kubernetes.io/enforce=baseline`\n\n3. შექმენით პოდი სახელად `secure-pod` `nginx` იმიჯით, რომელიც შეესაბამება baseline სტანდარტს.\n\n4. შექმენით Role და RoleBinding, რომლებიც ServiceAccount-ს სახელად `pss-viewer` (უკვე შექმნილია) მისცემს namespace-ებზე გამოყენებული pod security standard-ების ნახვის უფლებას."
     },
     {
       "id": "4",
@@ -132,7 +135,8 @@
           "expectedOutput": "0",
           "weightage": 1
         }
-      ]
+      ],
+      "question_ka": "დაიცავით Kubernetes node-ის metadata პოდებისგან. შექმენით NetworkPolicy სახელად `block-metadata` `metadata-protect` namespace-ში, რომელიც ყველა პოდისთვის დაბლოკავს გამავალ წვდომას Kubernetes metadata endpoint-ზე (ჩვეულებრივ 169.254.169.254).\n\nშეამოწმეთ თქვენი გადაწყვეტა იმავე namespace-ში პოდის სახელად `test-pod` შექმნით `busybox` იმიჯით და ბრძანებით, რომელიც 3600 წამს იძინებს."
     },
     {
       "id": "5",
@@ -165,7 +169,8 @@
           "expectedOutput": "0",
           "weightage": 2
         }
-      ]
+      ],
+      "question_ka": "Kubernetes-ის ბინარული ფაილების მთლიანობა უნდა შეამოწმოთ განთავსებამდე. `binary-verify` namespace-ში შექმენით პოდი სახელად `verify-bin` `busybox` იმიჯით, რომელიც ჰოსტის `/usr/bin` დირექტორიას მიამაგრებს მხოლოდ-კითხვის ვოლუმად `/host-bin`-ზე.\n\nპოდის შიგნით დაწერეთ სკრიპტი, რომელიც გამოთვლის შემდეგი ფაილების SHA256 ჰეშს და შედეგებს შეინახავს ფაილში `/tmp/verified-hashes.txt`:\n- /host-bin/kubectl\n- /host-bin/kubelet\n\nგამოიყენეთ ბრძანების ფორმატი: `sha256sum [file] >> /tmp/verified-hashes.txt`"
     },
     {
       "id": "6",
@@ -200,7 +205,8 @@
           "expectedOutput": "0",
           "weightage": 2
         }
-      ]
+      ],
+      "question_ka": "შექმენით Role და RoleBinding `rbac-minimize` namespace-ში, რომ ServiceAccount-ს სახელად `app-reader` მისცეთ მინიმალური ნებართვები პოდების, სერვისებისა და deployment-ების წასაკითხად, მაგრამ არა secret-ებისა და configmap-ების.\n\nRole-ს სახელი უნდა იყოს `app-reader-role`, RoleBinding-ს კი `app-reader-binding`."
     },
     {
       "id": "7",
@@ -241,7 +247,8 @@
           "expectedOutput": "0",
           "weightage": 1
         }
-      ]
+      ],
+      "question_ka": "`service-account-caution` namespace-ში შექმენით Deployment სახელად `secure-app` 2 რეპლიკით, `nginx` იმიჯით.\n\nდააკონფიგურირეთ deployment ისე, რომ იყენებდეს თქვენ მიერ შესაქმნელ ServiceAccount-ს სახელად `minimal-sa`. ამ ServiceAccount-ს გამორთული უნდა ჰქონდეს API credential-ების ავტომატური მიმაგრება.\n\nდამატებით, პოდის შაბლონშიც აშკარად გამორთეთ service account token-ის ავტომატური მიმაგრება."
     },
     {
       "id": "8",
@@ -275,7 +282,8 @@
           "expectedOutput": "0",
           "weightage": 2
         }
-      ]
+      ],
+      "question_ka": "შეზღუდეთ წვდომა Kubernetes API სერვერზე: შექმენით NetworkPolicy სახელად `api-server-policy` `api-restrict` namespace-ში, რომელიც აკრძალავს გამავალ ტრაფიკს Kubernetes API სერვერზე ყველასთვის, გარდა `role=admin` ლეიბლის მქონე პოდებისა.\n\nშექმენით პოდი სახელად `admin-pod` ლეიბლით `role=admin` და პოდი სახელად `restricted-pod` ლეიბლით `role=restricted` იმავე namespace-ში. ორივემ უნდა გამოიყენოს `busybox` იმიჯი და იძინოს 3600 წამს."
     },
     {
       "id": "9",
@@ -316,7 +324,8 @@
           "expectedOutput": "0",
           "weightage": 1
         }
-      ]
+      ],
+      "question_ka": "შექმენით პოდი სახელად `secure-container` `os-hardening` namespace-ში `nginx` იმიჯით და შემდეგი უსაფრთხოების პარამეტრებით:\n\n1. კონტეინერმა უნდა ჩამოაგდოს ყველა capability და დაიბრუნოს მხოლოდ `NET_BIND_SERVICE`\n2. კონტეინერს უნდა ჰქონდეს მხოლოდ-კითხვის root ფაილური სისტემა\n3. კონტეინერი უნდა გაეშვას მომხმარებლის ID 1000-ითა და ჯგუფის ID 3000-ით\n\nდარწმუნდით, რომ კონტეინერი წარმატებით ეშვება და ემსახურება ტრაფიკს პორტზე 80."
     },
     {
       "id": "10",
@@ -350,7 +359,8 @@
           "expectedOutput": "0",
           "weightage": 1
         }
-      ]
+      ],
+      "question_ka": "შექმენით პოდი სახელად `seccomp-pod` `seccomp-profile` namespace-ში `nginx` იმიჯით და გამოყენებული seccomp პროფილით.\n\nseccomp პროფილი უნდა იყოს ნაგულისხმევი runtime/default პროფილი.\n\nდამატებით, შექმენით ConfigMap სახელად `seccomp-config` იმავე namespace-ში გასაღებით `profile.json`, რომელიც შეიცავს მარტივ seccomp პროფილს და უშვებს მხოლოდ შემდეგ სისტემურ გამოძახებებს: `exit`, `exit_group`, `rt_sigreturn`, `read`, `write` და `open`."
     },
     {
       "id": "11",
@@ -383,7 +393,8 @@
           "expectedOutput": "0",
           "weightage": 2
         }
-      ]
+      ],
+      "question_ka": "დაადეთ `pod-security` namespace-ს ლეიბლი `baseline` Pod Security Standard-ის აღსასრულებლად.\n\nშემდეგ შექმენით პოდი სახელად `compliant-pod`, რომელიც შეესაბამება baseline სტანდარტს.\n\nბოლოს, სცადეთ პოდის შექმნა სახელად `non-compliant-pod`, რომელიც არღვევს სტანდარტს root-ით და privileged security context-ით გაშვებით. შეცდომა ჩაწერეთ ფაილში `/tmp/violation.txt`."
     },
     {
       "id": "12",
@@ -417,7 +428,8 @@
           "expectedOutput": "0",
           "weightage": 2
         }
-      ]
+      ],
+      "question_ka": "შექმენით Secret სახელად `db-creds` `secrets-management` namespace-ში შემდეგი მონაცემებით:\n- username: `admin`\n- password: `SecretP@ssw0rd`\n\nგანათავსეთ პოდი სახელად `secure-app`, რომელიც ამ secret-ს მიამაგრებს ფაილებად `/etc/db-creds`-ზე.\n\nდამატებით, განათავსეთ მეორე პოდი სახელად `env-app`, რომელიც secret-ის მონაცემებს გამოაქვეყნებს გარემოს ცვლადებად სახელებით `DB_USER` და `DB_PASS`.\n\nორივემ უნდა გამოიყენოს `busybox` იმიჯი და შეასრულოს ბრძანება `sleep 3600`."
     }
   ]
 }
