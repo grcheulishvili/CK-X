@@ -127,16 +127,6 @@ try {
         }
         Write-ColorOutput "✓ Docker Compose is installed" "Green"
         
-        # Check curl or equivalent
-        if (-not (Test-Command curl) -and -not (Test-Command Invoke-WebRequest)) {
-            Write-ColorOutput "✗ Neither curl nor Invoke-WebRequest is available" "Red"
-            Write-ColorOutput "Please ensure you have PowerShell 3.0 or higher" "Yellow"
-            Write-Host "Press any key to continue..."
-            $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-            return $false
-        }
-        Write-ColorOutput "✓ Download capabilities are available" "Green"
-        
         Write-ColorOutput "✓ All system requirements satisfied" "Green"
         Write-Host ""
         return $true
@@ -248,48 +238,31 @@ try {
         # Create project directory
         Write-ColorOutput "Setting Up Installation" "Blue"
         Write-ColorOutput "==============================================================" "Cyan"
-        Write-ColorOutput "Creating project directory..." "Yellow"
-        
-        $installDir = "ck-x-simulator"
-        if (-not (Test-Path $installDir)) {
-            New-Item -ItemType Directory -Force -Path $installDir | Out-Null
-        }
-        Set-Location $installDir
-        
-        # Download docker-compose.yml
-        Write-ColorOutput "Downloading Docker Compose file..." "Yellow"
-        $composeUrl = ""  # build locally from the repository; no remote compose file
-        
-        if (Test-Command curl) {
-            curl.exe -fsSL $composeUrl -o docker-compose.yml
-        } else {
-            Invoke-WebRequest -Uri $composeUrl -OutFile docker-compose.yml
-        }
-        
-        if (-not (Test-Path "docker-compose.yml")) {
-            Write-ColorOutput "✗ Failed to download docker-compose.yml" "Red"
+        # Run from the repository root. Every service is built from source, and the
+        # compose file references its build contexts by relative path (./jumphost,
+        # ./app, ./nginx and so on), so the compose file cannot be copied elsewhere.
+        $repoRoot = Split-Path -Parent $PSScriptRoot
+        Set-Location $repoRoot
+
+        if (-not (Test-Path "docker-compose.yaml")) {
+            Write-ColorOutput "X docker-compose.yaml not found in $repoRoot" "Red"
+            Write-ColorOutput "Clone the repository first:" "Cyan"
+            Write-ColorOutput "  git clone https://github.com/grcheulishvili/CK-X.git" "Cyan"
+            Write-ColorOutput "  cd CK-X" "Cyan"
+            Write-ColorOutput "  .\scripts\install.ps1" "Cyan"
             Write-Host "Press any key to continue..."
             $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
             return
         }
-        Write-ColorOutput "✓ Docker Compose file downloaded" "Green"
-        
-        # Pull images
-        Write-ColorOutput "Pulling Docker images..." "Yellow"
-        docker compose pull
+        Write-ColorOutput "Repository found at $repoRoot" "Green"
+
+        # Build and start. Images are built locally, so nothing is pulled from a
+        # third-party registry beyond the official base images.
+        Write-ColorOutput "Building images and starting services (first run takes a few minutes)..." "Yellow"
+        docker compose up -d --build
         if ($LASTEXITCODE -ne 0) {
-            Write-ColorOutput "✗ Failed to pull Docker images" "Red"
-            Write-Host "Press any key to continue..."
-            $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-            return
-        }
-        Write-ColorOutput "✓ Docker images pulled successfully" "Green"
-        
-        # Start services
-        Write-ColorOutput "Starting CK-X services..." "Yellow"
-        docker compose up -d
-        if ($LASTEXITCODE -ne 0) {
-            Write-ColorOutput "✗ Failed to start services" "Red"
+            Write-ColorOutput "X Failed to build or start services" "Red"
+            Write-ColorOutput "Check the output above, or run: docker compose logs" "Cyan"
             Write-Host "Press any key to continue..."
             $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
             return

@@ -72,13 +72,6 @@ check_requirements() {
     fi
     echo -e "${GREEN}✓ Docker Compose is installed${NC}"
     
-    # Check curl
-    if ! command_exists curl; then
-        echo -e "${RED}✗ curl is not installed${NC}"
-        echo -e "${YELLOW}Please install curl first${NC}"
-        exit 1
-    fi
-    echo -e "${GREEN}✓ curl is installed${NC}"
     
     echo -e "${GREEN}✓ All system requirements satisfied${NC}"
     echo
@@ -176,38 +169,33 @@ main() {
     # Check port
     check_ports
     
-    # Create project directory
+    # Run from the repository root. Every service is built from source, and the
+    # compose file references its build contexts by relative path (./jumphost,
+    # ./app, ./nginx and so on), so the compose file cannot be copied elsewhere.
     echo -e "${BLUE}Setting Up Installation${NC}"
     echo -e "${CYAN}==============================================================${NC}"
-    echo -e "${YELLOW}Creating project directory...${NC}"
-    mkdir -p ck-x-simulator && cd ck-x-simulator
-    
-    # Use the local docker-compose file if we're inside the repo; otherwise fetch it.
-    echo -e "${YELLOW}Preparing Docker Compose file...${NC}"
-    if [ -f ../docker-compose.yaml ]; then
-        cp ../docker-compose.yaml docker-compose.yml
-    elif [ -f ../docker-compose.yml ]; then
-        cp ../docker-compose.yml docker-compose.yml
-    else
-        echo -e "${RED}✗ docker-compose.yaml not found. Run this from the CK-X repository.${NC}"
+
+    REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+    cd "$REPO_ROOT" || exit 1
+
+    if [ ! -f docker-compose.yaml ]; then
+        echo -e "${RED}✗ docker-compose.yaml not found in ${REPO_ROOT}${NC}"
+        echo -e "${CYAN}Clone the repository first:${NC}"
+        echo -e "${CYAN}  git clone https://github.com/grcheulishvili/CK-X.git${NC}"
+        echo -e "${CYAN}  cd CK-X && ./scripts/install.sh${NC}"
         exit 1
     fi
-    
-    if [ ! -f docker-compose.yml ]; then
-        echo -e "${RED}✗ Failed to obtain docker-compose.yml${NC}"
+    echo -e "${GREEN}✓ Repository found at ${REPO_ROOT}${NC}"
+
+    # Build and start. Images are built locally, so nothing is pulled from a
+    # third-party registry beyond the official base images.
+    echo -e "${YELLOW}Building images and starting services (first run takes a few minutes)...${NC}"
+    docker compose up -d --build
+    if [ $? -ne 0 ]; then
+        echo -e "${RED}✗ Failed to build or start services${NC}"
+        echo -e "${CYAN}Check the output above, or run: docker compose logs${NC}"
         exit 1
     fi
-    echo -e "${GREEN}✓ Docker Compose file ready${NC}"
-    
-    # Build images locally (self-contained; does not depend on any external image registry
-    # beyond official library base images).
-    echo -e "${YELLOW}Building Docker images locally...${NC}"
-    docker compose build
-    echo -e "${GREEN}✓ Docker images built successfully${NC}"
-    
-    # Start services
-    echo -e "${YELLOW}Starting CK-X services...${NC}"
-    docker compose up -d
     echo -e "${GREEN}✓ Services started${NC}"
     
     # Combined waiting message instead of individual service wait messages
