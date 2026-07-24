@@ -1,0 +1,39 @@
+CK-X Simulator
+==============
+
+This repository is a fork of CK-X (https://github.com/sailor-sh/CK-X).
+
+Original work:
+    Copyright (c) 2026 Sailor.sh. All rights reserved.
+    Licensed under the Business Source License 1.1.
+    Licensor: Sailor.sh
+
+Modifications in this fork:
+    Copyright (c) 2026 the CK-X Simulator fork contributors.
+
+The Business Source License 1.1 in LICENSE governs this entire repository,
+including the modifications listed below. Sailor.sh remains the Licensor of the
+Licensed Work; this fork does not and cannot relicense it, change the Licensor,
+or alter the Change Date. Contributions to this fork are made under the same
+license.
+
+Commercial use, production deployment, or offering this software as a hosted or
+managed service requires written permission from Sailor.sh, as set out in
+LICENSE. Forking does not grant those rights.
+
+Summary of modifications
+------------------------
+
+- Added CKS coverage and two CKA mock exams weighted to the published exam
+  blueprint.
+- Rewrote worked solutions to an imperative-first workflow.
+- Added Georgian localisation for the interface, lab catalogue and all questions.
+- Rebuilt the landing page around the lab catalogue.
+- Replaced the deprecated desktop base image, made all images build locally, and
+  added a self-hosted desktop base.
+- Fixed graders that could never fail, tasks that were unsatisfiable on the
+  bundled cluster, and a number of platform defects in networking, resource
+  limits and the remote desktop.
+- Added scripts/lint-exams.py to catch these classes of defect before merge.
+
+See FIXES.md for the detailed change log.
